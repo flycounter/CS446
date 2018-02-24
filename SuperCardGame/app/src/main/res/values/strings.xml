@@ -1,7 +1,4 @@
 <resources>
     <string name="app_name">SuperCardGame</string>
-
-    <string name="title_activity_game">GameActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_single_play">SinglePlayActivity</string>
 </resources>
