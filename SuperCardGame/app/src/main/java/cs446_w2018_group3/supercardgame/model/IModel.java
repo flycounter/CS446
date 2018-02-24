@@ -5,5 +5,5 @@ package cs446_w2018_group3.supercardgame.model;
  */
 
 public interface IModel {
-    void apply();
+    // ...
 }

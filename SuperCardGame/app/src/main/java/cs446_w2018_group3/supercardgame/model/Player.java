@@ -8,10 +8,5 @@ public class Player implements IModel {
     String id;
     String name;
 
-    public Player() { }
-
-    @Override
-    public void apply() {
-
-    }
+    // ...
 }
