@@ -1,6 +1,6 @@
 package cs446_w2018_group3.supercardgame.util.events;
 
-import cs446_w2018_group3.supercardgame.model.Card;
+import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.Player;
 
 import java.util.List;

@@ -1,9 +1,6 @@
 package cs446_w2018_group3.supercardgame.gamelogic;
 
 import cs446_w2018_group3.supercardgame.model.Player;
-import cs446_w2018_group3.supercardgame.util.events.GameEvent;
-import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
-import cs446_w2018_group3.supercardgame.model.Card;
 
 /**
  * Created by JarvieK on 2018/2/24.
