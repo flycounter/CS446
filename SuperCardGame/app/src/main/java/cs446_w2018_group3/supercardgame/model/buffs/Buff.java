@@ -10,24 +10,21 @@ import cs446_w2018_group3.supercardgame.model.Player;
 
 public abstract class Buff implements IModel {
     protected int remainingTurns;
-    protected Effect.BaseEffect buffEffect;
     protected int id;
     protected String label;
     protected Player subject, object;
 
-    public Buff(int id, String label,Player subject, Player object, Effect.BaseEffect eff, int turns) {
+    public Buff(int id, String label,Player subject, Player object, int turns) {
         this.id = id;
         this.label = label;
         this.subject = subject;
         this.object = object;
         remainingTurns = turns;
-        buffEffect = eff;
     }
 
     public int getId() { return id; }
     public String getLabel() { return label; }
     public int getRemainingTurns() { return remainingTurns; }
-    public Effect.BaseEffect getBuffEffect() { return buffEffect; }
 
     /*
     * applyBuff applies the buff by one turn and returns the number of remaining turns
