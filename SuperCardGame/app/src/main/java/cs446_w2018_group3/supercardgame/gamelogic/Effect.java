@@ -29,7 +29,7 @@ public class Effect {
         @Override
         public void useEffect(GameEvent _e) {
             PlayerEvent e = (PlayerEvent) _e;
-            e.UseElementAction.object.setHP (e.UseElementAction.getHP() - 1);
+//            e.UseElementAction.object.setHP (e.UseElementAction.getHP() - 1);
         }
     }
 }
