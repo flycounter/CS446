@@ -7,37 +7,38 @@ import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
  * Created by JarvieK on 2018/2/24.
  */
 
-public class Action {
-    abstract class BaseAction {
+public class Handler {
+    abstract class BaseHandler {
         GameLogic gameLogic;
         int actionCost;
 
-        BaseAction(GameLogic gameLogic) {
+        BaseHandler(GameLogic gameLogic) {
             this.gameLogic = gameLogic;
         }
 
-        public abstract void performAction(GameEvent e);
+        public abstract void handleAction(GameEvent e);
     }
 
-    public class CombineAction extends BaseAction {
-        public CombineAction(GameLogic gameLogic) {
-            super(gameLogic);
-        }
+    public class CombineHandler extends BaseHandler {
+        public CombineHandler(GameLogic gameLogic) { super(gameLogic); }
 
         @Override
-        public void performAction(GameEvent _e) {
+        public void handleAction(GameEvent _e) {
             PlayerEvent e = (PlayerEvent) _e;
+
+
             // ...
+
         }
     }
 
-    public class UseElementAction extends BaseAction {
-        public UseElementAction(GameLogic gameLogic) {
+    public class UseElementHandler extends BaseHandler {
+        public UseElementHandler(GameLogic gameLogic) {
             super(gameLogic);
         }
 
         @Override
-        public void performAction(GameEvent _e) {
+        public void handleAction(GameEvent _e) {
             PlayerEvent e = (PlayerEvent) _e;
             // ElementCard card = e.action.card;
             // ...

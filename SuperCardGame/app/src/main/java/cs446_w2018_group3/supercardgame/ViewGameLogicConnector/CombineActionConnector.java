@@ -18,7 +18,7 @@ public class CombineActionConnector implements IConnector {
 
     @Override
     public void dispatch(GameEvent _e) {
-        PlayerEvent.CombineAction e = (PlayerEvent.CombineAction) _e;
-        gameLogic.combineAction.performAction((PlayerEvent.CombineAction).getSubject(), e.)
+//        PlayerEvent.CombineAction e = (PlayerEvent.CombineAction) _e;
+//        gameLogic.combineAction.performAction((PlayerEvent.CombineAction).getSubject(), e.)
     }
 }
