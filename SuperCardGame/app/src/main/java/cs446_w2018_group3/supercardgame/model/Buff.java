@@ -8,12 +8,12 @@ import cs446_w2018_group3.supercardgame.gamelogic.Effect;
 
 public class Buff implements IModel {
     private int remainingTurns;
-    private Effect buffEffect;
+    private Effect.BaseEffect buffEffect;
     private int id;
     private String label;
     private Player subject, object;
 
-    public Buff(int id, String label,Player subject, Player object, Effect eff, int turns) {
+    public Buff(int id, String label,Player subject, Player object, Effect.BaseEffect eff, int turns) {
         this.id = id;
         this.label = label;
         this.subject = subject;
@@ -25,13 +25,14 @@ public class Buff implements IModel {
     public int getId() { return id; }
     public String getLabel() { return label; }
     public int getRemainingTurns() { return remainingTurns; }
-    public Effect getBuffEffect() { return buffEffect; }
+    public Effect.BaseEffect getBuffEffect() { return buffEffect; }
 
     /*
     * applyBuff applies the buff by one turn and returns the number of remaining turns
     * */
     public int applyBuff() {
         remainingTurns -= 1;
+        buffEffect.applyEffect( subject, object );
         return remainingTurns;
     }
 
