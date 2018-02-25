@@ -54,10 +54,10 @@ public class PlayerEvent extends GameEvent {
         }
     }
 
-    public class useItemAction extends BaseAction {
+    public class UseItemAction extends BaseAction {
         Card.ItemCard card;
 
-        public useItemAction(Player player, Card.ItemCard card) {
+        public UseItemAction(Player player, Card.ItemCard card) {
             super(player);
             this.card = card;
         }

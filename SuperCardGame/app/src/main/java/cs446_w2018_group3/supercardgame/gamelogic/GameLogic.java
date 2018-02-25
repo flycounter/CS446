@@ -8,9 +8,7 @@ import cs446_w2018_group3.supercardgame.runtime.Runtime;
 
 public class GameLogic {
     private Runtime runtime;
-
     public GameLogic() {
-
     }
 
     public void setRuntime(Runtime runtime) {
