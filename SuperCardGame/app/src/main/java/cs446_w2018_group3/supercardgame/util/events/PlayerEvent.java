@@ -46,10 +46,12 @@ public class PlayerEvent extends GameEvent {
     }
 
     public class UseElementAction extends BaseAction {
+        Player object;
         Card.ElementCard card;
 
-        public UseElementAction(Player player, Card.ElementCard card) {
-            super(player);
+        public UseElementAction(Player subject, Player object, Card.ElementCard card) {
+            super(subject);
+            this.object = object;
             this.card = card;
         }
     }

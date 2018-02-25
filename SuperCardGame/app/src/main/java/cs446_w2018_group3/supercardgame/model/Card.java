@@ -23,7 +23,14 @@ public class Card {
     abstract class BaseCard implements IModel {
         int id;
         String label;
+
         public abstract void apply();
+        public int getId() {
+            return this.id;
+        }
+        public String getLabel() {
+            return this.label;
+        }
     }
 
     public class ElementCard extends BaseCard {
