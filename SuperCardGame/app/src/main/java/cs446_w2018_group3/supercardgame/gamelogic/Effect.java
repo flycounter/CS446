@@ -10,27 +10,46 @@ import cs446_w2018_group3.supercardgame.model.Card;
  */
 
 public class Effect {
+    //private static Effect instance;
 
-    public abstract class BaseEffect {
-        GameLogic gameLogic;
-        int actionCost;
+    //public static Effect getInstance() {
+    //    if (instance == null) {
+    //        instance = new Effect();
+    //    }
+    //    return instance;
+    //}
 
-        BaseEffect(GameLogic gameLogic) {
-            this.gameLogic = gameLogic;
-        }
-
-        public abstract void applyEffect(Player subject, Player object);
+    public static void dealDamageEffect ( Player subject, Player object, int damage) {
+        object.setHP(object.getHP() - damage);
     }
 
-    public class UseElementEffect extends BaseEffect {
-        int damage;
-        public UseElementEffect(GameLogic gameLogic) {
-            super(gameLogic);
-        }
+//    public static void dealDamageEffect ( Player subject, Player object, int damage) {
+//        object.setHP(object.getHP() - damage);
+//    }
 
-        @Override
-        public void applyEffect(Player subject, Player object) {
-            object.setHP ( object.getHP() - 1 );
-        }
-    }
+
+//    public abstract static class BaseEffect {
+//        GameLogic gameLogic;
+//        int actionCost;
+//
+//        BaseEffect() {
+//            //this.gameLogic = gameLogic;
+//        }
+//
+//        public abstract void applyEffect(Player subject, Player object);
+//    }
+
+//    public static class DealDamageEffect extends BaseEffect {
+//        int damage;
+//
+//        public DealDamageEffect(int damage) {
+//            this.damage = damage;
+//            //super(gameLogic);
+//        }
+//
+//        @Override
+//        public void applyEffect(Player subject, Player object) {
+//            object.setHP ( object.getHP() - damage );
+//        }
+//    }
 }

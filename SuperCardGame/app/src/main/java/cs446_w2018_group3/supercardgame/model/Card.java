@@ -1,5 +1,6 @@
 package cs446_w2018_group3.supercardgame.model;
 
+import cs446_w2018_group3.supercardgame.gamelogic.Effect;
 /**
  * Created by JarvieK on 2018/2/23.
  */
@@ -35,6 +36,7 @@ public class Card {
 
     public class ElementCard extends BaseCard {
         int level;
+        int damage;
         @Override
         public void apply() {}
     }
@@ -49,6 +51,11 @@ public class Card {
             this.id = 0;
             this.label = "Water";
             this.level = 1;
+            this.damage = 1;
+        }
+
+        public void apply(Player subject, Player object) {
+            Effect.dealDamageEffect(subject, object, damage);
         }
     }
 
