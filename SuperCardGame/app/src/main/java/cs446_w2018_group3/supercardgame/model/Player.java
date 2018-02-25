@@ -1,7 +1,7 @@
 package cs446_w2018_group3.supercardgame.model;
 
 import java.util.ArrayList;
-import cs446_w2018_group3.supercardgame.model.Buff;
+import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 
 /**
  * Created by JarvieK on 2018/2/23.
