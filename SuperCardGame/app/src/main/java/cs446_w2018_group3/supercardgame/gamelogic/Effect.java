@@ -19,7 +19,7 @@ public class Effect {
     //    return instance;
     //}
 
-    public static void dealDamageEffect ( Player subject, Player object, int damage) {
+    public static void dealDamageEffect ( Player object, int damage) {
         object.setHP(object.getHP() - damage);
     }
 

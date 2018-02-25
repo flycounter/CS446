@@ -55,7 +55,7 @@ public class Card {
         }
 
         public void apply(Player subject, Player object) {
-            Effect.dealDamageEffect(subject, object, damage);
+            Effect.dealDamageEffect(object, damage);
         }
     }
 
