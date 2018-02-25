@@ -1,6 +1,5 @@
 package cs446_w2018_group3.supercardgame.model;
 
-import cs446_w2018_group3.supercardgame.gamelogic.Effect;
 /**
  * Created by JarvieK on 2018/2/23.
  */

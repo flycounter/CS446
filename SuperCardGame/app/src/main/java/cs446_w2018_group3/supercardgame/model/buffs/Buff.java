@@ -1,6 +1,5 @@
 package cs446_w2018_group3.supercardgame.model.buffs;
 
-import cs446_w2018_group3.supercardgame.gamelogic.Effect;
 import cs446_w2018_group3.supercardgame.model.IModel;
 import cs446_w2018_group3.supercardgame.model.Player;
 

@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.gamelogic;
+package cs446_w2018_group3.supercardgame.model;
 
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent;
