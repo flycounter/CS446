@@ -3,6 +3,8 @@ package cs446_w2018_group3.supercardgame.model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import cs446_w2018_group3.supercardgame.info.CardInfo;
+import cs446_w2018_group3.supercardgame.info.GameInfo;
 import cs446_w2018_group3.supercardgame.model.cards.*;
 
 /**
@@ -11,7 +13,7 @@ import cs446_w2018_group3.supercardgame.model.cards.*;
 
 public class Game {
     private Player player1, player2;
-    private String weather;
+    private Translate.Weather weather;
     private ArrayList<Card> deck1, deck2;
     private Random rng = new Random();
 
@@ -24,7 +26,7 @@ public class Game {
         player2.setHP(5);
         player2.setAP(0);
 
-        weather = "Sunny";
+        weather = Translate.Weather.Sunny;
 
         for( int i = 0; i < 15; i++ ) {
             deck1.add( new WaterCard() );
@@ -87,4 +89,15 @@ public class Game {
         p.setAP(0);
     }
 
+    public GameInfo getGameInfo() {
+        ArrayList<CardInfo> deck1Info = new ArrayList<CardInfo>();
+        ArrayList<CardInfo> deck2Info = new ArrayList<CardInfo>();
+        for ( Card c : deck1 ) {
+            deck1Info.add( c.getCardInfo() );
+        }
+        for ( Card c: deck2 ) {
+            deck2Info.add( c.getCardInfo() );
+        }
+        return new GameInfo( player1.getPlayerInfo(), player2.getPlayerInfo(), weather, deck1Info, deck2Info );
+    }
 }
