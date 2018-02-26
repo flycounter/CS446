@@ -6,7 +6,7 @@ package cs446_w2018_group3.supercardgame.model;
 
 public class Translate {
      public static enum CardType {
-        Water, Fire, Air, Dirt, Aqua, Steam, Ice, Mud, Flame, Blast, Lava, Gale, Sand, Rock, Error
+        Water, Fire, Air, Dirt, Aqua, Steam, Ice, Mud, Flame, Blast, Lava, Gale, Sand, Rock, Excalibar, Error
     }
 
     public static enum Weather {

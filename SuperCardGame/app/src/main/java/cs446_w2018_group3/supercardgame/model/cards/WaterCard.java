@@ -9,8 +9,8 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class WaterCard extends ElementCard {
-    public WaterCard (Translate.CardType cardType, int level, int damage) {
-        super(cardType, level, damage);
+    public WaterCard () {
+        super(Translate.CardType.Water, 1, 1);
     }
 
     public void apply(Player subject, Player object) {

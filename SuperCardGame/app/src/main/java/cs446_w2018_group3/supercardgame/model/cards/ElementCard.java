@@ -17,7 +17,7 @@ public class ElementCard extends Card {
             {Translate.CardType.Mud, Translate.CardType.Lava, Translate.CardType.Sand, Translate.CardType.Rock}};
     int level;
     int damage;
-    
+
     @Override
     public void apply(Player subject, Player object) {}
 

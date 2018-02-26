@@ -8,8 +8,10 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class ItemCard extends Card {
-    public ItemCard (Translate.CardType cardType) {
+    int damage;
+    public ItemCard (Translate.CardType cardType, int damage) {
         super(cardType);
+        this.damage = damage;
     }
 
     @Override

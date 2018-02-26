@@ -6,8 +6,9 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  * Created by yandong on 2018-02-25.
  */
 
-public class AirCard extends ElementCard {
-    public AirCard () {
-        super(Translate.CardType.Air, 1, 1);
+public class Excalibar extends ItemCard {
+
+    public Excalibar() {
+        super(Translate.CardType.Excalibar, -1);
     }
-    }
+}

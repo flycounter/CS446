@@ -7,7 +7,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class DirtCard extends ElementCard {
-    public DirtCard (Translate.CardType cardType, int level, int damage) {
-        super(cardType, level, damage);
+    public DirtCard () {
+        super(Translate.CardType.Dirt, 1, 1);
     }
     }

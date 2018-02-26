@@ -7,7 +7,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class FireCard extends ElementCard {
-    public FireCard (Translate.CardType cardType, int level, int damage) {
-        super(cardType, level, damage);
+    public FireCard () {
+        super(Translate.CardType.Fire, 1, 1);
     }
-    }
+}
