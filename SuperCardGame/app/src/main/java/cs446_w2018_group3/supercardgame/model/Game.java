@@ -1,6 +1,7 @@
 package cs446_w2018_group3.supercardgame.model;
 
 import java.util.ArrayList;
+import cs446_w2018_group3.supercardgame.model.cards.*;
 
 /**
  * Created by Yakumo on 2/25/2018.

@@ -1,6 +1,8 @@
 package cs446_w2018_group3.supercardgame.util.events;
 
 import cs446_w2018_group3.supercardgame.model.cards.Card;
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.ItemCard;
 import cs446_w2018_group3.supercardgame.model.Player;
 
 import java.util.List;
@@ -33,23 +35,23 @@ public class PlayerEvent extends GameEvent {
     }
 
     public class CombineAction extends BaseAction {
-        List<Card.ElementCard> cards;
+        List<ElementCard> cards;
 
-        public CombineAction(Player player, List<Card.ElementCard> cards) {
+        public CombineAction(Player player, List<ElementCard> cards) {
             super(player);
             this.cards = cards;
         }
 
-        public List<Card.ElementCard> getCards() {
+        public List<ElementCard> getCards() {
             return this.cards;
         }
     }
 
     public class UseElementAction extends BaseAction {
         public Player object;
-        Card.ElementCard card;
+        ElementCard card;
 
-        public UseElementAction(Player subject, Player object, Card.ElementCard card) {
+        public UseElementAction(Player subject, Player object, ElementCard card) {
             super(subject);
             this.object = object;
             this.card = card;
@@ -57,9 +59,9 @@ public class PlayerEvent extends GameEvent {
     }
 
     public class UseItemAction extends BaseAction {
-        Card.ItemCard card;
+        ItemCard card;
 
-        public UseItemAction(Player player, Card.ItemCard card) {
+        public UseItemAction(Player player, ItemCard card) {
             super(player);
             this.card = card;
         }
