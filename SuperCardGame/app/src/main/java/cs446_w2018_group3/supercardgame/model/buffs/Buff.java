@@ -12,17 +12,19 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public abstract class Buff implements IModel {
+    static int id = 0;
     protected int remainingTurns;
     protected int buffId;
     protected Translate.BuffType buffType;
     protected Player subject, object;
 
-    public Buff(int id, Translate.BuffType label, Player subject, Player object, int turns) {
+    public Buff(Translate.BuffType label, Player subject, Player object, int turns) {
         this.buffId = id;
         this.buffType = label;
         this.subject = subject;
         this.object = object;
         remainingTurns = turns;
+        this.id++;
     }
 
     public int getId() {

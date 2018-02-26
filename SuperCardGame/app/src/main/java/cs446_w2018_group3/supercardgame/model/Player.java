@@ -57,6 +57,10 @@ public class Player implements IModel {
         return hand;
     }
 
+    public void addBuff (Buff b) {
+        buffs.add(b);
+    }
+
     public void insertHandler( Buff h ) { buffs.add(h); }
 
     public void applyBuff() {
