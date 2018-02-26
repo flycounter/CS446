@@ -70,9 +70,13 @@ public class Game {
     }
 
     public void combineElement( Player p, ElementCard c1, ElementCard c2 ) {
-        //p.insertCard( ElementCard.combine( c1, c2 ) );
+//        p.insertCard( ElementCard.combine( c1, c2 ) );
         p.removeCard( c1 );
         p.removeCard( c2 );
+    }
+
+    public void endTurn( Player p ) {
+        p.setAP(0);
     }
 
 }
