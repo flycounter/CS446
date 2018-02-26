@@ -3,7 +3,6 @@ package cs446_w2018_group3.supercardgame.model.buffs;
 import android.widget.TextView;
 
 import cs446_w2018_group3.supercardgame.info.BuffInfo;
-import cs446_w2018_group3.supercardgame.model.IModel;
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -11,9 +10,9 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  * Created by Yakumo on 2/24/2018.
  */
 
-public abstract class Buff implements IModel {
+public abstract class Buff {
     protected int remainingTurns;
-    protected int buffId;
+    protected final int buffId;
     protected Translate.BuffType buffType;
     protected Player subject, object;
 

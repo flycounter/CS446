@@ -2,7 +2,6 @@ package cs446_w2018_group3.supercardgame.model.cards;
 
 import cs446_w2018_group3.supercardgame.info.CardInfo;
 import cs446_w2018_group3.supercardgame.model.Effect;
-import cs446_w2018_group3.supercardgame.model.IModel;
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -25,7 +24,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 //  12: Sand
 //  13: Rock
 
-public abstract class Card implements IModel {
+public abstract class Card {
     static int id = 0;
     int cardId;
     Translate.CardType cardType;

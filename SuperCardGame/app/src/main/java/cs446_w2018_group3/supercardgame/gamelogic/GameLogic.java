@@ -7,7 +7,6 @@ import android.util.Log;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.gamelogic.model.Player;
-import cs446_w2018_group3.supercardgame.gamelogic.repository.PlayerDataRepository;
 import cs446_w2018_group3.supercardgame.runtime.Runtime;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent;
 import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
@@ -50,7 +49,9 @@ public class GameLogic {
         List<Integer> list = ((CombineAction) ((PlayerEvent) e).getAction()).getCardIndices();
         Log.d(this.getClass().toString(), String.format("cards: %s", list));
         // change player name to "another player"
-        ((MutableLiveData<Player>) getPlayer()).setValue(new Player("another player"));
-
+//        ((MutableLiveData<Player>) getPlayer()).setValue(new Player("another player"));
+        Player player = getPlayer().getValue();
+//        player.setName("another name");
+        ((MutableLiveData<Player>) getPlayer()).setValue(player);
     }
 }

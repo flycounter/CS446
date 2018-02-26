@@ -11,12 +11,12 @@ import cs446_w2018_group3.supercardgame.model.cards.*;
 
 public class Game {
     private Player player1, player2;
-    private String weather;
-    private ArrayList<Card> deck1, deck2;
-    private Random rng = new Random();
+//    private Weather weather;
+    private Random rng;
 
     // Pseudo game constructor. Create a game with a sandbag opponent, and with only water cards in deck. Sunny weather
     public Game() {
+        init();
         player1 = new Player(1,"Player1");
         player2 = new Player(2,"Sandbag");
         player1.setHP(10);
@@ -24,12 +24,21 @@ public class Game {
         player2.setHP(5);
         player2.setAP(0);
 
-        weather = "Sunny";
+//        weather = "Sunny";
+//
+//        for( int i = 0; i < 15; i++ ) {
+//            deck1.add( new WaterCard() );
+//            deck2.add( new WaterCard() );
+//        }
+    }
 
-        for( int i = 0; i < 15; i++ ) {
-            deck1.add( new WaterCard() );
-            deck2.add( new WaterCard() );
-        }
+    private void init() {
+        // player init
+
+        // field init
+
+        //
+
     }
 
     /*
@@ -37,32 +46,32 @@ public class Game {
     * Random weather to be added.
     * */
     public void gameStart() {
-        for( int i = 0; i < 3; i += 1 ) {
-            Card temp = deck1.get( rng.nextInt( deck1.size() ) );
-            player1.insertCard( temp );
-            deck1.remove( temp );
-            temp = deck2.get( rng.nextInt( deck1.size() ) );
-            player2.insertCard( temp );
-            deck2.remove( temp );
-        }
+//        for( int i = 0; i < 3; i += 1 ) {
+//            Card temp = deck1.get( rng.nextInt( deck1.size() ) );
+//            player1.insertCard( temp );
+//            deck1.remove( temp );
+//            temp = deck2.get( rng.nextInt( deck1.size() ) );
+//            player2.insertCard( temp );
+//            deck2.remove( temp );
+//        }
     }
 
     public void startPlayerTurn(Player p) {
-        ArrayList<Card> deck;
-        if ( p == player1 ) {
-            deck = deck1;
-        } else if ( p == player2 ) {
-            deck = deck2;
-        } else {
-            return;
-        }
-        p.setAP( p.getAP() + 6 );
-        for( int i = 0; i < 2; i += 1 ) {
-            Card temp = deck.get( rng.nextInt( deck.size() ) );
-            p.insertCard(temp);
-            deck.remove(temp);
-        }
-        p.applyBuff();
+//        ArrayList<Card> deck;
+//        if ( p == player1 ) {
+//            deck = deck1;
+//        } else if ( p == player2 ) {
+//            deck = deck2;
+//        } else {
+//            return;
+//        }
+//        p.setAP( p.getAP() + 6 );
+//        for( int i = 0; i < 2; i += 1 ) {
+//            Card temp = deck.get( rng.nextInt( deck.size() ) );
+//            p.insertCard(temp);
+//            deck.remove(temp);
+//        }
+//        p.applyBuff();
     }
 
     public void playerUseCard( Player subject, Player object, Card c ) {

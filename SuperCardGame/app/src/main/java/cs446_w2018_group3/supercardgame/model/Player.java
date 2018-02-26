@@ -1,6 +1,9 @@
 package cs446_w2018_group3.supercardgame.model;
 
+import android.arch.lifecycle.LiveData;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import cs446_w2018_group3.supercardgame.info.*;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
@@ -10,13 +13,14 @@ import cs446_w2018_group3.supercardgame.model.cards.Card;
  * Created by JarvieK on 2018/2/23.
  */
 
-public class Player implements IModel {
+public class Player {
     private int id;
     private String name;
     private int health;
     private int actionPoint;
-    private ArrayList<Card> hand;
-    private ArrayList<Buff> buffs;
+    private List<Card> deck;
+    private List<Card> hand;
+    private List<Buff> buffs;
 
     public Player( int id, String name ) {
         this.id = id;
@@ -53,7 +57,7 @@ public class Player implements IModel {
     public void removeCard( Card c ) {
         hand.remove(c);
     }
-    public ArrayList<Card> getHand() {
+    public List<Card> getHand() {
         return hand;
     }
 

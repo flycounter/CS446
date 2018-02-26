@@ -1,31 +1,58 @@
 package cs446_w2018_group3.supercardgame.runtime;
 
-import cs446_w2018_group3.supercardgame.gamelogic.GameLogic;
-import cs446_w2018_group3.supercardgame.gamelogic.model.Player;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.cards.Card;
+import cs446_w2018_group3.supercardgame.model.cards.FireCard;
+import cs446_w2018_group3.supercardgame.model.cards.WaterCard;
 
 /**
  * Created by JarvieK on 2018/2/24.
  */
 
 public class Runtime {
-    private Player player;
-    private GameLogic gameLogic;
+    private final MutableLiveData<Player> player = new MutableLiveData<>();
+    private final MutableLiveData<Player> opponent = new MutableLiveData<>();
+//    private Game game;
 
-    public Runtime() {}
+    public Runtime() {
+        init();
+    }
 
-    public Player getPlayer() {
+    private void init() {
+        Player playerData = new Player(1, "you");
+        for (int i = 0; i < 3; i++) {
+            playerData.insertCard(new WaterCard());
+        }
+
+        Player opponentData = new Player(2, "opponent");
+        for (int i = 0; i < 3; i++) {
+            playerData.insertCard(new FireCard());
+        }
+
+        player.setValue(playerData);
+        opponent.setValue(opponentData);
+    }
+
+    public LiveData<Player> getPlayer() {
         return player;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public LiveData<Player> getOpponent() {
+        return opponent;
     }
 
-    public GameLogic getGameLogic() {
-        return gameLogic;
+    public MutableLiveData<Player> getMutablePlayer() {
+        return player;
     }
 
-    public void setGameLogic(GameLogic gameLogic) {
-        this.gameLogic = gameLogic;
+    public MutableLiveData<Player> getMutableOpponent() {
+        return opponent;
     }
 }
