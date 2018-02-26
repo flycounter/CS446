@@ -27,8 +27,8 @@ public class Game {
         weather = "Sunny";
 
         for( int i = 0; i < 15; i++ ) {
-            deck1.add( new WaterCard(Translate.CardType.Water, 1, 1 ) );
-            deck2.add( new WaterCard(Translate.CardType.Water, 1, 1 ) );
+            deck1.add( new WaterCard() );
+            deck2.add( new WaterCard() );
         }
     }
 
@@ -58,7 +58,7 @@ public class Game {
         }
         p.setAP( p.getAP() + 6 );
         for( int i = 0; i < 2; i += 1 ) {
-            Card temp = deck.get(rng.nextInt(deck.size()));
+            Card temp = deck.get( rng.nextInt( deck.size() ) );
             p.insertCard(temp);
             deck.remove(temp);
         }
@@ -74,7 +74,7 @@ public class Game {
             Translate.CardType newCardType = ElementCard.combine( c1.getCardType(), c2.getCardType() );
 
             // This is temporary
-            Card newCard = new ElementCard( newCardType , 2, 2 );
+            Card newCard = new AquaCard();
 
             p.insertCard( newCard );
             p.removeCard( c1 );
