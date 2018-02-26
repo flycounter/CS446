@@ -1,13 +1,13 @@
 package cs446_w2018_group3.supercardgame;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 public abstract class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,6 +17,4 @@ public abstract class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-    }
-
 }
