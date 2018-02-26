@@ -61,6 +61,15 @@ public class Player implements IModel {
         buffs.add(b);
     }
 
+    public void removeBuff (int id) {
+        for ( Buff b: buffs ) {
+            if (b.getBuffId() == id) {
+                buffs.remove(b);
+                break;
+            }
+        }
+    }
+
     public void insertHandler( Buff h ) { buffs.add(h); }
 
     public void applyBuff() {

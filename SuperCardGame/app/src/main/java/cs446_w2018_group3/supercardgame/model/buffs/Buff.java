@@ -27,7 +27,7 @@ public abstract class Buff implements IModel {
         this.id++;
     }
 
-    public int getId() {
+    public int getBuffId() {
         return buffId;
     }
 
