@@ -13,13 +13,15 @@ import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
  */
 
 public class PlayerInfo {
+    public String name;
     public int playerId;
     public int HP;
     public int AP;
     public ArrayList<CardInfo> hands;
     public ArrayList<BuffInfo> buffs;
 
-    public PlayerInfo (int playerId, int HP, int AP, ArrayList<CardInfo> hands, ArrayList<BuffInfo> buffs){
+    public PlayerInfo (String name, int playerId, int HP, int AP, ArrayList<CardInfo> hands, ArrayList<BuffInfo> buffs){
+        this.name = name;
         this.playerId = playerId;
         this.HP = HP;
         this.AP = AP;

@@ -1,6 +1,8 @@
 package cs446_w2018_group3.supercardgame.model;
 
 import java.util.ArrayList;
+
+import cs446_w2018_group3.supercardgame.info.*;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 
@@ -56,10 +58,26 @@ public class Player implements IModel {
     }
 
     public void insertHandler( Buff h ) { buffs.add(h); }
+
     public void applyBuff() {
         int turns;
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
         }
+    }
+
+    public PlayerInfo getPlayerInfo() {
+        ArrayList<CardInfo> tempCardInfoList = new ArrayList<CardInfo>();
+        ArrayList<BuffInfo> tempBuffInfoList = new ArrayList<BuffInfo>();
+
+        for ( Card c: hand ) {
+            tempCardInfoList.add( c.getCardInfo() );
+        }
+
+        for ( Buff b: buffs ) {
+            tempBuffInfoList.add( b.getBuffInfo() );
+        }
+
+        return new PlayerInfo(name, id, health, actionPoint, tempCardInfoList, tempBuffInfoList);
     }
 }

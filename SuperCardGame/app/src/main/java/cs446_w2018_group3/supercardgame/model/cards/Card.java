@@ -46,7 +46,7 @@ public abstract class Card implements IModel {
         return cardType;
     }
 
-    public CardInfo getCardInfo (Card card) {
+    public CardInfo getCardInfo () {
         return new CardInfo(cardId, cardType);
     }
 }
