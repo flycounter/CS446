@@ -10,21 +10,35 @@ import cs446_w2018_group3.supercardgame.model.cards.Card;
  */
 
 public class ElementCard extends Card {
-    int cardTypeId;
+    static Translate.CardType[][] combileRule = {
+            {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
+            {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
+            {Translate.CardType.Ice, Translate.CardType.Blast, Translate.CardType.Gale, Translate.CardType.Sand},
+            {Translate.CardType.Mud, Translate.CardType.Lava, Translate.CardType.Sand, Translate.CardType.Rock}};
     int level;
     int damage;
+    
     @Override
     public void apply(Player subject, Player object) {}
+
+    public static Boolean combineCheck(ElementCard card1, ElementCard card2) {
+        return card1.getLevel() == 1 && card2.getLevel() == 1;
+    }
+
+    public static Translate.CardType combine(Translate.CardType cardType1, Translate.CardType cardType2) {
+        int cardIntType1 = Translate.cardToInt(cardType1);
+        int cardIntType2 = Translate.cardToInt(cardType2);
+
+        return combileRule[cardIntType1][cardIntType2];
+    }
 
     public ElementCard(Translate.CardType cardType, int level, int damage) {
         super(cardType);
         this.level = level;
         this.damage = damage;
-        this.cardTypeId = Translate.cardToInt(cardType);
     }
 
-    public int getCardTypeId(){
-        return cardTypeId;
+    public int getLevel(){
+        return level;
     }
-
 }
