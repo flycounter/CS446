@@ -1,5 +1,7 @@
 package cs446_w2018_group3.supercardgame.gamelogic;
 
+import android.util.Log;
+
 import cs446_w2018_group3.supercardgame.util.events.GameEvent;
 import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
 

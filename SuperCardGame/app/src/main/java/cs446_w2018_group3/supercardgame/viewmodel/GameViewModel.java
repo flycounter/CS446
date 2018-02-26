@@ -23,7 +23,7 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
     public GameViewModel(Application application) {
         super(application);
 
-        playerObservable = PlayerDataRepository.getInstance().getPlayer();
+        playerObservable = gameLogic.getPlayer();
     }
 
     public LiveData<Player> getPlayerObservable() {

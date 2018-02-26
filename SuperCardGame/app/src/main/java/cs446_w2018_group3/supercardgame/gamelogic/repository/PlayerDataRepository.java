@@ -3,6 +3,7 @@ package cs446_w2018_group3.supercardgame.gamelogic.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
+import cs446_w2018_group3.supercardgame.gamelogic.model.CustomMutableLiveData;
 import cs446_w2018_group3.supercardgame.gamelogic.model.Player;
 
 /**
@@ -25,7 +26,7 @@ public class PlayerDataRepository {
     }
 
     public LiveData<Player> getPlayer() {
-        final MutableLiveData<Player> data = new MutableLiveData<>();
+        final CustomMutableLiveData<Player> data = new CustomMutableLiveData<>();
         return data;
     }
 }
