@@ -66,7 +66,7 @@ public class Game {
     }
 
     public void playerUseCard( Player subject, Player object, Card c ) {
-        ((WaterCard)c).apply( subject, object );
+        (c).apply( subject, object );
     }
 
     public int combineElement( Player p, ElementCard c1, ElementCard c2 ) {
