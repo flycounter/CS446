@@ -3,7 +3,11 @@ package cs446_w2018_group3.supercardgame;
 import android.media.audiofx.Equalizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,7 +25,9 @@ public class SinglePlayActivity extends AppCompatActivity {
     Button use;
     Button endTurn;
     Button surrender;
-
+    int TEXTSIZE=28;
+  //  final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
+    List<Integer> chosenCard; //store the card that player is chosen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +54,36 @@ public class SinglePlayActivity extends AppCompatActivity {
         endTurn.setText("EndTurn");
         surrender.setText("Surrender");
         weather.setText("Weather:");
+        actionLog.setText("Action:");
+        setTextSize(TEXTSIZE);
+        //create hand cards
+        createHand();
+        //add listenrs
+        combine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo
+            }
+        });
+        use.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo
+            }
+        });
+        endTurn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo
+            }
+        });
+        surrender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //todo
+            }
+        });
+
 
     }
     //mode1:set oppStatus,mode2: set playerStatus
@@ -55,9 +91,11 @@ public class SinglePlayActivity extends AppCompatActivity {
         String text = "Player:"+name+"    HP:"+Integer.toString(hp)+"    AP:"+Integer.toString(ap)+"    Class:"+ pclass +"    Hand:"+Integer.toString(hand);
         if(mode==1) {
             oppStatus.setText(text);
+
         }
         if(mode==2) {
             playerStatus.setText(text);
+
         }
     }
     private void setBuffEquip(List<String> buffList,List<String> equipList,int mode){
@@ -73,9 +111,41 @@ public class SinglePlayActivity extends AppCompatActivity {
         if(equipList.size()==0) text += "None";
         if(mode==1) {
             oppBuffEquip.setText(text);
+
         }
         if(mode==2) {
             playerBuffEquip.setText(text);
+
         }
+    }
+    private void setTextSize(int textSize){
+        playerBuffEquip.setTextSize(textSize);
+        oppBuffEquip.setTextSize( textSize);
+        playerStatus.setTextSize( textSize);
+        oppStatus.setTextSize(textSize);
+        actionLog.setTextSize(textSize);
+        weather.setTextSize(textSize);
+    }
+
+    private void createHand(){
+        LinearLayout handView = findViewById(R.id.HandContainer);
+        //temp code to create fake hands
+        int handnum = 5;
+        for(int i=0;i<handnum;i++){
+            LinearLayout childLayout = new LinearLayout(this);
+            childLayout.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            handView.addView(childLayout,childLayoutParams);
+            TextView cardView = new TextView(this);
+            CheckBox cardBox = new CheckBox(this);
+            cardView.setText("Fire");
+            cardView.setTextSize(32);
+            cardBox.setText("select");
+            cardBox.setTextSize(32);
+            LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            childLayout.addView(cardBox,boxLayoutParams);
+            childLayout.addView(cardView,cardLayoutParams);
+         }
     }
 }
