@@ -70,12 +70,13 @@ public class Player implements IModel {
         }
     }
 
-    public void insertHandler( Buff h ) { buffs.add(h); }
-
     public void applyBuff() {
         int turns;
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
+            if ( turns == 0 ) {
+                buffs.remove( b );
+            }
         }
     }
 
