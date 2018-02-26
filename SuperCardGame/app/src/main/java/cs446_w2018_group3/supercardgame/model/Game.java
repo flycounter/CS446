@@ -27,8 +27,8 @@ public class Game {
         weather = "Sunny";
 
         for( int i = 0; i < 15; i++ ) {
-            deck1.add( new WaterCard() );
-            deck2.add( new WaterCard() );
+            deck1.add( new WaterCard(Translate.CardType.Water, 1, 1 ) );
+            deck2.add( new WaterCard(Translate.CardType.Water, 1, 1 ) );
         }
     }
 
