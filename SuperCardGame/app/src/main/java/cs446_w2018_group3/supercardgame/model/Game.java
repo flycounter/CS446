@@ -69,10 +69,18 @@ public class Game {
         ((WaterCard)c).apply( subject, object );
     }
 
-    public void combineElement( Player p, ElementCard c1, ElementCard c2 ) {
-//        p.insertCard( ElementCard.combine( c1, c2 ) );
-        p.removeCard( c1 );
-        p.removeCard( c2 );
+    public int combineElement( Player p, ElementCard c1, ElementCard c2 ) {
+        if ( ElementCard.combineCheck( c1, c2 ) ) {
+            Translate.CardType newCardType = ElementCard.combine( c1.getCardType(), c2.getCardType() );
+
+            // This is temporary
+            Card newCard = new ElementCard( newCardType , 2, 2 );
+
+            p.insertCard( newCard );
+            p.removeCard( c1 );
+            p.removeCard( c2 );
+            return 0;
+        } else return -1;
     }
 
     public void endTurn( Player p ) {

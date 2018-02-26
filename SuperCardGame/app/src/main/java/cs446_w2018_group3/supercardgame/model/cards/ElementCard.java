@@ -10,7 +10,7 @@ import cs446_w2018_group3.supercardgame.model.cards.Card;
  */
 
 public class ElementCard extends Card {
-    static Translate.CardType[][] combileRule = {
+    static Translate.CardType[][] combineRule = {
             {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
             {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
             {Translate.CardType.Ice, Translate.CardType.Blast, Translate.CardType.Gale, Translate.CardType.Sand},
@@ -29,7 +29,7 @@ public class ElementCard extends Card {
         int cardIntType1 = Translate.cardToInt(cardType1);
         int cardIntType2 = Translate.cardToInt(cardType2);
 
-        return combileRule[cardIntType1][cardIntType2];
+        return combineRule[cardIntType1][cardIntType2];
     }
 
     public ElementCard(Translate.CardType cardType, int level, int damage) {
