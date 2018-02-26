@@ -7,7 +7,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class AirCard extends ElementCard {
-    public AirCard (Translate.CardType cardType, int level, int damage) {
-        super(cardType, level, damage);
+    public AirCard () {
+        super(Translate.CardType.Air, 1, 1);
     }
     }
