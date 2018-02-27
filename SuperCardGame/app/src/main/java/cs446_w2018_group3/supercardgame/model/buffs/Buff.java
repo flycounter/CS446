@@ -1,7 +1,6 @@
 package cs446_w2018_group3.supercardgame.model.buffs;
 
 import cs446_w2018_group3.supercardgame.util.events.payload.BuffPayload;
-import cs446_w2018_group3.supercardgame.model.IModel;
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -9,7 +8,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  * Created by Yakumo on 2/24/2018.
  */
 
-public abstract class Buff implements IModel {
+public abstract class Buff {
     static int id = 0;
     protected int remainingTurns;
     protected int buffId;

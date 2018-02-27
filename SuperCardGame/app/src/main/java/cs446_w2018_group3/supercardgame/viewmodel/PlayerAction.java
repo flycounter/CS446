@@ -7,7 +7,7 @@ import java.util.List;
  */
 
 public interface PlayerAction {
-    void combineCards(List<Integer> cardIndices);
-    void useElementCard(Integer cardIndex);
+    void combineCards(List<Integer> cardIds);
+    void useElementCard(Integer cardId);
     void turnEnd();
 }

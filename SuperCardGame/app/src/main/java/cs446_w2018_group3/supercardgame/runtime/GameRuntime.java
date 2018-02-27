@@ -33,7 +33,7 @@ public class GameRuntime implements GameScheduler {
         gameField = new MutableLiveData<>();
     }
 
-    private void init(Game game) {
+    public void init(Game game) {
         gameRuntime = new GameRuntime();
         Player playerData = new Player(1, "you");
         for (int i = 0; i < 3; i++) {
@@ -53,7 +53,8 @@ public class GameRuntime implements GameScheduler {
         // NOTE: for demo purpose the game always starts with player goes first
         setNextPlayer(this.getPlayer().getValue());
 
-        game.bindRuntime(this);
+        this.game = game;
+        this.game.bindRuntime(this);
     }
 
     public LiveData<Player> getPlayer() {

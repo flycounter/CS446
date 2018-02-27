@@ -13,7 +13,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.gamelogic.model.Player;
+import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class SinglePlayActivity extends AppCompatActivity {
@@ -95,8 +96,27 @@ public class SinglePlayActivity extends AppCompatActivity {
 
         observeViewModel(viewModel);
 
-        // NOTE: temp code for testing liveData
         combine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // get list of cardIds selected
+
+                List<Integer> cardIds = new ArrayList<>();
+                list.add(1);
+                viewModel.combineCards(list);
+            }
+        });
+
+        use.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Integer> list = new ArrayList<>();
+                list.add(1);
+                viewModel.combineCards(list);
+            }
+        });
+
+        endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 List<Integer> list = new ArrayList<>();
@@ -107,13 +127,24 @@ public class SinglePlayActivity extends AppCompatActivity {
     }
 
     private void observeViewModel(GameViewModel viewModel) {
-        viewModel.getPlayerObservable().observe(this, new Observer<Player>() {
+        // wire up ui elements and LiveData
+        viewModel.getGameRuntime().getPlayer().observe(this, new Observer<Player>() {
             @Override
             public void onChanged(@Nullable Player player) {
                 // update UI if player info changed
                 // example here shows a toast "player data updated"
                 Toast.makeText(SinglePlayActivity.this, "player data updated", Toast.LENGTH_SHORT).show();
-                setStatus(player.getName(),20,10,"None",5,2);
+
+                // set player status
+                setStatus(
+                        player.getName(),
+                        player.getHP(),
+                        player.getAP(),
+                        "default_player_class",
+                        player.getHand().size(),
+                        2);
+
+                // set hand
 
             }
         });

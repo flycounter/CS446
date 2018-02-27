@@ -215,20 +215,8 @@ public class Game {
             // update LiveData
             gameRuntime.getMutablePlayer(player.getId()).setValue(player);
 
-        } catch (PlayerNotFoundException e) {
+        } catch (PlayerNotFoundException err) {
             // ...
         }
-    }
-
-    public GameInfo getGameInfo() {
-        ArrayList<CardInfo> deck1Info = new ArrayList<CardInfo>();
-        ArrayList<CardInfo> deck2Info = new ArrayList<CardInfo>();
-        for ( Card c : deck1 ) {
-            deck1Info.add( c.getCardInfo() );
-        }
-        for ( Card c: deck2 ) {
-            deck2Info.add( c.getCardInfo() );
-        }
-        return new GameInfo( player1.getPlayerInfo(), player2.getPlayerInfo(), weather, deck1Info, deck2Info );
     }
 }
