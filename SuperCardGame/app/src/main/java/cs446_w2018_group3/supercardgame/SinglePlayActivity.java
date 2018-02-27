@@ -1,14 +1,18 @@
 package cs446_w2018_group3.supercardgame;
 
+import android.graphics.drawable.ColorDrawable;
 import android.media.audiofx.Equalizer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +29,21 @@ public class SinglePlayActivity extends AppCompatActivity {
     Button use;
     Button endTurn;
     Button surrender;
-    int TEXTSIZE=28;
-  //  final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
-    List<Integer> chosenCard; //store the card that player is chosen
+    int TEXTSIZE;
+   // final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
+    List<CheckBox> chosenCard = new ArrayList<CheckBox>(); //store the card that player is chosen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_play);
+        //get the size of screen and set textsize
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int screenHeight = dm.heightPixels;
+        if(screenHeight<=2000) TEXTSIZE = 20;
+        else {
+            TEXTSIZE = 28;
+        }
         //connect widgets
         oppStatus = findViewById( R.id.OppStatus);
         oppBuffEquip = findViewById( R.id.OppBuffEquid);
@@ -62,19 +74,38 @@ public class SinglePlayActivity extends AppCompatActivity {
         combine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
+                int size = chosenCard.size();
+                if(size!=2){
+                    actionLog.setText("Action:Invalid command,you have to choose exactly two element card to combine");
+                }
+                else{
+                    //todo
+                }
             }
         });
         use.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
+                int size = chosenCard.size();
+                if(size<1){
+                    actionLog.setText("Action:Invalid command,you have to choose at least one card to use.");
+                }
+                if(size>1){
+                    actionLog.setText("Action:Invalid command,you can only use one card each time.");
+                }
+                else{
+                   //todo
+                }
             }
         });
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
+                //viewModel.turnEnd();
+                actionLog.setText("Action:You end the turn,now is your opponent's turn.");
+                combine.setEnabled(false);
+                use.setEnabled(false);
+                endTurn.setEnabled(false);
             }
         });
         surrender.setOnClickListener(new View.OnClickListener() {
@@ -128,24 +159,42 @@ public class SinglePlayActivity extends AppCompatActivity {
     }
 
     private void createHand(){
-        LinearLayout handView = findViewById(R.id.HandContainer);
+        final LinearLayout handView = findViewById(R.id.HandContainer);
+        handView.removeAllViews();
         //temp code to create fake hands
         int handnum = 5;
         for(int i=0;i<handnum;i++){
-            LinearLayout childLayout = new LinearLayout(this);
+            final LinearLayout childLayout = new LinearLayout(this);
             childLayout.setOrientation(LinearLayout.VERTICAL);
             LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             handView.addView(childLayout,childLayoutParams);
             TextView cardView = new TextView(this);
-            CheckBox cardBox = new CheckBox(this);
+            final CheckBox cardBox = new CheckBox(this);
             cardView.setText("Fire");
             cardView.setTextSize(32);
             cardBox.setText("select");
             cardBox.setTextSize(32);
+            //cardBox.setId(cardid);
             LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             childLayout.addView(cardBox,boxLayoutParams);
             childLayout.addView(cardView,cardLayoutParams);
+            //add listener
+                cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if(b){
+                                chosenCard.add(cardBox);
+                                int size =chosenCard.size();
+                                if(size>2) {
+                                    chosenCard.get(0).setChecked(false);
+                                }
+                            }
+                            else{
+                                    chosenCard.remove(cardBox);
+                                }
+                        }
+                });
          }
     }
 }
