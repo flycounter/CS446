@@ -1,16 +1,12 @@
 package cs446_w2018_group3.supercardgame.gamelogic;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-import java.util.List;
-
-import cs446_w2018_group3.supercardgame.info.GameInfo;
+import cs446_w2018_group3.supercardgame.util.events.payload.GameInfo;
 import cs446_w2018_group3.supercardgame.model.Game;
-import cs446_w2018_group3.supercardgame.model.Player;
-import cs446_w2018_group3.supercardgame.util.events.PlayerCombineElementEvent;
-import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
-import cs446_w2018_group3.supercardgame.util.events.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.BasePlayerEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
 
 /**
  * Created by JarvieK on 2018/2/23.
@@ -34,23 +30,23 @@ public class GameLogic {
         return gameLogic;
     }
 
-    public void playerStartTurnEvent( PlayerEvent playerEvent ) {
-        game.startPlayerTurn( playerEvent.playerInfo );
+    public void playerStartTurnEvent( BasePlayerEvent basePlayerEvent) {
+        game.startPlayerTurn( basePlayerEvent.playerInfo );
         gameInfoMutableLiveData.setValue( game.getGameInfo() );
     }
 
     public void playerUseCardEvent( PlayerUseCardEvent playerUseCardEvent ) {
-        game.playerUseCard( playerUseCardEvent.playerInfo, playerUseCardEvent.objectInfo, playerUseCardEvent.cardInfo );
+        game.playerUseCardEventHandler( playerUseCardEvent.playerInfo, playerUseCardEvent.objectInfo, playerUseCardEvent.cardInfo );
         gameInfoMutableLiveData.setValue( game.getGameInfo() );
     }
 
     public void playerCombineElementEvent( PlayerCombineElementEvent playerCombineElementEvent ) {
-        game.combineElement( playerCombineElementEvent.playerInfo, playerCombineElementEvent.card1Info, playerCombineElementEvent.card2Info );
+        game.playerCombineElementsEventHandler( playerCombineElementEvent.playerInfo, playerCombineElementEvent.card1Info, playerCombineElementEvent.card2Info );
         gameInfoMutableLiveData.setValue( game.getGameInfo() );
     }
 
-    public void playerEndTurnEvent( PlayerEvent playerEvent ) {
-        game.endTurn( playerEvent.playerInfo );
+    public void playerEndTurnEvent( BasePlayerEvent basePlayerEvent) {
+        game.PlayerEndTurnEventHandler( basePlayerEvent.playerInfo );
         gameInfoMutableLiveData.setValue( game.getGameInfo() );
     }
 

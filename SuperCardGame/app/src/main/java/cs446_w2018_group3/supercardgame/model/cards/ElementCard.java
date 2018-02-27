@@ -1,9 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
-import cs446_w2018_group3.supercardgame.info.CardInfo;
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.Card;
 
 /**
  * Created by yandong on 2018-02-25.
@@ -21,7 +19,7 @@ public abstract class ElementCard extends Card {
     @Override
     public abstract void apply(Player subject, Player object);
 
-    public static Boolean combineCheck(ElementCard card1, ElementCard card2) {
+    public static Boolean canCombine(ElementCard card1, ElementCard card2) {
         return card1.getLevel() == 1 && card2.getLevel() == 1;
     }
 
@@ -37,6 +35,11 @@ public abstract class ElementCard extends Card {
         this.level = level;
         this.damage = damage;
     }
+
+//    public ElementCardFactory getElementCardFactory(Translate.CardType cardType) {
+//        // TODO: implement using factory pattern to properly create cards
+//        return null;
+//    }
 
     public int getLevel(){
         return level;

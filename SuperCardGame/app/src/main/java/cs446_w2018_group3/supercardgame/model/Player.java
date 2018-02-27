@@ -1,11 +1,9 @@
 package cs446_w2018_group3.supercardgame.model;
 
-import android.arch.lifecycle.LiveData;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.info.*;
+import cs446_w2018_group3.supercardgame.util.events.payload.*;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 
@@ -22,6 +20,8 @@ public class Player {
     private List<Card> hand;
     private List<Buff> buffs;
 
+    public class test {}
+
     public Player( int id, String name ) {
         this.id = id;
         this.name = name;
@@ -32,39 +32,36 @@ public class Player {
     public int getId() {
         return id;
     }
-
     public String getName() {
         return name;
     }
-
     public int getHP() {
         return health;
     }
-    public void setHP( int newHP ) {
-        health = newHP;
-    }
-
     public int getAP() {
         return actionPoint;
-    }
-    public void setAP( int newAP ) {
-        actionPoint = newAP;
-    }
-
-    public void insertCard( Card c ) {
-        hand.add(c);
-    }
-    public void removeCard( Card c ) {
-        hand.remove(c);
     }
     public List<Card> getHand() {
         return hand;
     }
+    public List<Card> getDeck() { return deck; }
 
+    public void setHP( int newHP ) {
+        health = newHP;
+    }
+    public void setAP( int newAP ) {
+        actionPoint = newAP;
+    }
+    public void addCardToHand(Card c ) {
+        hand.add(c);
+    }
+    public void removeCardFromHand(Card c ) {
+        hand.remove(c);
+    }
+    public void setDeck(List<Card> deck) { this.deck = deck; }
     public void addBuff (Buff b) {
         buffs.add(b);
     }
-
     public void removeBuff (int id) {
         for ( Buff b: buffs ) {
             if (b.getBuffId() == id) {
@@ -75,6 +72,8 @@ public class Player {
     }
 
     public void applyBuff() {
+        // TODO: separate buff application and buff removal
+        // function applyBuff() does not indicate side effects
         int turns;
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
@@ -86,16 +85,16 @@ public class Player {
 
     public PlayerInfo getPlayerInfo() {
         ArrayList<CardInfo> tempCardInfoList = new ArrayList<CardInfo>();
-        ArrayList<BuffInfo> tempBuffInfoList = new ArrayList<BuffInfo>();
+        ArrayList<BuffPayload> tempBuffPayloadList = new ArrayList<BuffPayload>();
 
         for ( Card c: hand ) {
             tempCardInfoList.add( c.getCardInfo() );
         }
 
         for ( Buff b: buffs ) {
-            tempBuffInfoList.add( b.getBuffInfo() );
+            tempBuffPayloadList.add( b.getBuffInfo() );
         }
 
-        return new PlayerInfo(name, id, health, actionPoint, tempCardInfoList, tempBuffInfoList);
+        return new PlayerInfo(name, id, health, actionPoint, tempCardInfoList, tempBuffPayloadList);
     }
 }

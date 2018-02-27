@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.info;
+package cs446_w2018_group3.supercardgame.util.events.payload;
 
 import cs446_w2018_group3.supercardgame.model.Translate;
 

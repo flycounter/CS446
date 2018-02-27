@@ -8,7 +8,7 @@ import java.util.List;
 
 import cs446_w2018_group3.supercardgame.gamelogic.GameLogic;
 import cs446_w2018_group3.supercardgame.gamelogic.model.Player;
-import cs446_w2018_group3.supercardgame.util.events.PlayerEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.BasePlayerEvent;
 import cs446_w2018_group3.supercardgame.util.events.actions.*;
 
 /**
@@ -32,7 +32,7 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
     @Override
     public void combineCards(List<Integer> cardIndices) {
         // create event then pass to gameLogic
-        PlayerEvent e = new PlayerEvent(new CombineAction(cardIndices));
+        BasePlayerEvent e = new BasePlayerEvent(new CombineAction(cardIndices));
         // pass event to gameLogic
         gameLogic.handleEvent(e);
     }
