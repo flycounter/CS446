@@ -61,12 +61,26 @@ public class Player {
         return hand;
     }
 
-    public void insertHandler( Buff h ) { buffs.add(h); }
+    public void addBuff (Buff b) {
+        buffs.add(b);
+    }
+
+    public void removeBuff (int id) {
+        for ( Buff b: buffs ) {
+            if (b.getBuffId() == id) {
+                buffs.remove(b);
+                break;
+            }
+        }
+    }
 
     public void applyBuff() {
         int turns;
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
+            if ( turns == 0 ) {
+                buffs.remove( b );
+            }
         }
     }
 
