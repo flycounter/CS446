@@ -2,6 +2,7 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
+import android.util.Log;
 
 import java.util.List;
 
@@ -23,12 +24,14 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
 
     public GameViewModel(Application application) {
         super(application);
-
-        // game init begin
         gameRuntime = new GameRuntime();
         game = new Game();
+    }
+
+    public void init() {
+        // init after UI setup completes
+        Log.i("viewmodel", "game runtime init");
         gameRuntime.init(game);
-        // game init done
     }
 
     // used by activity / fragments to get observables

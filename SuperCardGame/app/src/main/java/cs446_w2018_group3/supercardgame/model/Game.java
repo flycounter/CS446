@@ -1,5 +1,7 @@
 package cs446_w2018_group3.supercardgame.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,8 +12,6 @@ import cs446_w2018_group3.supercardgame.Exceptions.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
-import cs446_w2018_group3.supercardgame.util.events.payload.CardInfo;
-import cs446_w2018_group3.supercardgame.util.events.payload.GameInfo;
 import cs446_w2018_group3.supercardgame.model.cards.*;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
@@ -22,13 +22,12 @@ import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEve
  */
 
 public class Game {
-    // confugurations
+    // configurations
     public static final int PLAYER_MAX_AP = 10;
     public static final int PLAYER_AP_REGEN_PER_TURN = 3;
     public static final int PLAYER_CARD_DRAW_PER_TURN = 3;
 
     private GameRuntime gameRuntime;
-    private Translate.Weather weather;
     private Random rng = new Random();
 
     // Pseudo game constructor. Create a game with a sandbag opponent, and with only water cards in deck. Sunny weather
@@ -36,12 +35,13 @@ public class Game {
 
     public void bindRuntime(GameRuntime runtime) {
         this.gameRuntime = runtime;
-
         init();
+        Log.i("Game", "calling gameStart()");
+        gameStart();
     }
 
     private void init() {
-        Player player1 = new Player(1,"Player1");
+        Player player1 = new Player(1,"You");
         Player player2 = new Player(2,"Sandbag");
         player1.setHP(10);
         player1.setAP(0);
@@ -64,10 +64,13 @@ public class Game {
         }
         player2.setDeck(deck);
 
+        gameRuntime.setNextPlayer(player1);
+
         // update liveData
         gameRuntime.getMutablePlayer().setValue(player1);
         gameRuntime.getMutableOpponent().setValue(player2);
         gameRuntime.getMutableField().setValue(gameField);
+        Log.i("Game", "game init done");
     }
 
     private Player getPlayer(int playerId) throws PlayerNotFoundException {
@@ -87,8 +90,8 @@ public class Game {
         throw new PlayerNotFoundException();
     }
 
-    private Card getCardInDeck(Player player, int cardId) throws CardNotFoundException {
-        for ( Card c : player.getDeck() ) {
+    private Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
+        for ( Card c : player.getHand() ) {
             if ( c.getCardId() == cardId ) {
                 return c;
             }
@@ -101,12 +104,16 @@ public class Game {
     * Players start with empty hands and 0 AP. gameStart() places 3 cards from each player's deck into their hand
     * Random weather to be added.
     * */
-    public void gameStart() {
+    private void gameStart() {
+        Log.i("game", "game start");
         try {
+            Log.i("game", "before player turn start");
             beforePlayerTurnStart(gameRuntime.getNextPlayer());
+            Log.i("game", "player turn start");
             playerTurnStart(gameRuntime.getNextPlayer());
         }
-        catch (PlayerCanNotEnterTurnException e) {
+        catch (PlayerCanNotEnterTurnException err) {
+            Log.i("Game", err.toString());
             // ...
         }
     }
@@ -136,7 +143,9 @@ public class Game {
 
         // draw cards from player's deck
         List<Card> deck = player.getDeck();
-        for (int i = 0; i < 3 && deck.size() > 0; i++) {
+        Log.i("Game", String.format("deck size: %d", player.getDeck().size()));
+        for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
+            Log.i("Game", "drawing card from deck");
             player.addCardToHand(deck.remove(0));
         }
 
@@ -159,7 +168,7 @@ public class Game {
             Player target = getPlayer(e.getTargetId());
 
             // take card from subject's hand
-            Card card = getCardInDeck(subject, e.getCardId());
+            Card card = getCardInHand(subject, e.getCardId());
             subject.removeCardFromHand(card);
 
             // apply card to target
@@ -170,6 +179,7 @@ public class Game {
             gameRuntime.getMutablePlayer(target.getId()).setValue(target);
 
         } catch (PlayerNotFoundException | CardNotFoundException err) {
+            Log.i("Game", err.toString());
             // ...
         }
     }
@@ -183,8 +193,10 @@ public class Game {
             List<ElementCard> cards = new ArrayList<>();
 
             for (int cardId: e.getCardIds()) {
-                cards.add((ElementCard) getCardInDeck(player, cardId));
+                cards.add((ElementCard) getCardInHand(player, cardId));
             }
+
+            Log.i("Game", String.format("cards found in hand: %s", cards.toString()));
 
             // validation
             if (!ElementCard.canCombine(cards.get(0), cards.get(1))) {
@@ -193,14 +205,18 @@ public class Game {
 
             // do combination
             // TODO: update the method to support arbitrary number of cards
-            Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
-            ElementCard newCard = new AquaCard();
+//            Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
+            ElementCard newCard = new FireCard();
 
             player.addCardToHand(newCard);
             player.removeCardFromHand(cards.get(0));
             player.removeCardFromHand(cards.get(1));
+
+            // update LiveData
+            gameRuntime.getMutablePlayer(player.getId()).setValue(player);
         }
         catch ( PlayerNotFoundException | CardNotFoundException | ElementCardsCanNotCombineException err ) {
+            Log.i("Game", err.toString());
             // ...
         }
     }
@@ -216,6 +232,7 @@ public class Game {
             gameRuntime.getMutablePlayer(player.getId()).setValue(player);
 
         } catch (PlayerNotFoundException err) {
+            Log.i("Game", err.toString());
             // ...
         }
     }

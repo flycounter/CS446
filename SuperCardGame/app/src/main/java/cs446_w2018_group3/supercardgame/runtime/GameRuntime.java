@@ -2,6 +2,7 @@ package cs446_w2018_group3.supercardgame.runtime;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
 
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
@@ -25,7 +26,7 @@ public class GameRuntime implements GameScheduler {
     private Player nextPlayer;
     private Game game;
 
-    private static GameRuntime gameRuntime;
+    private GameRuntime gameRuntime;
 
     public GameRuntime() {
         player = new MutableLiveData<>();
@@ -35,25 +36,10 @@ public class GameRuntime implements GameScheduler {
 
     public void init(Game game) {
         gameRuntime = new GameRuntime();
-        Player playerData = new Player(1, "you");
-        for (int i = 0; i < 3; i++) {
-            playerData.addCardToHand(new WaterCard());
-        }
-
-        Player opponentData = new Player(2, "opponent");
-        for (int i = 0; i < 3; i++) {
-            playerData.addCardToHand(new FireCard());
-        }
-
-        player.setValue(playerData);
-        opponent.setValue(opponentData);
-
-        gameField.setValue(new GameField());
-
         // NOTE: for demo purpose the game always starts with player goes first
-        setNextPlayer(this.getPlayer().getValue());
 
         this.game = game;
+        Log.i("GameRuntime", "binding runtime to game");
         this.game.bindRuntime(this);
     }
 
