@@ -128,11 +128,11 @@ public class SinglePlayActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //viewModel.turnEnd();
+                viewModel.turnEnd();
                 actionLog.setText("Action:\nYou end the turn,now is your opponent's turn.");
-                combine.setEnabled(false);
-                use.setEnabled(false);
-                endTurn.setEnabled(false);
+//                combine.setEnabled(false);
+//                use.setEnabled(false);
+//                endTurn.setEnabled(false);
             }
         });
         surrender.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +269,13 @@ public class SinglePlayActivity extends AppCompatActivity {
                 if (isChecked) {
                     chosenCard.add(CardDataMap.get(checkboxId));
                 } else {
-                    chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
+                    for ( Integer id: chosenCard ) {
+                        if ( id.equals( CardDataMap.get( checkboxId ) ) ) {
+                            chosenCard.remove( id );
+                        }
+                    }
+//                    Substituted for api 22
+//                    chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
             }
