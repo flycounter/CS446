@@ -46,22 +46,26 @@ public class Game {
         player1.setHP(10);
         player1.setAP(0);
         player2.setHP(30);
-        player2.setAP(0);
+        player2.setAP(10);
 
         GameField gameField = new GameField();
 
         List<Card> deck; // temp variable
 
         deck = new ArrayList<>();
-        for( int i = 0; i < 15; i++ ) {
-            deck.add( new WaterCard() );
-            deck.add( new FireCard() );
+        for( int i = 0; i < 6; i++ ) {
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
+            deck.add( Card.createNewCard( Translate.CardType.Air ) );
+            deck.add( Card.createNewCard( Translate.CardType.Dirt ) );
         }
         player1.setDeck(deck);
 
         deck = new ArrayList<>();
         for( int i = 0; i < 15; i++ ) {
-            deck.add( new FireCard() );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
         }
         player2.setDeck(deck);
 
@@ -147,7 +151,7 @@ public class Game {
         List<Card> deck = player.getDeck();
         Log.i("Game", String.format("deck size: %d", player.getDeck().size()));
         for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
-            Log.i("Game", "drawing card from deck");
+//            Log.i("Game", "drawing card from deck");
             player.addCardToHand(deck.remove(rng.nextInt(deck.size())));
         }
 
@@ -208,7 +212,9 @@ public class Game {
             // do combination
             // TODO: update the method to support arbitrary number of cards
             Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
-            ElementCard newCard = new AquaCard();
+            ElementCard newCard = (ElementCard) Card.createNewCard(cardType);
+
+            if (newCard == null) {}
 
             player.addCardToHand(newCard);
             player.removeCardFromHand(cards.get(0));

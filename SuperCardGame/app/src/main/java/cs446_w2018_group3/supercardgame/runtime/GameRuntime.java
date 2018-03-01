@@ -6,6 +6,8 @@ import android.util.Log;
 
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.Game;
+import cs446_w2018_group3.supercardgame.model.cards.AquaCard;
+import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.cards.FireCard;
@@ -110,8 +112,11 @@ public class GameRuntime implements GameScheduler {
 
     public void handlePlayerStartTurnEvent() {
         try {
+            //TODO: this is for demo only. Very mock up.
             game.beforePlayerTurnStart(this.getOpponent().getValue());
             game.beforePlayerTurnStart(this.getPlayer().getValue());
+            Card c = new AquaCard();
+            c.apply(this.getOpponent().getValue(), this.getPlayer().getValue());
             game.playerTurnStart(this.getPlayer().getValue());
         } catch ( PlayerCanNotEnterTurnException e ) {
         }

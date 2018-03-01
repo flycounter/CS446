@@ -16,8 +16,9 @@ public class Player {
     private String name;
     private int health;
     private int actionPoint;
+    private int shield;
     private List<Card> deck;
-    private List<Card> hand;
+    public List<Card> hand;
     private List<Buff> buffs;
 
     public class test {}
@@ -25,6 +26,7 @@ public class Player {
     public Player( int id, String name ) {
         this.id = id;
         this.name = name;
+        shield = 0;
         hand = new ArrayList<Card>();
         buffs = new ArrayList<Buff>();
     }
@@ -41,10 +43,14 @@ public class Player {
     public int getAP() {
         return actionPoint;
     }
+    public int getShield() {
+        return shield;
+    }
     public List<Card> getHand() {
         return hand;
     }
     public List<Card> getDeck() { return deck; }
+    public List<Buff> getBuffs() { return buffs; }
 
     public void setHP( int newHP ) {
         health = newHP;
@@ -52,7 +58,10 @@ public class Player {
     public void setAP( int newAP ) {
         actionPoint = newAP;
     }
-    public void addCardToHand(Card c ) {
+    public void setShield( int newShield ) {
+        shield = newShield;
+    }
+    public void addCardToHand( Card c ) {
         hand.add(c);
     }
     public void removeCardFromHand(Card c ) {

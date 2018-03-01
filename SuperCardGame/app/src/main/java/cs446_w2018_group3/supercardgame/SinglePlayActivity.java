@@ -154,7 +154,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                viewModel.turnEnd();
                 if(gameMode==3){
                     Intent intent = new Intent();
                     intent.setClass(SinglePlayActivity.this,MainActivity.class);
@@ -162,10 +162,10 @@ public class SinglePlayActivity extends AppCompatActivity {
                     v.getContext().startActivity(intent);
                 }
                 actionLog.setText("Action:\nYou end the turn,now is your opponent's turn.");
-                combine.setEnabled(false);
-                use.setEnabled(false);
-                endTurn.setEnabled(false);
-                viewModel.turnEnd();
+//                combine.setEnabled(false);
+//                use.setEnabled(false);
+//                endTurn.setEnabled(false);
+
             }
         });
         surrender.setOnClickListener(new View.OnClickListener() {
@@ -234,8 +234,8 @@ public class SinglePlayActivity extends AppCompatActivity {
                 // example here shows a toast "player data updated"
                 Toast.makeText(SinglePlayActivity.this, String.format("player: %s", player.getName()), Toast.LENGTH_SHORT).show();
 
-                Log.i("player", player.getName());
-                Log.i("hands", player.getHand().toString());
+//                Log.i("player", player.getName());
+//                Log.i("hands", player.getHand().toString());
                 for(Card card: player.getHand()) {
                     Log.i("hands (id)", String.format("%d", card.getCardId()));
                 }
@@ -287,10 +287,10 @@ public class SinglePlayActivity extends AppCompatActivity {
         final CheckBox cardBox = new CheckBox(this);
         String cardName = Translate.cardToString(card.getCardType());
         setCardImage(cardView,cardName);
-        cardBox.setText("select");
+        cardBox.setText(cardName);
         cardBox.setTextSize(32);
         LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(450, 400);
-        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(450, 400);
+        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(450, 200);
         childLayout.addView(cardBox, boxLayoutParams);
         childLayout.addView(cardView, cardLayoutParams);
 
@@ -298,7 +298,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         // NOTE: need to be aware of variable scope
         int checkboxId = CardDataMap.size();
         CardDataMap.put(checkboxId, card.getCardId());
-        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getCardId()));
+//        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getCardId()));
 
         // listener
         cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -347,6 +347,15 @@ public class SinglePlayActivity extends AppCompatActivity {
     }
 
     private void runTutorial() {
+        //For demo
+//        ArrayList<Card> hand = new ArrayList<>();
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        viewModel.getGameRuntime().getPlayer().getValue().hand = hand;
+        //For Aiur
         combine.setEnabled(false);
         use.setEnabled(false);
         endTurn.setEnabled(false);
@@ -360,7 +369,7 @@ public class SinglePlayActivity extends AppCompatActivity {
                 //viewModel.turnEnd();
                 clickCount++;
                 if(stepCount==1) {
-                    actionLog.setText("You use a Water card and deal 1 damage. ");
+                    actionLog.setText("You use a Basic card and deal 1 damage. ");
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -415,6 +424,8 @@ public class SinglePlayActivity extends AppCompatActivity {
             case "Mud":cardView.setImageResource(R.drawable.mudicon);break;
             case "Steam":cardView.setImageResource(R.drawable.steamicon);break;
             case "Sand":cardView.setImageResource(R.drawable.sandicon);break;
+            case "Blast":cardView.setImageResource(R.drawable.blasticon);break;
+            case "Ice":cardView.setImageResource(R.drawable.iceicon);break;
 
         }
     }
