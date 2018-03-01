@@ -1,4 +1,6 @@
-package cs446_w2018_group3.supercardgame.model;
+package cs446_w2018_group3.supercardgame.model.player;
+
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,7 @@ import cs446_w2018_group3.supercardgame.model.cards.Card;
  */
 
 public class Player {
+    public final static int PLAYER_MAX_AP = 10;
     private int id;
     private String name;
     private int health;
@@ -83,6 +86,10 @@ public class Player {
         }
     }
 
+    public void addAP(int amount) {
+        setAP(Math.min(PLAYER_MAX_AP, getAP() + amount));
+    }
+
     public void applyBuff() {
         // TODO: separate buff application and buff removal
         // function applyBuff() does not indicate side effects
@@ -112,5 +119,9 @@ public class Player {
         }
 
         return new PlayerInfo(name, id, health, actionPoint, tempCardInfoList, tempBuffPayloadList);
+    }
+
+    boolean equals(@Nullable Player that) {
+        return that != null && this.getId() == that.getId();
     }
 }

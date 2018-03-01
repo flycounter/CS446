@@ -3,12 +3,9 @@
         import android.arch.lifecycle.Observer;
         import android.arch.lifecycle.ViewModelProviders;
         import android.content.Intent;
-        import android.graphics.Bitmap;
-        import android.graphics.BitmapFactory;
         import android.graphics.Color;
         import android.os.Handler;
         import android.support.annotation.Nullable;
-        import android.support.v4.content.ContextCompat;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.util.DisplayMetrics;
@@ -27,7 +24,7 @@
         import java.util.List;
         import java.util.Map;
 
-        import cs446_w2018_group3.supercardgame.model.Player;
+        import cs446_w2018_group3.supercardgame.model.player.Player;
         import cs446_w2018_group3.supercardgame.model.Translate;
         import cs446_w2018_group3.supercardgame.model.cards.Card;
         import cs446_w2018_group3.supercardgame.model.field.GameField;
@@ -85,7 +82,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         use = findViewById(R.id.Use);
         endTurn = findViewById(R.id.EndTurn);
         surrender = findViewById(R.id.Surrender);
-        //init text
+        //start text
         actionLog.setTextColor(Color.RED);
         setStatus("Dragon", 30, 10, "Boss", 5, 1);
         setStatus("You", 20, 10, "None", 5, 2);
@@ -119,8 +116,8 @@ public class SinglePlayActivity extends AppCompatActivity {
                         actionLog.performClick();
                         combine.setEnabled(false);
                     }
-                    viewModel.getGameRuntime().handlePlayerCombineElementEvent(new PlayerCombineElementEvent(
-                            viewModel.getGameRuntime().getPlayer().getValue().getId(),
+                    viewModel.getGameController().handlePlayerCombineElementEvent(new PlayerCombineElementEvent(
+                            viewModel.getGameController().getPlayer().getValue().getId(),
                             chosenCard
                     ));
 
@@ -142,9 +139,9 @@ public class SinglePlayActivity extends AppCompatActivity {
                         actionLog.performClick();
                         use.setEnabled(false);
                     }
-                    viewModel.getGameRuntime().handlePlayerUseCardEvent(new PlayerUseCardEvent(
-                            viewModel.getGameRuntime().getPlayer().getValue().getId(),
-                            viewModel.getGameRuntime().getOpponent().getValue().getId(),
+                    viewModel.getGameController().handlePlayerUseCardEvent(new PlayerUseCardEvent(
+                            viewModel.getGameController().getPlayer().getValue().getId(),
+                            viewModel.getGameController().getOpponent().getValue().getId(),
                             chosenCard.get(0)
                     ));
 
@@ -222,12 +219,12 @@ public class SinglePlayActivity extends AppCompatActivity {
         observeViewModel(viewModel);
         Log.i("view", "observer setup done");
         // start game
-        viewModel.init();
+        viewModel.start();
     }
 
     private void observeViewModel(GameViewModel viewModel) {
         // wire up ui elements and LiveData
-        viewModel.getGameRuntime().getPlayer().observe(this, new Observer<Player>() {
+        viewModel.getGameController().getPlayer().observe(this, new Observer<Player>() {
             @Override
             public void onChanged(Player player) {
                 // update UI if player info changed
@@ -254,7 +251,7 @@ public class SinglePlayActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.getGameRuntime().getOpponent().observe(this, new Observer<Player>() {
+        viewModel.getGameController().getOpponent().observe(this, new Observer<Player>() {
             @Override
             public void onChanged(@Nullable Player player) {
                 setStatus(
@@ -268,7 +265,7 @@ public class SinglePlayActivity extends AppCompatActivity {
             }
         });
 
-        viewModel.getGameRuntime().getGameField().observe(this, new Observer<GameField>() {
+        viewModel.getGameController().getGameField().observe(this, new Observer<GameField>() {
             @Override
             public void onChanged(@Nullable GameField gameField) {
                 weather.setText(gameField.getWeather().getLabel());
@@ -354,7 +351,7 @@ public class SinglePlayActivity extends AppCompatActivity {
 //        hand.add( Card.createNewCard( Translate.CardType.Water ) );
 //        hand.add( Card.createNewCard( Translate.CardType.Water ) );
 //        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        viewModel.getGameRuntime().getPlayer().getValue().hand = hand;
+//        viewModel.getGameController().getPlayer().getValue().hand = hand;
         //For Aiur
         combine.setEnabled(false);
         use.setEnabled(false);

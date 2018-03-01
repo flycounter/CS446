@@ -1,7 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
 import cs446_w2018_group3.supercardgame.util.events.payload.CardInfo;
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
@@ -66,6 +66,10 @@ public abstract class Card {
 
     public CardInfo getCardInfo () {
         return new CardInfo(cardId, cardType);
+    }
+
+    public String getLabel() {
+        return Translate.cardToString(cardType);
     }
 }
 

@@ -8,8 +8,9 @@ import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEve
  * Created by JarvieK on 2018/2/26.
  */
 
-public interface GameScheduler {
+public interface IGameEventHandler {
     void handlePlayerUseCardEvent(PlayerUseCardEvent e);
     void handlePlayerCombineElementEvent(PlayerCombineElementEvent e);
     void handlePlayerEndTurnEvent(PlayerEndTurnEvent e);
+//    void handlePlayerStartTurnEvent(TurnStartEvent e);
 }

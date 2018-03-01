@@ -7,11 +7,11 @@ import android.util.Log;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.Game;
-import cs446_w2018_group3.supercardgame.model.Player;
-import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.BasePlayerEvent;
+import cs446_w2018_group3.supercardgame.runtime.GameController;
+import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
 
 /**
@@ -19,47 +19,49 @@ import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEve
  */
 
 public class GameViewModel extends AndroidViewModel implements PlayerAction {
-    private final GameRuntime gameRuntime;
-    private final Game game;
+    private final GameController gameController;
+    private final GameEventHandler gameEventHandler;
 
     public GameViewModel(Application application) {
         super(application);
-        gameRuntime = new GameRuntime();
-        game = new Game();
+
+        gameEventHandler = new GameEventHandler();
+        gameController = new GameController(gameEventHandler);
     }
 
-    public void init() {
-        // init after UI setup completes
-        Log.i("viewmodel", "game runtime init");
-        gameRuntime.init(game);
+    public void start() {
+        // start after UI setup completes
+        Log.i("viewmodel", "game runtime start");
+        gameController.start();
     }
 
     // used by activity / fragments to get observables
-    public final GameRuntime getGameRuntime() { return gameRuntime; }
+    public final GameController getGameController() { return gameController; }
 
     @Override
     public void combineCards(List<Integer> cardIds) {
         // NOTE: assume combine commands always come from player (which makes sense)
-        // NOTE: app may crash if vm receives command before game init completes
+        // NOTE: app may crash if vm receives command before game start completes
         // pass event to game runtime
-        gameRuntime.handlePlayerCombineElementEvent(new PlayerCombineElementEvent(
-                gameRuntime.getPlayer().getValue().getId(), cardIds));
+        gameController.handlePlayerCombineElementEvent(new PlayerCombineElementEvent(
+                gameEventHandler.getPlayer().getValue().getId(), cardIds));
     }
 
     @Override
     public void useElementCard(Integer cardId) {
         // TODO
-        gameRuntime.handlePlayerUseCardEvent(new PlayerUseCardEvent(
-                gameRuntime.getPlayer().getValue().getId(),
-                gameRuntime.getOpponent().getValue().getId(),
+        gameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(
+                gameEventHandler.getPlayer().getValue().getId(),
+                gameEventHandler.getOpponent().getValue().getId(),
                 cardId));
     }
 
     @Override
     public void turnEnd() {
         // TODO
-        gameRuntime.handlePlayerEndTurnEvent(new PlayerEndTurnEvent(
-                gameRuntime.getPlayer().getValue().getId()));
-        gameRuntime.handlePlayerStartTurnEvent();
+        gameEventHandler.handlePlayerEndTurnEvent(new PlayerEndTurnEvent(
+                gameEventHandler.getPlayer().getValue().getId()));
+        gameEventHandler.handlePlayerStartTurnEvent(new TurnStartEvent(
+                gameEventHandler.getPlayer().getValue().getId()));
     }
 }
