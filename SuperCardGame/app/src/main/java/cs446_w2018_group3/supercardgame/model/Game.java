@@ -46,16 +46,19 @@ public class Game {
         player1.setHP(10);
         player1.setAP(0);
         player2.setHP(30);
-        player2.setAP(0);
+        player2.setAP(10);
 
         GameField gameField = new GameField();
 
         List<Card> deck; // temp variable
 
         deck = new ArrayList<>();
-        for( int i = 0; i < 15; i++ ) {
+        for( int i = 0; i < 6; i++ ) {
             deck.add( new WaterCard() );
             deck.add( new FireCard() );
+            deck.add( new SteamCard() );
+            deck.add( new MudCard() );
+            deck.add( new SandCard() );
         }
         player1.setDeck(deck);
 

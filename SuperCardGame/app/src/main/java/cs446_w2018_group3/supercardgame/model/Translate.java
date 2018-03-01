@@ -34,6 +34,9 @@ public class Translate {
             case Air: return "Air";
             case Dirt: return "Dirt";
             case Aqua: return "Aqua";
+            case Mud: return  "Mud";
+            case Steam: return "Steam";
+            case Sand: return  "Sand";
             default: return "Error";
         }
     }
