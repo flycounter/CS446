@@ -14,6 +14,7 @@ public class WaterCard extends ElementCard {
     }
 
     public void apply(Player subject, Player object) {
-        Effect.dealDamageEffect(subject, object, damage);
+        int curDamage = ElementCard.calculateDamage(damage, object);
+        Effect.dealDamageEffect(subject, object, curDamage);
     }
 }

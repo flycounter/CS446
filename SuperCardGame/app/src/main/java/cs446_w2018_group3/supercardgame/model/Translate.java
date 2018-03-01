@@ -14,7 +14,7 @@ public class Translate {
     }
 
     public static enum BuffType {
-        Burn
+        Burn, Dodge
     }
 
     public static int cardToInt (CardType card) {

@@ -20,6 +20,14 @@ public class Effect {
         object.setHP(object.getHP() - damage);
     }
 
+    public static void decreaseAP ( Player subject, Player object, int num) {
+        object.setAP(object.getAP() - num);
+    }
+
+    public static void addShield ( Player subject, Player object, int num) {
+        subject.setShield( subject.getShield() + num );
+    }
+
 //    public static void dealDamageEffect ( Player subject, Player object, int damage) {
 //        object.setHP(object.getHP() - damage);
 //    }
