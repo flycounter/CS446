@@ -18,7 +18,7 @@ public class Player {
     private int actionPoint;
     private int shield;
     private List<Card> deck;
-    private List<Card> hand;
+    public List<Card> hand;
     private List<Buff> buffs;
 
     public class test {}

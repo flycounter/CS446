@@ -339,6 +339,15 @@ public class SinglePlayActivity extends AppCompatActivity {
     }
 
     private void runTutorial() {
+        //For demo
+//        ArrayList<Card> hand = new ArrayList<>();
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
+//        viewModel.getGameRuntime().getPlayer().getValue().hand = hand;
+        //For Aiur
         combine.setEnabled(false);
         use.setEnabled(false);
         endTurn.setEnabled(false);
@@ -353,7 +362,7 @@ public class SinglePlayActivity extends AppCompatActivity {
                 //viewModel.turnEnd();
                 clickCount++;
                 if(stepCount==1) {
-                    actionLog.setText("You use a Water card and deal 1 damage. ");
+                    actionLog.setText("You use a Basic card and deal 1 damage. ");
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

@@ -16,7 +16,6 @@ public class FireCard extends ElementCard {
     }
 
     public void apply(Player subject, Player object) {
-        Buff newBuff = new DamageOverTimeBuff(Translate.BuffType.Burn, subject, object, 2, 1);
-        object.addBuff(newBuff);
+        Effect.dealDamageEffect(subject, object, damage);
     }
 }

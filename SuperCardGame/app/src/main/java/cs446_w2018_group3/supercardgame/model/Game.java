@@ -53,18 +53,17 @@ public class Game {
         List<Card> deck; // temp variable
 
         deck = new ArrayList<>();
-        for( int i = 0; i < 6; i++ ) {
-            deck.add( new WaterCard() );
-            deck.add( new FireCard() );
-            deck.add( new SteamCard() );
-            deck.add( new MudCard() );
-            deck.add( new SandCard() );
+        for( int i = 0; i < 8; i++ ) {
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
+            deck.add( Card.createNewCard( Translate.CardType.Air ) );
+            deck.add( Card.createNewCard( Translate.CardType.Dirt ) );
         }
         player1.setDeck(deck);
 
         deck = new ArrayList<>();
         for( int i = 0; i < 15; i++ ) {
-            deck.add( new FireCard() );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
         }
         player2.setDeck(deck);
 
