@@ -1,5 +1,4 @@
 package cs446_w2018_group3.supercardgame.util.events.playerevent;
-import cs446_w2018_group3.supercardgame.util.events.payload.PlayerInfo;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent;
 
 /**

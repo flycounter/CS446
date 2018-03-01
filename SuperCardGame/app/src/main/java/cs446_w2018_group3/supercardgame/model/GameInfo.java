@@ -1,8 +1,8 @@
-package cs446_w2018_group3.supercardgame.util.events.payload;
+package cs446_w2018_group3.supercardgame.model;
 
 import java.util.ArrayList;
 
-import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.model.cards.CardInfo;
 
 /**
  * Created by yandong on 2018-02-25.

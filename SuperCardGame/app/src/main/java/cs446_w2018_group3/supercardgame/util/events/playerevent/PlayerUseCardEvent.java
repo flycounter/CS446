@@ -1,8 +1,5 @@
 package cs446_w2018_group3.supercardgame.util.events.playerevent;
 
-import cs446_w2018_group3.supercardgame.util.events.payload.CardInfo;
-import cs446_w2018_group3.supercardgame.util.events.payload.PlayerInfo;
-
 /**
  * Created by Yakumo on 2/26/2018.
  */
