@@ -150,7 +150,7 @@ public class Game {
         List<Card> deck = player.getDeck();
         Log.i("Game", String.format("deck size: %d", player.getDeck().size()));
         for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
-            Log.i("Game", "drawing card from deck");
+//            Log.i("Game", "drawing card from deck");
             player.addCardToHand(deck.remove(rng.nextInt(deck.size())));
         }
 

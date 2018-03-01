@@ -227,8 +227,8 @@ public class SinglePlayActivity extends AppCompatActivity {
                 // example here shows a toast "player data updated"
                 Toast.makeText(SinglePlayActivity.this, String.format("player: %s", player.getName()), Toast.LENGTH_SHORT).show();
 
-                Log.i("player", player.getName());
-                Log.i("hands", player.getHand().toString());
+//                Log.i("player", player.getName());
+//                Log.i("hands", player.getHand().toString());
                 for(Card card: player.getHand()) {
                     Log.i("hands (id)", String.format("%d", card.getCardId()));
                 }
@@ -291,7 +291,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         // NOTE: need to be aware of variable scope
         int checkboxId = CardDataMap.size();
         CardDataMap.put(checkboxId, card.getCardId());
-        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getCardId()));
+//        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getCardId()));
 
         // listener
         cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

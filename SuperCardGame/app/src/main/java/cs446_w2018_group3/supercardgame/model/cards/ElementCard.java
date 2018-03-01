@@ -33,16 +33,7 @@ public abstract class ElementCard extends Card {
 
     public static int calculateDamage (int damage, Player object) {
 
-        for ( Buff b : object.getBuffs() ) {
-            if ( b instanceof DodgeBuff ) {
-                return 0;
-            }
-        }
-        int shield = object.getShield();
-        damage = damage - shield;
-        shield = shield - damage;
 
-        object.setShield( Math.max(0, shield) );
         return Math.max(0, damage);
     }
 

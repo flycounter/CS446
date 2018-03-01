@@ -16,6 +16,6 @@ public class SteamCard extends ElementCard {
 
     public void apply(Player subject, Player object) {
         Buff newBuff = new DodgeBuff(Translate.BuffType.Dodge, subject, object);
-        object.addBuff(newBuff);
+        subject.addBuff(newBuff);
     }
 }

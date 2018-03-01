@@ -1,6 +1,10 @@
 package cs446_w2018_group3.supercardgame.model;
 
+import android.util.Log;
+
 import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.buffs.Buff;
+import cs446_w2018_group3.supercardgame.model.buffs.DodgeBuff;
 
 /**
  * Created by JarvieK on 2018/2/24.
@@ -17,7 +21,20 @@ public class Effect {
     //}
 
     public static void dealDamageEffect ( Player subject, Player object, int damage) {
-        object.setHP(object.getHP() - damage);
+        Log.i("Buffs size: ", "" + object.getBuffs().size());
+        for ( Buff b : object.getBuffs() ) {
+            Log.i("check", "Checking Buff" + b.getLabel().toString());
+            if ( b instanceof DodgeBuff) {
+                Log.i("check", b.getLabel().toString());
+                return;
+            }
+        }   // check Dodge
+        int shield = object.getShield();
+        int curDamage = Math.max(0, damage - shield);
+        shield = Math.max(0,shield - damage);
+
+        object.setShield(shield);
+        object.setHP(object.getHP() - curDamage);
     }
 
     public static void decreaseAP ( Player subject, Player object, int num) {
