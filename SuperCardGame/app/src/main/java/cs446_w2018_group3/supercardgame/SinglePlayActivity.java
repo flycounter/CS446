@@ -3,6 +3,8 @@
         import android.arch.lifecycle.Observer;
         import android.arch.lifecycle.ViewModelProviders;
         import android.content.Intent;
+        import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
         import android.graphics.Color;
         import android.os.Handler;
         import android.support.annotation.Nullable;
@@ -15,6 +17,7 @@
         import android.widget.Button;
         import android.widget.CheckBox;
         import android.widget.CompoundButton;
+        import android.widget.ImageView;
         import android.widget.LinearLayout;
         import android.widget.TextView;
         import android.widget.Toast;
@@ -83,6 +86,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         endTurn = findViewById(R.id.EndTurn);
         surrender = findViewById(R.id.Surrender);
         //init text
+        actionLog.setTextColor(Color.RED);
         setStatus("Dragon", 30, 10, "Boss", 5, 1);
         setStatus("You", 20, 10, "None", 5, 2);
         List<String> emptyList = new ArrayList<String>();
@@ -150,7 +154,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //viewModel.turnEnd();
+
                 if(gameMode==3){
                     Intent intent = new Intent();
                     intent.setClass(SinglePlayActivity.this,MainActivity.class);
@@ -161,7 +165,7 @@ public class SinglePlayActivity extends AppCompatActivity {
                 combine.setEnabled(false);
                 use.setEnabled(false);
                 endTurn.setEnabled(false);
-
+                viewModel.turnEnd();
             }
         });
         surrender.setOnClickListener(new View.OnClickListener() {
@@ -279,14 +283,14 @@ public class SinglePlayActivity extends AppCompatActivity {
         childLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         handView.addView(childLayout, childLayoutParams);
-        TextView cardView = new TextView(this);
+        ImageView cardView = new ImageView(this);
         final CheckBox cardBox = new CheckBox(this);
-        cardView.setText(Translate.cardToString(card.getCardType()));
-        cardView.setTextSize(32);
+        String cardName = Translate.cardToString(card.getCardType());
+        setCardImage(cardView,cardName);
         cardBox.setText("select");
         cardBox.setTextSize(32);
-        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(450, 400);
+        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(450, 400);
         childLayout.addView(cardBox, boxLayoutParams);
         childLayout.addView(cardView, cardLayoutParams);
 
@@ -302,13 +306,17 @@ public class SinglePlayActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     chosenCard.add(CardDataMap.get(checkboxId));
-                    chosenBox.add(cardBox);
-                    if(chosenBox.size()>2){
-                        chosenBox.get(0).setChecked(false);
-                    }
                 } else {
-                    chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
-                    chosenBox.remove(cardBox);
+                    List<Integer> cardsToDelete = new ArrayList<>();
+                    for ( Integer id: chosenCard ) {
+                        if ( id.equals( CardDataMap.get( checkboxId ) ) ) {
+                            cardsToDelete.add( id );
+                        }
+                    }
+                    chosenCard.removeAll( cardsToDelete );
+//                    Substituted for api 22
+//                    chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
+
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
             }
@@ -343,7 +351,6 @@ public class SinglePlayActivity extends AppCompatActivity {
         use.setEnabled(false);
         endTurn.setEnabled(false);
         surrender.setEnabled(false);
-        actionLog.setTextColor(Color.RED);
         actionLog.setClickable(true);
         if(clickCount==0)    actionLog.setText("Action:\nHere is the game tutorial,let's learn how to play this card game.");
 
@@ -393,5 +400,22 @@ public class SinglePlayActivity extends AppCompatActivity {
 
             }
         });
+    }
+    private void setCardImage(ImageView cardView,String cardName){
+        switch(cardName){
+            case "Fire":cardView.setImageResource(R.drawable.fireicon);break;
+            case "Water":cardView.setImageResource(R.drawable.watericon);break;
+            case "Air":cardView.setImageResource(R.drawable.airicon);break;
+            case "Dirt":cardView.setImageResource(R.drawable.dirticon);break;
+            case "Flame":cardView.setImageResource(R.drawable.flameicon);break;
+            case "Aqua":cardView.setImageResource(R.drawable.auqaicon);break;
+            case "Gale":cardView.setImageResource(R.drawable.galeicon);break;
+            case "Rock":cardView.setImageResource(R.drawable.rockicon);break;
+            case "Lava":cardView.setImageResource(R.drawable.lavaicon);break;
+            case "Mud":cardView.setImageResource(R.drawable.mudicon);break;
+            case "Steam":cardView.setImageResource(R.drawable.steamicon);break;
+            case "Sand":cardView.setImageResource(R.drawable.sandicon);break;
+
+        }
     }
 }

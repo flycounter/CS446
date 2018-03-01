@@ -60,5 +60,6 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
         // TODO
         gameRuntime.handlePlayerEndTurnEvent(new PlayerEndTurnEvent(
                 gameRuntime.getPlayer().getValue().getId()));
+        gameRuntime.handlePlayerStartTurnEvent();
     }
 }

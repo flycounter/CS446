@@ -9,7 +9,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "cs446_w2018_group3.supercardgame"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
