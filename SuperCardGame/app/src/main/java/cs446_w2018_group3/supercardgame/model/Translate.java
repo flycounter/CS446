@@ -37,6 +37,12 @@ public class Translate {
             case Mud: return  "Mud";
             case Steam: return "Steam";
             case Sand: return  "Sand";
+            case Ice: return "Ice";
+            case Flame: return "Flame";
+            case Blast: return "Blast";
+            case Lava: return "Lava";
+            case Gale: return "Gale";
+            case Rock: return "Rock";
             default: return "Error";
         }
     }
