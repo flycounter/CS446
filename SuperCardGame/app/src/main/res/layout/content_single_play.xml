@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="cs446_w2018_group3.supercardgame.SinglePlayActivity"
+    tools:showIn="@layout/activity_single_play">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/OppBasic"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Player:Boss      HP:30       AP:10      Class:None      Hand:5" />
+
+        <TextView
+            android:id="@+id/OppBuffEquip"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Buff:Freeze                       Equip:Excalibur" />
+
+        <TextView
+            android:id="@+id/Weather"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:text="Current Weather : Blizzard" />
+
+        <TextView
+            android:id="@+id/CurrentAction"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:text="Current Action:You use Fire and deal 1 damage!" />
+
+        <TextView
+            android:id="@+id/PlayerBasic"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="Player:You      HP:30        AP:10       Class:None     Hand:5" />
+
+        <TextView
+            android:id="@+id/playerBuffEquip"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text=" Buff:None                                    Equip:None" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <ToggleButton
+                android:id="@+id/CombineButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Combine" />
+
+            <ToggleButton
+                android:id="@+id/UseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Use" />
+
+            <ToggleButton
+                android:id="@+id/EndTurnButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="End" />
+
+            <ToggleButton
+                android:id="@+id/SurrenderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Surrender" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="109dp"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

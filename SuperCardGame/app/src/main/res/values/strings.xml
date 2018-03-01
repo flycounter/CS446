@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SuperCardGame</string>
+    <string name="title_activity_single_play">SinglePlayActivity</string>
 </resources>
