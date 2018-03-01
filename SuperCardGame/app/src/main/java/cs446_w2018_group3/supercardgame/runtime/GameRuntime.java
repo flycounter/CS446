@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
+import cs446_w2018_group3.supercardgame.Exceptions.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.Player;
@@ -106,6 +107,15 @@ public class GameRuntime implements GameScheduler {
     @Override
     public void handlePlayerEndTurnEvent(PlayerEndTurnEvent e) {
         game.playerEndTurnEventHandler(e);
+    }
+
+    public void handlePlayerStartTurnEvent() {
+        try {
+            game.beforePlayerTurnStart(this.getOpponent().getValue());
+            game.beforePlayerTurnStart(this.getPlayer().getValue());
+            game.playerTurnStart(this.getPlayer().getValue());
+        } catch ( PlayerCanNotEnterTurnException e ) {
+        }
     }
 
     public Player getNextPlayer() {

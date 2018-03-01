@@ -60,6 +60,9 @@ public class Player {
     }
     public void setDeck(List<Card> deck) { this.deck = deck; }
     public void addBuff (Buff b) {
+        if(buffs.size() == 0) {
+            buffs = new ArrayList<>();
+        }
         buffs.add(b);
     }
     public void removeBuff (int id) {
@@ -75,11 +78,15 @@ public class Player {
         // TODO: separate buff application and buff removal
         // function applyBuff() does not indicate side effects
         int turns;
+        ArrayList<Buff> buffsToRemove = new ArrayList<>();
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
             if ( turns == 0 ) {
-                buffs.remove( b );
+                buffsToRemove.add(b);
             }
+        }
+        for ( Buff b: buffsToRemove ) {
+            buffs.remove(b);
         }
     }
 
