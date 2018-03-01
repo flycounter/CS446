@@ -33,6 +33,7 @@ public class Translate {
             case Fire: return "Fire";
             case Air: return "Air";
             case Dirt: return "Dirt";
+            case Aqua: return "Aqua";
             default: return "Error";
         }
     }
