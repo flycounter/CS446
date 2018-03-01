@@ -211,7 +211,9 @@ public class Game {
             // do combination
             // TODO: update the method to support arbitrary number of cards
             Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
-            ElementCard newCard = new AquaCard();
+            ElementCard newCard = (ElementCard) Card.createNewCard(cardType);
+
+            if (newCard == null) {}
 
             player.addCardToHand(newCard);
             player.removeCardFromHand(cards.get(0));
