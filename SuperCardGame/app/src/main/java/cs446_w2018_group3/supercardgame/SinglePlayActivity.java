@@ -50,6 +50,7 @@ public class SinglePlayActivity extends AppCompatActivity {
     GameViewModel viewModel;
     Map<Integer, Integer> CardDataMap; // Map<checkbox_id, card_id>
     List<Integer> chosenCard; // store id of cards chosen by the player
+    List<CheckBox> chosenBox;
     int gameMode;
 
     @Override
@@ -66,6 +67,7 @@ public class SinglePlayActivity extends AppCompatActivity {
             TEXTSIZE = 26;
         }
         chosenCard = new ArrayList<>();
+        chosenBox = new ArrayList<CheckBox>();
         CardDataMap = new HashMap<>();
         Intent intent = getIntent();
         gameMode = intent.getIntExtra("mode",0);
@@ -300,8 +302,13 @@ public class SinglePlayActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     chosenCard.add(CardDataMap.get(checkboxId));
+                    chosenBox.add(cardBox);
+                    if(chosenBox.size()>2){
+                        chosenBox.get(0).setChecked(false);
+                    }
                 } else {
                     chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
+                    chosenBox.remove(cardBox);
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
             }
