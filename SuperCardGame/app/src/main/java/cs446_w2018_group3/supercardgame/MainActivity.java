@@ -1,5 +1,6 @@
 package cs446_w2018_group3.supercardgame;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,18 +12,21 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
+
 public class MainActivity extends AppCompatActivity {
     TextView title;
     Button start;
     Button deckEdit;
     Button shop;
     Button leaderBoard;
-
-
+    GameViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
+        this.viewModel = viewModel;
         //connect widgets
         title = findViewById(R.id.Title);
         start = findViewById(R.id.Start);
@@ -37,13 +41,11 @@ public class MainActivity extends AppCompatActivity {
         shop.setText("Card shop");
         leaderBoard.setText("Leaderboard");
 
-
-
         //set listener
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Popup startPopup = new Popup(MainActivity.this);
+                Popup startPopup = new Popup(MainActivity.this, viewModel);
                 startPopup.showPopup(new View(MainActivity.this));
             }
         });

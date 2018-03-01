@@ -26,7 +26,6 @@ public class GameRuntime implements GameScheduler {
 
     private Player nextPlayer;
     private Game game;
-
     private GameRuntime gameRuntime;
 
     public GameRuntime() {
@@ -134,4 +133,5 @@ public class GameRuntime implements GameScheduler {
                         : this.getPlayer().getValue()
         );
     }
+
 }

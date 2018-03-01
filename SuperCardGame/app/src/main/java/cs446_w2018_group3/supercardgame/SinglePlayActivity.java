@@ -1,32 +1,36 @@
-package cs446_w2018_group3.supercardgame;
+        package cs446_w2018_group3.supercardgame;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.arch.lifecycle.Observer;
+        import android.arch.lifecycle.ViewModelProviders;
+        import android.content.Intent;
+        import android.graphics.Color;
+        import android.os.Handler;
+        import android.support.annotation.Nullable;
+        import android.support.v4.content.ContextCompat;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
+        import android.util.DisplayMetrics;
+        import android.util.Log;
+        import android.view.View;
+        import android.widget.Button;
+        import android.widget.CheckBox;
+        import android.widget.CompoundButton;
+        import android.widget.LinearLayout;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.List;
+        import java.util.Map;
 
-import cs446_w2018_group3.supercardgame.model.Player;
-import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.Card;
-import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
-import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
+        import cs446_w2018_group3.supercardgame.model.Player;
+        import cs446_w2018_group3.supercardgame.model.Translate;
+        import cs446_w2018_group3.supercardgame.model.cards.Card;
+        import cs446_w2018_group3.supercardgame.model.field.GameField;
+        import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
+        import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
+        import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class SinglePlayActivity extends AppCompatActivity {
     //widgets
@@ -41,10 +45,12 @@ public class SinglePlayActivity extends AppCompatActivity {
     Button endTurn;
     Button surrender;
     int TEXTSIZE;
+    int clickCount;
+    int stepCount;
     GameViewModel viewModel;
-
     Map<Integer, Integer> CardDataMap; // Map<checkbox_id, card_id>
     List<Integer> chosenCard; // store id of cards chosen by the player
+    int gameMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +63,12 @@ public class SinglePlayActivity extends AppCompatActivity {
         int screenHeight = dm.heightPixels;
         if (screenHeight <= 2000) TEXTSIZE = 20;
         else {
-            TEXTSIZE = 28;
+            TEXTSIZE = 26;
         }
         chosenCard = new ArrayList<>();
         CardDataMap = new HashMap<>();
+        Intent intent = getIntent();
+        gameMode = intent.getIntExtra("mode",0);
         //connect widgets
         oppStatus = findViewById(R.id.OppStatus);
         oppBuffEquip = findViewById(R.id.OppBuffEquid);
@@ -100,10 +108,16 @@ public class SinglePlayActivity extends AppCompatActivity {
                 if (size != 2) {
                     actionLog.setText("Action:\nInvalid command,you have to choose exactly two element card to combine");
                 } else {
+                    if (gameMode==3){
+                        stepCount +=1;
+                        actionLog.performClick();
+                        combine.setEnabled(false);
+                    }
                     viewModel.getGameRuntime().handlePlayerCombineElementEvent(new PlayerCombineElementEvent(
                             viewModel.getGameRuntime().getPlayer().getValue().getId(),
                             chosenCard
                     ));
+
                 }
             }
         });
@@ -114,14 +128,20 @@ public class SinglePlayActivity extends AppCompatActivity {
                 if (size < 1) {
                     actionLog.setText("Action:\nInvalid command,you have to choose at least one card to use.");
                 }
-                if (size > 1) {
+                else if (size > 1) {
                     actionLog.setText("Action:\nInvalid command,you can only use one card each time.");
                 } else {
+                    if (gameMode==3){
+                        stepCount +=1;
+                        actionLog.performClick();
+                        use.setEnabled(false);
+                    }
                     viewModel.getGameRuntime().handlePlayerUseCardEvent(new PlayerUseCardEvent(
                             viewModel.getGameRuntime().getPlayer().getValue().getId(),
                             viewModel.getGameRuntime().getOpponent().getValue().getId(),
                             chosenCard.get(0)
                     ));
+
                 }
             }
         });
@@ -129,6 +149,12 @@ public class SinglePlayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 viewModel.turnEnd();
+                if(gameMode==3){
+                    Intent intent = new Intent();
+                    intent.setClass(SinglePlayActivity.this,MainActivity.class);
+                    // Start activity
+                    v.getContext().startActivity(intent);
+                }
                 actionLog.setText("Action:\nYou end the turn,now is your opponent's turn.");
 //                combine.setEnabled(false);
 //                use.setEnabled(false);
@@ -142,6 +168,11 @@ public class SinglePlayActivity extends AppCompatActivity {
                 //todo
             }
         });
+        if(gameMode==3){
+            clickCount = 0;
+            stepCount =0;
+            runTutorial();
+        }
     }
 
     //mode1:set oppStatus,mode2: set playerStatus
@@ -269,11 +300,13 @@ public class SinglePlayActivity extends AppCompatActivity {
                 if (isChecked) {
                     chosenCard.add(CardDataMap.get(checkboxId));
                 } else {
+                    List<Integer> cardsToDelete = new ArrayList<>();
                     for ( Integer id: chosenCard ) {
                         if ( id.equals( CardDataMap.get( checkboxId ) ) ) {
-                            chosenCard.remove( id );
+                            cardsToDelete.add( id );
                         }
                     }
+                    chosenCard.removeAll( cardsToDelete );
 //                    Substituted for api 22
 //                    chosenCard.removeIf(cardId -> cardId.equals(CardDataMap.get(checkboxId)));
                 }
@@ -303,5 +336,62 @@ public class SinglePlayActivity extends AppCompatActivity {
         oppStatus.setTextSize(textSize);
         actionLog.setTextSize(textSize);
         weather.setTextSize(textSize);
+    }
+
+    private void runTutorial() {
+        combine.setEnabled(false);
+        use.setEnabled(false);
+        endTurn.setEnabled(false);
+        surrender.setEnabled(false);
+        actionLog.setTextColor(Color.RED);
+        actionLog.setClickable(true);
+        if(clickCount==0)    actionLog.setText("Action:\nHere is the game tutorial,let's learn how to play this card game.");
+
+        actionLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //viewModel.turnEnd();
+                clickCount++;
+                if(stepCount==1) {
+                    actionLog.setText("You use a Water card and deal 1 damage. ");
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do something after 5s = 5000ms
+                            actionLog.setText("Great!Now try to combine two card and make a new card by selecting 2 card and push combine button. ");
+                            combine.setEnabled(true);
+                        }
+                    }, 3000);
+                }
+                else if(stepCount==2){
+                    actionLog.setText("Great!Now you create a more powerful card by combine two card,try to use it.");
+                    use.setEnabled(true);
+                }
+                else if(stepCount==3){
+                    actionLog.setText("You use a aqua card and deal 3 damage.");
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do something after 3s = 3000ms
+                            actionLog.setText("Now you can push endTurn button end this turn and exit the Tutorial.");
+                            endTurn.setEnabled(true);
+                        }
+                    }, 3000);
+
+                }
+                else if (clickCount == 1) {
+                    actionLog.setText("Action:\nYour goal is to kill your opponent,by using your hand cards." +
+                            "each action,include combine and use your card will cost you corresponding ap.");
+                } else if (clickCount == 2) {
+                    actionLog.setText("Action:\nFirst step,let's try to use one of your hand card by selecting it and push use button.");
+                    use.setEnabled(true);
+                }
+
+
+
+            }
+        });
     }
 }
