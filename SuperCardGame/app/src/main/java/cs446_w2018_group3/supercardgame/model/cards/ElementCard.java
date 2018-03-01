@@ -2,6 +2,7 @@ package cs446_w2018_group3.supercardgame.model.cards;
 
 import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.model.buffs.*;
 
 /**
  * Created by yandong on 2018-02-25.
@@ -28,6 +29,21 @@ public abstract class ElementCard extends Card {
         int cardIntType2 = Translate.cardToInt(cardType2);
 
         return combineRule[cardIntType1][cardIntType2];
+    }
+
+    public static int calculateDamage (int damage, Player object) {
+
+        for ( Buff b : object.getBuffs() ) {
+            if ( b instanceof DodgeBuff ) {
+                return 0;
+            }
+        }
+        int shield = object.getShield();
+        damage = damage - shield;
+        shield = shield - damage;
+
+        object.setShield( Math.max(0, shield) );
+        return Math.max(0, damage);
     }
 
     public ElementCard(Translate.CardType cardType, int level, int damage) {
