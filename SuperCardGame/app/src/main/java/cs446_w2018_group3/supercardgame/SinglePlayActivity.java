@@ -149,10 +149,17 @@ public class SinglePlayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //viewModel.turnEnd();
+                if(gameMode==3){
+                    Intent intent = new Intent();
+                    intent.setClass(SinglePlayActivity.this,MainActivity.class);
+                    // Start activity
+                    v.getContext().startActivity(intent);
+                }
                 actionLog.setText("Action:\nYou end the turn,now is your opponent's turn.");
                 combine.setEnabled(false);
                 use.setEnabled(false);
                 endTurn.setEnabled(false);
+
             }
         });
         surrender.setOnClickListener(new View.OnClickListener() {
@@ -361,7 +368,7 @@ public class SinglePlayActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             // Do something after 3s = 3000ms
-                            actionLog.setText("Now you can push endTurn button end this turn ");
+                            actionLog.setText("Now you can push endTurn button end this turn and exit the Tutorial.");
                             endTurn.setEnabled(true);
                         }
                     }, 3000);
