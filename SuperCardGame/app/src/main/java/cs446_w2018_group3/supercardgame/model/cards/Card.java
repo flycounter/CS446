@@ -44,6 +44,26 @@ public abstract class Card {
         return cardType;
     }
 
+    public static Card createNewCard (Translate.CardType cardType) {
+        switch (cardType) {
+            case Water: return new WaterCard();
+            case Fire: return new FireCard();
+            case Air: return new AirCard();
+            case Dirt: return new DirtCard();
+            case Aqua: return new AquaCard();
+            case Flame: return new FlameCard();
+            case Rock: return new RockCard();
+            case Gale: return new GaleCard();
+            case Lava: return new LavaCard();
+            case Blast: return new BlastCard();
+            case Ice: return new IceCard();
+            case Steam: return new SteamCard();
+            case Mud: return new MudCard();
+            case Sand: return new SandCard();
+        }
+        return null;
+    }
+
     public CardInfo getCardInfo () {
         return new CardInfo(cardId, cardType);
     }

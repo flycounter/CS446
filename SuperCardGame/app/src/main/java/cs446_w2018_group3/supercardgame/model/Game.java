@@ -25,7 +25,7 @@ public class Game {
     // configurations
     public static final int PLAYER_MAX_AP = 10;
     public static final int PLAYER_AP_REGEN_PER_TURN = 3;
-    public static final int PLAYER_CARD_DRAW_PER_TURN = 3;
+    public static final int PLAYER_CARD_DRAW_PER_TURN = 5;
 
     private GameRuntime gameRuntime;
     private Random rng = new Random();
@@ -45,22 +45,27 @@ public class Game {
         Player player2 = new Player(2,"Sandbag");
         player1.setHP(10);
         player1.setAP(0);
-        player2.setHP(5);
-        player2.setAP(0);
+        player2.setHP(30);
+        player2.setAP(10);
 
         GameField gameField = new GameField();
 
         List<Card> deck; // temp variable
 
         deck = new ArrayList<>();
-        for( int i = 0; i < 15; i++ ) {
-            deck.add( new WaterCard() );
+        for( int i = 0; i < 6; i++ ) {
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Water ) );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
+            deck.add( Card.createNewCard( Translate.CardType.Air ) );
+            deck.add( Card.createNewCard( Translate.CardType.Dirt ) );
         }
         player1.setDeck(deck);
 
         deck = new ArrayList<>();
         for( int i = 0; i < 15; i++ ) {
-            deck.add( new FireCard() );
+            deck.add( Card.createNewCard( Translate.CardType.Fire ) );
         }
         player2.setDeck(deck);
 
@@ -118,7 +123,7 @@ public class Game {
         }
     }
 
-    private void beforePlayerTurnStart(Player player) throws PlayerCanNotEnterTurnException {
+    public void beforePlayerTurnStart(Player player) throws PlayerCanNotEnterTurnException {
         // check if next player can enter the turn
         if (player == null) {
             throw new PlayerCanNotEnterTurnException();
@@ -131,13 +136,14 @@ public class Game {
         gameRuntime.getMutablePlayer(player.getId()).setValue(player);
 
         if (player.getHP() <= 0) {
-            throw new PlayerCanNotEnterTurnException();
+            // TODO: Handle Player dead event
+//            throw new PlayerCanNotEnterTurnException();
         }
 
         // pass
     }
 
-    private void playerTurnStart(Player player) {
+    public void playerTurnStart(Player player) {
         // update player's AP
         player.setAP(Math.min(PLAYER_MAX_AP, PLAYER_AP_REGEN_PER_TURN + player.getAP()));
 
@@ -145,8 +151,8 @@ public class Game {
         List<Card> deck = player.getDeck();
         Log.i("Game", String.format("deck size: %d", player.getDeck().size()));
         for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
-            Log.i("Game", "drawing card from deck");
-            player.addCardToHand(deck.remove(0));
+//            Log.i("Game", "drawing card from deck");
+            player.addCardToHand(deck.remove(rng.nextInt(deck.size())));
         }
 
         // update LiveData
@@ -205,8 +211,10 @@ public class Game {
 
             // do combination
             // TODO: update the method to support arbitrary number of cards
-//            Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
-            ElementCard newCard = new FireCard();
+            Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
+            ElementCard newCard = (ElementCard) Card.createNewCard(cardType);
+
+            if (newCard == null) {}
 
             player.addCardToHand(newCard);
             player.removeCardFromHand(cards.get(0));

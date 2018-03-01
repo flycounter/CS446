@@ -16,8 +16,9 @@ public class Player {
     private String name;
     private int health;
     private int actionPoint;
+    private int shield;
     private List<Card> deck;
-    private List<Card> hand;
+    public List<Card> hand;
     private List<Buff> buffs;
 
     public class test {}
@@ -25,6 +26,7 @@ public class Player {
     public Player( int id, String name ) {
         this.id = id;
         this.name = name;
+        shield = 0;
         hand = new ArrayList<Card>();
         buffs = new ArrayList<Buff>();
     }
@@ -41,10 +43,14 @@ public class Player {
     public int getAP() {
         return actionPoint;
     }
+    public int getShield() {
+        return shield;
+    }
     public List<Card> getHand() {
         return hand;
     }
     public List<Card> getDeck() { return deck; }
+    public List<Buff> getBuffs() { return buffs; }
 
     public void setHP( int newHP ) {
         health = newHP;
@@ -52,7 +58,10 @@ public class Player {
     public void setAP( int newAP ) {
         actionPoint = newAP;
     }
-    public void addCardToHand(Card c ) {
+    public void setShield( int newShield ) {
+        shield = newShield;
+    }
+    public void addCardToHand( Card c ) {
         hand.add(c);
     }
     public void removeCardFromHand(Card c ) {
@@ -60,6 +69,9 @@ public class Player {
     }
     public void setDeck(List<Card> deck) { this.deck = deck; }
     public void addBuff (Buff b) {
+        if(buffs.size() == 0) {
+            buffs = new ArrayList<>();
+        }
         buffs.add(b);
     }
     public void removeBuff (int id) {
@@ -75,11 +87,15 @@ public class Player {
         // TODO: separate buff application and buff removal
         // function applyBuff() does not indicate side effects
         int turns;
+        ArrayList<Buff> buffsToRemove = new ArrayList<>();
         for ( Buff b: buffs ) {
             turns = b.applyBuff();
             if ( turns == 0 ) {
-                buffs.remove( b );
+                buffsToRemove.add(b);
             }
+        }
+        for ( Buff b: buffsToRemove ) {
+            buffs.remove(b);
         }
     }
 
