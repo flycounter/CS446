@@ -2,6 +2,7 @@ package cs446_w2018_group3.supercardgame.runtime;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,33 +12,41 @@ import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerA
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.model.Game;
+import cs446_w2018_group3.supercardgame.model.bot.Bot;
+import cs446_w2018_group3.supercardgame.model.player.AIPlayer;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
+import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/3/1.
  */
 
-public class GameController implements GameStateControl {
+public class GameRuntime implements GameStateControl {
     private final GameFSM fsm;
     private final Game gameModel;
     private final GameEventHandler gameEventHandler;
 
     // game objects
     private List<MutableLiveData<Player>> players;
+    private MutableLiveData<Player> currPlayer; // NOTE: currPlayer is updated when turn changes
     private MutableLiveData<GameField> gameField;
 
     // references
     private int currPlayerIdx;
 
-    public GameController(GameEventHandler gameEventHandler) {
+    public GameRuntime(GameEventHandler gameEventHandler) {
         fsm = new GameFSM();
         gameModel = new Game();
         this.gameEventHandler = gameEventHandler;
 
-        this.players = new ArrayList<>();
+        players = new ArrayList<>();
+        currPlayer = new MutableLiveData<>();
         currPlayerIdx = 0;
+
+        gameField = new MutableLiveData<>();
 
         gameEventHandler.bind(this);
         gameModel.bind(this);
@@ -45,7 +54,30 @@ public class GameController implements GameStateControl {
 
     public void addPlayer(Player player) {
         // TODO: check whether player is already added
-        players.add(new MutableLiveData<>());
+        MutableLiveData<Player> mPlayer = new MutableLiveData<>();
+        mPlayer.setValue(player);
+        players.add(mPlayer);
+        Log.i("GameRuntime", String.format("player added: %s", player.getName()));
+    }
+
+    public void addBot() {
+        // add bot to game
+        Player player = new AIPlayer(2, "Bot");
+        final Bot bot = new Bot(player);
+        bot.bind(gameEventHandler);
+        gameEventHandler.addStateEventListener(new StateEventAdapter() {
+            @Override
+            public void onTurnStart(TurnStartEvent e) {
+                bot.onTurnStart(e);
+            }
+
+            @Override
+            public void onGameEnd(Player winner) {
+                // nothing to do for bot
+            }
+        });
+        addPlayer(player);
+        Log.i("GameRuntime", String.format("bot player added: %s", player.getName()));
     }
 
     @Override
@@ -54,8 +86,10 @@ public class GameController implements GameStateControl {
             // state check
             if (fsm.getState() != GameFSM.State.IDLE) {
                 // TODO: start game during a game?
+                Log.w("main", "attempting to start game during a game; state: " + fsm.getState());
                 return;
             }
+
             if (players.size() < 2) {
                 // need more than 2 players to start?
                 // ...
@@ -64,108 +98,63 @@ public class GameController implements GameStateControl {
 
             try {
                 // assume the first player joined takes the first turn
-                gameModel.init(players.get(0).getValue());
+                setNextPlayer();
+                gameModel.init();
+                setNextPlayer(players.get(0).getValue());
+
+
+                // state update
+                fsm.nextState(); // goes to TURN_START
+                fsm.nextState(); // goes to PLAYER_TURN
+                Log.i("GameRuntime", "game started");
             }
             catch (PlayerNotFoundException err) {
                 // TODO: logs
+                Log.w("main", err);
             }
+
+
+        }
+        catch (InvalidStateException err) {
+            // TODO: logs
+            Log.w("main", err);
+        }
+    }
+
+    @Override
+    public void turnStart() throws PlayerCanNotEnterTurnException {
+        try {
+            // state check
+            if (fsm.getState() != GameFSM.State.TURN_START) {
+                throw new InvalidStateException(fsm.getState());
+            }
+
+            gameModel.playerTurnStart(getCurrPlayer().getValue());
 
             // state update
             fsm.nextState();
         }
-        catch (InvalidStateException err) {
+        catch (PlayerNotFoundException | InvalidStateException err) {
             // TODO: logs
+            Log.w("main", err);
         }
     }
 
     @Override
-    public void beforeTurnStart() throws PlayerCanNotEnterTurnException {
+    public void turnEnd() { // called by the player side (e.g. human players or a bot)
         try {
-            // state check
-            if (fsm.getState() != GameFSM.State.BEFORE_TURN_START) {
-                throw new InvalidStateException(fsm.getState());
-            }
-
-            try {
-                gameModel.beforePlayerTurnStart(getCurrPlayer().getValue());
-            }
-            catch (PlayerNotFoundException | PlayerCanNotEnterTurnException err) {
-                if (err instanceof PlayerNotFoundException) {
-                    // TODO: game end
-                }
-
-                if (err instanceof PlayerCanNotEnterTurnException) {
-                    throw (PlayerCanNotEnterTurnException) err;
-                }
-            }
-        }
-        catch (InvalidStateException err) {
-            // TODO: logs
-        }
-    }
-
-    @Override
-    public void turnStart() {
-        try {
-            // state check
-            if (fsm.getState() != GameFSM.State.PLAYER_TURN) {
-                throw new InvalidStateException(fsm.getState());
-            }
-
-            try {
-                gameModel.playerTurnStart(getCurrPlayer().getValue());
-            }
-            catch (PlayerNotFoundException err) {
-                // TODO: logs
-            }
-        }
-        catch (InvalidStateException err) {
-            // TODO: logs
-        }
-    }
-
-    @Override
-    public void afterTurnStart() {
-        // state update
-        try {
-            fsm.nextState();
-        }
-        catch (InvalidStateException err) {
-            // TODO: logs
-        }
-
-    }
-
-    @Override
-    public void beforeTurnEnd() {
-        // method not implemented in model
-    }
-
-    @Override
-    public void turnEnd() {
-        try {
+            fsm.nextState(); // goes to TURN_END
             gameModel.playerTurnEnd(getCurrPlayer().getValue());
+            fsm.nextState(); // goes to TURN_START
         }
-        catch (PlayerNotFoundException err) {
+        catch (PlayerNotFoundException | InvalidStateException err) {
             // TODO: logs
-        }
-    }
-
-    @Override
-    public void afterTurnEnd() {
-        try {
-            gameModel.afterPlayerTurnEnd(getCurrPlayer().getValue());
-
-            // state update
-            fsm.nextState();
-        }
-        catch (InvalidStateException err) {
-            // TODO: logs
+            Log.w("main", err);
         }
     }
 
     private MutableLiveData<Player> getMutableCurrPlayer() {
-        return players.get(currPlayerIdx);
+        return currPlayer;
     }
 
     private MutableLiveData<Player> getMutablePlayer(int playerId) {
@@ -211,10 +200,25 @@ public class GameController implements GameStateControl {
 
     public void setNextPlayer() {
         currPlayerIdx = (currPlayerIdx + 1) % players.size();
+        currPlayer.setValue(players.get(currPlayerIdx).getValue());
+        Log.i("main", "next player: " + currPlayer.getValue().getName());
     }
 
-    public void setNextPlayer(Player player) throws PlayerNotFoundException {
-        // TODO: force set next player
+    private void setNextPlayer(Player player) throws PlayerNotFoundException {
+        int playerIdx = 0;
+
+        for (; playerIdx < players.size(); playerIdx++) {
+            if (players.get(playerIdx).getValue().getId() == player.getId()) { break; }
+        }
+
+        if (playerIdx == players.size()) {
+            // player not found
+            throw new PlayerNotFoundException();
+        }
+
+        currPlayerIdx = playerIdx;
+        currPlayer.setValue(player);
+        Log.i("main", "next player: " + currPlayer.getValue().getName());
     }
 
     public void updatePlayer(Player player) throws PlayerNotFoundException {

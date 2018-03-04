@@ -12,7 +12,7 @@ import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerN
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
-import cs446_w2018_group3.supercardgame.runtime.GameController;
+import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.model.cards.*;
 
 /**
@@ -21,23 +21,22 @@ import cs446_w2018_group3.supercardgame.model.cards.*;
 
 public class Game {
     // configurations
-    public static final int PLAYER_MAX_AP = 10;
     public static final int PLAYER_AP_REGEN_PER_TURN = 3;
     public static final int PLAYER_CARD_DRAW_PER_TURN = 5;
 
-    private GameController gameController;
+    private GameRuntime gameRuntime;
     private Random rng = new Random(System.currentTimeMillis()); // seed = curr unix time
 
     // Pseudo game constructor. Create a game with a sandbag opponent, and with only water cards in deck. Sunny weather
     public Game() { }
 
-    public void bind(GameController gameController) {
-        this.gameController = gameController;
+    public void bind(GameRuntime gameRuntime) {
+        this.gameRuntime = gameRuntime;
     }
 
-    public void init(Player nextPlayer) throws PlayerNotFoundException {
+    public void init() throws PlayerNotFoundException {
         // for each player
-        for (LiveData<Player> playerHolder: gameController.getPlayers()) {
+        for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
             Player player = playerHolder.getValue();
             player.setHP(10);
             player.setAP(0);
@@ -52,7 +51,7 @@ public class Game {
             }
 
             // update liveData
-            gameController.updatePlayer(player);
+            gameRuntime.updatePlayer(player);
         }
 
         // game field setup
@@ -60,16 +59,13 @@ public class Game {
         // set weather, etc.
 
         // update LiveData
-        gameController.updateGameField(gameField);
-
-        // next player
-        gameController.setNextPlayer(nextPlayer);
+        gameRuntime.updateGameField(gameField);
 
         Log.i("Game", "game start done");
     }
 //
 //    private Player getPlayer(int playerId) throws PlayerNotFoundException {
-//        Player result = gameController.getPlayer(playerId).getValue();
+//        Player result = gameRuntime.getPlayer(playerId).getValue();
 //        if (result == null) {
 //            throw new PlayerNotFoundException();
 //        }
@@ -87,21 +83,22 @@ public class Game {
         throw new CardNotFoundException();
     }
 
-    public void beforePlayerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
+    private void beforePlayerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
         // apply buff first
         player.applyBuff();
 
         // update LiveData
-        gameController.updatePlayer(player);
+        gameRuntime.updatePlayer(player);
 
         if (player.getHP() <= 0) {
             throw new PlayerCanNotEnterTurnException();
         }
-
         // pass
     }
 
-    public void playerTurnStart(Player player) throws PlayerNotFoundException {
+    public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
+        Log.i("main", "game model: playerTurnStart");
+        beforePlayerTurnStart(player);
         // update player's AP
         player.addAP(PLAYER_AP_REGEN_PER_TURN);
 
@@ -114,21 +111,24 @@ public class Game {
         }
 
         // update LiveData
-        gameController.updatePlayer(player);
+        gameRuntime.updatePlayer(player);
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
+        Log.i("main", "game model: playerTurnEnd");
         // nothing to do at this moment?
         // update player AP??? isn't the game supposed to carry on AP to the next turn?
         player.setAP(0);
 
         // update LiveData
-        gameController.updatePlayer(player);
+        gameRuntime.updatePlayer(player);
+
+        afterPlayerTurnEnd(player);
     }
 
-    public void afterPlayerTurnEnd(Player player) {
+    private void afterPlayerTurnEnd(Player player) {
         // set next player
-        gameController.setNextPlayer();
+        gameRuntime.setNextPlayer();
     }
 
     public void useCard(Player subject, Player target, Card card) throws PlayerNotFoundException, CardNotFoundException {
@@ -139,8 +139,8 @@ public class Game {
         card.apply(subject, target);
 
         // update LiveData
-        gameController.updatePlayer(subject);
-        gameController.updatePlayer(target);
+        gameRuntime.updatePlayer(subject);
+        gameRuntime.updatePlayer(target);
     }
 
     public void playerCombineElementsEventHandler(Player player, List<ElementCard> cards)
@@ -165,6 +165,6 @@ public class Game {
         player.removeCardFromHand(cards.get(1));
 
         // update LiveData
-        gameController.updatePlayer(player);
+        gameRuntime.updatePlayer(player);
     }
 }

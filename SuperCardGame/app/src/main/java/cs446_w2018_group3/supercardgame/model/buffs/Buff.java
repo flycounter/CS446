@@ -42,4 +42,9 @@ public abstract class Buff {
 
     public abstract int applyBuff();
 
+    @Override
+    public boolean equals(Object that) {
+        return (that instanceof Buff && ((Buff) that).getBuffId() == this.getBuffId());
+    }
+
 }

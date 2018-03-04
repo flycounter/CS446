@@ -1,92 +1,48 @@
 package cs446_w2018_group3.supercardgame.runtime;
 
 
+import android.arch.lifecycle.LiveData;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerActionException;
+import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.InvalidStateException;
 import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.PlayerStateException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/2/24.
  */
 
 public class GameEventHandler implements IGameEventHandler {
-//    private final MutableLiveData<Player> player;
-//    private final MutableLiveData<Player> opponent;
-//    private final MutableLiveData<GameField> gameField;
-//
-//    private Player nextPlayer;
     private Game game;
-    private GameController gameController;
+    private GameRuntime gameRuntime;
 
-    public GameEventHandler() { }
+    // event listener
+    private List<StateEventAdapter> stateEventAdapters;
 
-//    public LiveData<Player> getPlayer() {
-//        return player;
-//    }
-//
-//    public MutableLiveData<Player> getPlayer(int playerId) {
-//        // TODO: refactor player and opponent into List of Players
-//        if (playerId == player.getValue().getId()) {
-//            return player;
-//        }
-//        else if (playerId == opponent.getValue().getId()) {
-//            return opponent;
-//        }
-//        else {
-//            return null;
-//        }
-//    }
-//
-//    public LiveData<Player> getOpponent() {
-//        return opponent;
-//    }
-//
-//    public LiveData<GameField> getGameField() {
-//        return gameField;
-//    }
-//
-//    public MutableLiveData<Player> getMutablePlayer() {
-//        return player;
-//    }
-//
-//    public MutableLiveData<Player> getMutablePlayer(int playerId) {
-//        // TODO: refactor player and opponent into List of Players
-//        if (playerId == player.getValue().getId()) {
-//            return player;
-//        }
-//        else if (playerId == opponent.getValue().getId()) {
-//            return opponent;
-//        }
-//        else {
-//            return null;
-//        }
-//    }
-//
-//    public MutableLiveData<Player> getMutableOpponent() {
-//        return opponent;
-//    }
-//
-//    public MutableLiveData<GameField> getMutableField() {
-//        return gameField;
-//    }
+    public GameEventHandler() {
+        stateEventAdapters = new ArrayList<>();
+    }
 
     @Override
     public void handlePlayerUseCardEvent(PlayerUseCardEvent e) {
         try {
-            gameController.checkPlayerEventState(e);
+            gameRuntime.checkPlayerEventState(e);
 
-            Player subject = gameController.getPlayer(e.getSubjectId()).getValue();
-            Player target = gameController.getPlayer(e.getTargetId()).getValue();
+            Player subject = gameRuntime.getPlayer(e.getSubjectId()).getValue();
+            Player target = gameRuntime.getPlayer(e.getTargetId()).getValue();
             if (subject == null || target == null) {
                 throw new PlayerNotFoundException();
             }
@@ -96,6 +52,7 @@ public class GameEventHandler implements IGameEventHandler {
             game.useCard(subject, target, card);
         }
         catch (PlayerStateException | PlayerActionException err) {
+            Log.w("main", err);
             // TODO: send err to UI
         }
     }
@@ -103,11 +60,11 @@ public class GameEventHandler implements IGameEventHandler {
     @Override
     public void handlePlayerCombineElementEvent(PlayerCombineElementEvent e) {
         try {
-            gameController.checkPlayerEventState(e);
+            gameRuntime.checkPlayerEventState(e);
 
             // get cards to be combined
             // NOTE: maybe replace with lambda map?
-            Player player = gameController.getPlayer(e.getSubjectId()).getValue();
+            Player player = gameRuntime.getPlayer(e.getSubjectId()).getValue();
             if (player == null) {
                 throw new PlayerNotFoundException();
             }
@@ -120,43 +77,51 @@ public class GameEventHandler implements IGameEventHandler {
             game.playerCombineElementsEventHandler(player, cards);
         }
         catch (PlayerStateException | PlayerActionException err) {
+            Log.w("main", err);
             // TODO: send err to UI
         }
     }
 
     @Override
-    public void handlePlayerEndTurnEvent(PlayerEndTurnEvent e) {
+    public void handlePlayerEndTurnEvent(PlayerEndTurnEvent _e) {
         try {
-            gameController.checkPlayerEventState(e);
-
-            gameController.beforeTurnEnd();
-            gameController.turnEnd();
-            gameController.afterTurnEnd();
+            gameRuntime.checkPlayerEventState(_e);
+            gameRuntime.turnEnd();
+            gameRuntime.turnStart(); // starts next player's turn
+            TurnStartEvent e = new TurnStartEvent(gameRuntime.getCurrPlayer().getValue().getId());
+            Log.i("main", "notifying turn start event");
+            for (StateEventAdapter adapter: stateEventAdapters) {
+                adapter.onTurnStart(e);
+            }
         }
         catch (InvalidStateException | PlayerActionException err) {
-            // ...
+            if (err instanceof PlayerCanNotEnterTurnException) {
+                // TODO: add method gameRuntime.getWinner()
+                Player winner = null;
+                for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+                    if (playerHolder.getValue().getHP() > 0) {
+                        winner = playerHolder.getValue();
+                    }
+                }
+                for (StateEventAdapter adapter: stateEventAdapters) {
+                    adapter.onGameEnd(winner);
+                }
+                // game end
+                return;
+            }
+            Log.w("main", err);
+            // TODO: send err to UI
         }
     }
 
-//    public Player getNextPlayer() {
-//        return nextPlayer;
-//    }
-//
-//    public void setNextPlayer(Player nextPlayer) {
-//        this.nextPlayer = nextPlayer;
-//    }
+    void bind(GameRuntime gameRuntime) {
+        this.gameRuntime = gameRuntime;
+        this.game = gameRuntime.getGameModel();
+    }
 
-//    public void changePlayer() {
-//        // NOTE: right now there are two players, so just switch between them
-//        setNextPlayer(
-//                getNextPlayer().getId() == getPlayer().getValue().getId()
-//                        ? this.getOpponent().getValue()
-//                        : this.getPlayer().getValue()
-//        );
-//    }
-
-    void bind(GameController gameController) {
-        this.gameController = gameController;
-        this.game = gameController.getGameModel();
+    @Override
+    public void addStateEventListener(StateEventAdapter adapter) {
+        stateEventAdapters.add(adapter);
+        Log.i("main", "state event listener added");
     }
 }

@@ -14,7 +14,7 @@ public class AIPlayer extends Player {
         super(id, name);
     }
 
-    public void init(GameEventHandler gameEventHandler) {
+    public void bind(GameEventHandler gameEventHandler) {
         this.gameEventHandler = gameEventHandler;
     }
 

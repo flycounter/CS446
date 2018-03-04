@@ -71,6 +71,11 @@ public abstract class Card {
     public String getLabel() {
         return Translate.cardToString(cardType);
     }
+
+    @Override
+    public boolean equals(Object that) {
+        return (that instanceof Card && ((Card) that).getCardId() == this.getCardId());
+    }
 }
 
 
