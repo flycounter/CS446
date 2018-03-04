@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException;
+package cs446_w2018_group3.supercardgame.Exception.PlayerStateException;
 
 import cs446_w2018_group3.supercardgame.runtime.GameFSM;
 

@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.util.events.playerevent;
+package cs446_w2018_group3.supercardgame.util.events.stateevent;
 
 /**
  * Created by JarvieK on 2018/2/26.

@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException;
+package cs446_w2018_group3.supercardgame.Exception.PlayerActionException;
 
 /**
  * Created by JarvieK on 2018/3/1.

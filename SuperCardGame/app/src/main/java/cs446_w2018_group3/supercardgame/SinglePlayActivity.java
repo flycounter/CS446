@@ -17,20 +17,19 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class SinglePlayActivity extends AppCompatActivity {
@@ -224,6 +223,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         observeViewModel(viewModel);
         // start game
         viewModel.start();
+
     }
 
     private void observeViewModel(final GameViewModel viewModel) {

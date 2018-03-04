@@ -7,18 +7,18 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.InvalidStateException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerActionNotAllowed;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidStateException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerActionNotAllowed;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.bot.Bot;
 import cs446_w2018_group3.supercardgame.model.player.AIPlayer;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/3/1.
@@ -105,7 +105,6 @@ public class GameRuntime implements GameStateControl {
 
                 // state update
                 fsm.nextState(); // goes to TURN_START
-                fsm.nextState(); // goes to PLAYER_TURN
                 Log.i("GameRuntime", "game started");
             }
             catch (PlayerNotFoundException err) {
@@ -135,7 +134,6 @@ public class GameRuntime implements GameStateControl {
             fsm.nextState();
         }
         catch (PlayerNotFoundException | InvalidStateException err) {
-            // TODO: logs
             Log.w("main", err);
         }
     }
@@ -236,6 +234,9 @@ public class GameRuntime implements GameStateControl {
     Game getGameModel() {
         return gameModel;
     }
+
+    // NOTE: getFSM() is only accessible within package (for GameEventHandler to get state)
+    GameFSM getFSM() { return fsm; }
 
     void checkPlayerEventState(PlayerEvent e) throws PlayerActionNotAllowed, InvalidStateException {
         if (!getCurrPlayer()

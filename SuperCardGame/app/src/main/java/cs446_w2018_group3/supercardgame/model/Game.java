@@ -6,10 +6,10 @@ import android.util.Log;
 import java.util.List;
 import java.util.Random;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.CardNotFoundException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.ElementCardsCanNotCombineException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.CardNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.ElementCardsCanNotCombineException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
@@ -153,6 +153,7 @@ public class Game {
 
         // do combination
         // TODO: update the method to support arbitrary number of cards
+        // TODO: check player's AP
         Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
         ElementCard newCard = (ElementCard) Card.createNewCard(cardType);
 

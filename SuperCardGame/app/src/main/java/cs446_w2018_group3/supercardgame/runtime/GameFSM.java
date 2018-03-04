@@ -2,7 +2,7 @@ package cs446_w2018_group3.supercardgame.runtime;
 
 import android.util.Log;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.InvalidStateException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidStateException;
 
 /**
  * Created by JarvieK on 2018/3/1.
@@ -10,7 +10,7 @@ import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.InvalidS
 
 public class GameFSM {
     public enum State {
-        IDLE, TURN_START, PLAYER_TURN, TURN_END, PLAYER_TURN_END
+        IDLE, TURN_START, PLAYER_TURN, TURN_END
     }
 
     private final State DEFAULT_STATE = State.IDLE;

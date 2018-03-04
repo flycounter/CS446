@@ -5,7 +5,7 @@ import android.util.Log;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/3/3.
@@ -30,6 +30,13 @@ public class Bot implements IBot {
         if (e.getSubjectId() == botPlayer.getId()) {
             // TODO: bot's turn
             // for now just end the turn
+
+//            // wait for 2 sec
+//            try {
+//                Thread.sleep(2000);
+//            }
+//            catch (InterruptedException err) {}
+
             gameEventHandler.handlePlayerEndTurnEvent(
                     new PlayerEndTurnEvent(botPlayer.getId()));
         }

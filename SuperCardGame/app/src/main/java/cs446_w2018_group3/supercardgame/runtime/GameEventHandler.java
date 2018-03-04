@@ -7,19 +7,20 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerActionException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.InvalidStateException;
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerStateException.PlayerStateException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerActionException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidStateException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.PlayerStateException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
-import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
+import cs446_w2018_group3.supercardgame.util.events.GameEndEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/2/24.
@@ -87,7 +88,7 @@ public class GameEventHandler implements IGameEventHandler {
         try {
             gameRuntime.checkPlayerEventState(_e);
             gameRuntime.turnEnd();
-            gameRuntime.turnStart(); // starts next player's turn
+            gameRuntime.turnStart();
             TurnStartEvent e = new TurnStartEvent(gameRuntime.getCurrPlayer().getValue().getId());
             Log.i("main", "notifying turn start event");
             for (StateEventAdapter adapter: stateEventAdapters) {
@@ -103,14 +104,25 @@ public class GameEventHandler implements IGameEventHandler {
                         winner = playerHolder.getValue();
                     }
                 }
-                for (StateEventAdapter adapter: stateEventAdapters) {
-                    adapter.onGameEnd(winner);
+
+                if (winner == null) {
+                    Log.w("main", "all players' HP reaches zero");
+                    return;
                 }
+
                 // game end
+                handleGameEndEvent(new GameEndEvent(winner));
                 return;
             }
             Log.w("main", err);
             // TODO: send err to UI
+        }
+    }
+
+    @Override
+    public void handleGameEndEvent(GameEndEvent e) {
+        for (StateEventAdapter adapter: stateEventAdapters) {
+            adapter.onGameEnd(e.getWinner());
         }
     }
 

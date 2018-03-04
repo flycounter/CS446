@@ -3,20 +3,20 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
-import cs446_w2018_group3.supercardgame.util.events.StateEventAdapter;
+import cs446_w2018_group3.supercardgame.util.events.GameEndEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
 
 /**
@@ -45,6 +45,29 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
 
     public void start() {
         gameRuntime.start();
+        try {
+            gameRuntime.turnStart(); // starts the first player's turn
+        }
+        catch (PlayerCanNotEnterTurnException err) {
+            // NOTE: same code as in gameEventHandler.handlePlayerEndTurnEvent(PlayerEndTurnEvent e)
+            // TODO: add method gameRuntime.getWinner()
+            Player winner = null;
+            for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+                if (playerHolder.getValue().getHP() > 0) {
+                    winner = playerHolder.getValue();
+                }
+            }
+
+            if (winner == null) {
+                Log.w("main", "all players' HP reaches zero");
+                return;
+            }
+
+            // game end
+            gameEventHandler.handleGameEndEvent(new GameEndEvent(winner));
+        }
+
+
     }
 
     // used by activity / fragments to get observables

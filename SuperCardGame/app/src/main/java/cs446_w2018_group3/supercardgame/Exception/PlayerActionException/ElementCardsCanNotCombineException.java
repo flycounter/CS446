@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame.Exceptions.PlayerActionException;
+package cs446_w2018_group3.supercardgame.Exception.PlayerActionException;
 
 import java.util.List;
 import java.util.stream.Collectors;
