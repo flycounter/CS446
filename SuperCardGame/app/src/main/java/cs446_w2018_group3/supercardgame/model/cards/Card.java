@@ -1,7 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
 import cs446_w2018_group3.supercardgame.util.events.payload.CardInfo;
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
@@ -44,8 +44,37 @@ public abstract class Card {
         return cardType;
     }
 
+    public static Card createNewCard (Translate.CardType cardType) {
+        switch (cardType) {
+            case Water: return new WaterCard();
+            case Fire: return new FireCard();
+            case Air: return new AirCard();
+            case Dirt: return new DirtCard();
+            case Aqua: return new AquaCard();
+            case Flame: return new FlameCard();
+            case Rock: return new RockCard();
+            case Gale: return new GaleCard();
+            case Lava: return new LavaCard();
+            case Blast: return new BlastCard();
+            case Ice: return new IceCard();
+            case Steam: return new SteamCard();
+            case Mud: return new MudCard();
+            case Sand: return new SandCard();
+        }
+        return null;
+    }
+
     public CardInfo getCardInfo () {
         return new CardInfo(cardId, cardType);
+    }
+
+    public String getLabel() {
+        return Translate.cardToString(cardType);
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        return (that instanceof Card && ((Card) that).getCardId() == this.getCardId());
     }
 }
 

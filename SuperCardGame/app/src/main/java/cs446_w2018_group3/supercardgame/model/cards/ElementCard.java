@@ -1,6 +1,6 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
@@ -28,6 +28,12 @@ public abstract class ElementCard extends Card {
         int cardIntType2 = Translate.cardToInt(cardType2);
 
         return combineRule[cardIntType1][cardIntType2];
+    }
+
+    public static int calculateDamage (int damage, Player object) {
+
+
+        return Math.max(0, damage);
     }
 
     public ElementCard(Translate.CardType cardType, int level, int damage) {

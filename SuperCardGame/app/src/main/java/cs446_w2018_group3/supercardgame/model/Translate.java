@@ -14,7 +14,7 @@ public class Translate {
     }
 
     public static enum BuffType {
-        Burn
+        Burn, Dodge
     }
 
     public static int cardToInt (CardType card) {
@@ -34,6 +34,15 @@ public class Translate {
             case Air: return "Air";
             case Dirt: return "Dirt";
             case Aqua: return "Aqua";
+            case Mud: return  "Mud";
+            case Steam: return "Steam";
+            case Sand: return  "Sand";
+            case Ice: return "Ice";
+            case Flame: return "Flame";
+            case Blast: return "Blast";
+            case Lava: return "Lava";
+            case Gale: return "Gale";
+            case Rock: return "Rock";
             default: return "Error";
         }
     }

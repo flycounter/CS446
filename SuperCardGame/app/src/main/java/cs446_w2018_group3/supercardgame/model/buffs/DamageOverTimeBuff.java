@@ -1,7 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.buffs;
 
 import cs446_w2018_group3.supercardgame.model.Effect;
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
@@ -11,6 +11,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public class DamageOverTimeBuff extends Buff {
     private int damage;
     public DamageOverTimeBuff(Translate.BuffType label, Player subject, Player object, int turns, int dmg) {
+        // TODO the buffType is fixed
         super( label, subject ,object ,turns );
         damage = dmg;
     }
