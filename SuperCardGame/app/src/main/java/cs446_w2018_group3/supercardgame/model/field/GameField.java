@@ -1,6 +1,6 @@
 package cs446_w2018_group3.supercardgame.model.field;
 
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 
 /**
  * Created by JarvieK on 2018/2/26.
