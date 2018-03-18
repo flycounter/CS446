@@ -48,6 +48,7 @@ public class PlayerInfo {
         result.addAll(hands);
         return result;
     }
+
     //public List<Card> getDeck() { return deck; }
     public List<BuffInfo> getBuffs() {
         List<BuffInfo> result = new ArrayList<>();

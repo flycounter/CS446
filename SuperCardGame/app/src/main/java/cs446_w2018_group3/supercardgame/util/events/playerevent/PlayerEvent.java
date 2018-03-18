@@ -5,10 +5,11 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent;
  * Created by JarvieK on 2018/2/23.
  */
 
-public abstract class BasePlayerEvent extends GameEvent {
+public abstract class PlayerEvent extends GameEvent {
     private final int subjectId; // reference to Player model
 
-    public BasePlayerEvent(int subjectId) {
+    public PlayerEvent(EventCode eventCode, int subjectId) {
+        super(eventCode);
         this.subjectId = subjectId;
     }
 

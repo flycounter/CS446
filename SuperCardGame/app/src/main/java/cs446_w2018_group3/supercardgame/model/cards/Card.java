@@ -1,6 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.util.events.payload.CardInfo;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
@@ -22,12 +23,25 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 //  12: Sand
 //  13: Rock
 
-public abstract class Card extends CardInfo {
+public abstract class Card {
+    static int id = 0;
+    int cardId;
+    Translate.CardType cardType;
 
     public abstract void apply(Player subject, Player object);
 
     public Card(Translate.CardType cardType) {
-        super (cardType);
+        this.cardType = cardType;
+        this.cardId = id;
+        id++;
+    }
+
+    public int getCardId() {
+        return this.cardId;
+    }
+
+    public Translate.CardType getCardType() {
+        return cardType;
     }
 
     public static Card createNewCard (Translate.CardType cardType) {
@@ -46,14 +60,22 @@ public abstract class Card extends CardInfo {
             case Steam: return new SteamCard();
             case Mud: return new MudCard();
             case Sand: return new SandCard();
-            case Excalibar: return new ExcalibarCard();
         }
         return null;
     }
 
-//    public CardInfo getCardInfo () {
-//        return new CardInfo(cardId, cardType);
-//    }
+    public CardInfo getCardInfo () {
+        return new CardInfo(cardId, cardType);
+    }
+
+    public String getLabel() {
+        return Translate.cardToString(cardType);
+    }
+
+    @Override
+    public boolean equals(Object that) {
+        return (that instanceof Card && ((Card) that).getCardId() == this.getCardId());
+    }
 }
 
 

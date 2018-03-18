@@ -2,7 +2,7 @@ package cs446_w2018_group3.supercardgame.model;
 
 import android.util.Log;
 
-import cs446_w2018_group3.supercardgame.model.Player;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.buffs.DodgeBuff;
 
