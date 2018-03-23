@@ -285,6 +285,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         handView.addView(childLayout, childLayoutParams);
         ImageView cardView = new ImageView(this);
+        cardView.setClickable(true);
         final CheckBox cardBox = new CheckBox(this);
         String cardName = Translate.cardToString(card.getCardType());
         setCardImage(cardView,cardName);
@@ -320,6 +321,14 @@ public class SinglePlayActivity extends AppCompatActivity {
 
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
+            }
+        });
+
+        cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                PopupInfo popupInfo = new PopupInfo(SinglePlayActivity.this,CardDataMap.get(checkboxId));
+                popupInfo.showPopup(new View(SinglePlayActivity.this));
             }
         });
     }

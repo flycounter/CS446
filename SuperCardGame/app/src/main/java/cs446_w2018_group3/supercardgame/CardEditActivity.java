@@ -134,6 +134,7 @@ public class CardEditActivity extends AppCompatActivity {
             container.addView(childLayout, childLayoutParams);
         }
         ImageView cardView = new ImageView(this);
+        cardView.setClickable(true);
         final CheckBox cardBox = new CheckBox(this);
         String cardName = Translate.cardToString(card.getCardType());
         setCardImage(cardView,cardName);
@@ -179,6 +180,13 @@ public class CardEditActivity extends AppCompatActivity {
                         removeList.removeAll( cardsToDelete );
                     }
                 }
+            }
+        });
+       cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                PopupInfo popupInfo = new PopupInfo(CardEditActivity.this,CardDataMap.get(checkboxId));
+                popupInfo.showPopup(new View(CardEditActivity.this));
             }
         });
     }
