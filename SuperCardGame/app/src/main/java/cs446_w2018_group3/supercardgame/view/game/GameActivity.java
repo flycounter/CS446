@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.game;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
+import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
@@ -32,7 +34,7 @@ import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter
 import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
-public class SinglePlayActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
     //widgets
     TextView oppStatus;
     TextView oppBuffEquip;
@@ -159,7 +161,7 @@ public class SinglePlayActivity extends AppCompatActivity {
 
                 if (gameMode == 3) {
                     Intent intent = new Intent();
-                    intent.setClass(SinglePlayActivity.this, MainActivity.class);
+                    intent.setClass(GameActivity.this, MainActivity.class);
                     // Start activity
                     v.getContext().startActivity(intent);
                 }

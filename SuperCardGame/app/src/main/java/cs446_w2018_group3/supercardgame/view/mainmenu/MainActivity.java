@@ -1,18 +1,16 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.mainmenu;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
+import cs446_w2018_group3.supercardgame.R;
+import cs446_w2018_group3.supercardgame.view.lobby.LobbyActivity;
+import cs446_w2018_group3.supercardgame.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
     TextView title;
@@ -20,33 +18,38 @@ public class MainActivity extends AppCompatActivity {
     Button deckEdit;
     Button shop;
     Button leaderBoard;
-    GameViewModel viewModel;
+    MainViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
-        this.viewModel = viewModel;
-        //connect widgets
+
+        // connect widgets
         title = findViewById(R.id.Title);
         start = findViewById(R.id.Start);
         deckEdit = findViewById(R.id.DeckEdit);
         shop = findViewById(R.id.Shop);
         leaderBoard = findViewById(R.id.Leaderboard);
-        //set Text
-        title.setText("Super card      game!");
+
+        // set Text
+        title.setText("Super card\ngame!");
         title.setTextSize(72);
-        start.setText("START");
+        start.setText("Start");
         deckEdit.setText("DECK EDIT");
         shop.setText("Card shop");
         leaderBoard.setText("Leaderboard");
 
-        //set listener
+        // viewmodel
+        final MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        this.viewModel = viewModel;
+
+        // set listener
         start.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Popup startPopup = new Popup(MainActivity.this, viewModel);
-                startPopup.showPopup(new View(MainActivity.this));
+            public void onClick(View view) {
+                final GameModePopup gameModePopup = new GameModePopup(MainActivity.this);
+                gameModePopup.showPopup(new View(MainActivity.this));
             }
         });
 
