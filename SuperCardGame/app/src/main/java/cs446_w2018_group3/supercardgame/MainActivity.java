@@ -49,10 +49,18 @@ public class MainActivity extends AppCompatActivity {
                 startPopup.showPopup(new View(MainActivity.this));
             }
         });
+        deckEdit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardEditActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
 
 
         //demo code
-        deckEdit.setEnabled(false);
         shop.setEnabled(false);
         leaderBoard.setEnabled(false);
 

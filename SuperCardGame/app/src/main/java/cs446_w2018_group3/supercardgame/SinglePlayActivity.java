@@ -3,6 +3,7 @@
         import android.arch.lifecycle.Observer;
         import android.arch.lifecycle.ViewModelProviders;
         import android.content.Intent;
+        import android.content.pm.ActivityInfo;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
         import android.graphics.Color;
@@ -53,7 +54,6 @@ public class SinglePlayActivity extends AppCompatActivity {
     GameViewModel viewModel;
     Map<Integer, Integer> CardDataMap; // Map<checkbox_id, card_id>
     List<Integer> chosenCard; // store id of cards chosen by the player
-    List<CheckBox> chosenBox;
     int gameMode;
 
     @Override
@@ -61,6 +61,8 @@ public class SinglePlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_single_play);
+        //disable landscape
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //get the size of screen and set textsize
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -70,7 +72,6 @@ public class SinglePlayActivity extends AppCompatActivity {
             TEXTSIZE = 26;
         }
         chosenCard = new ArrayList<>();
-        chosenBox = new ArrayList<CheckBox>();
         CardDataMap = new HashMap<>();
         Intent intent = getIntent();
         gameMode = intent.getIntExtra("mode",0);
