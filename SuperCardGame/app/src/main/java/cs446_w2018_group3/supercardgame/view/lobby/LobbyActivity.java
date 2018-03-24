@@ -1,8 +1,11 @@
 package cs446_w2018_group3.supercardgame.view.lobby;
 
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.net.wifi.p2p.WifiP2pDevice;
+import android.arch.lifecycle.ViewModelProviders;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,21 +15,21 @@ import android.view.View;
 
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.model.network.Session;
-import cs446_w2018_group3.supercardgame.network.ILobbyManager;
-import cs446_w2018_group3.supercardgame.network.P2PLobbyManager;
+import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 import cs446_w2018_group3.supercardgame.R;
+import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 
-public class LobbyActivity extends AppCompatActivity {
+public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFragment.OnFragmentInteractionListener {
     RecyclerView recyclerView;
-    ILobbyManager lobbyManager;
-    LiveData<List<Session>> devices;
+    LiveData<List<ConnInfo>> hostInfoList;
 
     private RecyclerViewAdapter mAdapter;
 
+    private LobbyViewModel viewModel;
+
     private void setAdapter() {
-        mAdapter = new RecyclerViewAdapter(LobbyActivity.this, devices.getValue());
+        mAdapter = new RecyclerViewAdapter(LobbyActivity.this, hostInfoList.getValue());
 
         // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -34,17 +37,26 @@ public class LobbyActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         mAdapter.SetOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position, Session session) {
-                //handle item click events here
+            public void onItemClick(View view, int position, ConnInfo connInfo) {
+                // join game
+                viewModel.joinGame(connInfo);
+                // show join game dialog
+                showJoinGameDialog();
             }
         });
 
-        devices.observe(this, new Observer<List<Session>>() {
+        hostInfoList.observe(this, new Observer<List<ConnInfo>>() {
             @Override
-            public void onChanged(@Nullable List<Session> sessions) {
+            public void onChanged(@Nullable List<ConnInfo> sessions) {
                 mAdapter.updateList(sessions);
             }
         });
+    }
+
+    private void showJoinGameDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogFragment dialogFragment = JoinGameDialogFragment.newInstance();
+        dialogFragment.show(fm, "JoinGameDialog");
     }
 
     @Override
@@ -52,41 +64,37 @@ public class LobbyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lobby);
 
-        lobbyManager = new P2PLobbyManager(this);
-        lobbyManager.start();
-        lobbyManager.hostGame();
-        devices = lobbyManager.getLobby();
+        // viewmodel
+        viewModel = ViewModelProviders.of(this).get(LobbyViewModel.class);
+        viewModel.init(this);
+
+        hostInfoList = viewModel.getLobby();
+        viewModel.hostGame();
+
         recyclerView = findViewById(R.id.lobby_recycler_view);
         setAdapter();
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // peer discovery
-        lobbyManager.start();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        lobbyManager.onResume();
+        viewModel.startHostDiscovery();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        lobbyManager.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        viewModel.stopHostDiscovery();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        lobbyManager.onDestroy();
+        viewModel.destroyHostDiscovery();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // do nothing
     }
 }

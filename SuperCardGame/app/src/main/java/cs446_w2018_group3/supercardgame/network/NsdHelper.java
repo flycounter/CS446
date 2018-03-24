@@ -21,11 +21,15 @@ import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import cs446_w2018_group3.supercardgame.model.network.Session;
+import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 
 public class NsdHelper {
 
@@ -35,12 +39,12 @@ public class NsdHelper {
     private final NsdManager.RegistrationListener mRegistrationListener;
     private final NsdManager.DiscoveryListener mDiscoveryListener;
 
-    private static final String SERVICE_TYPE = "_http._tcp.";
+    private static final String SERVICE_TYPE = "_websocket._tcp.";
     private static final String TAG = "NsdHelper";
     private static final String SERVICE_NAME = "MyGame";
     private String mServiceName = SERVICE_NAME + ":" + UUID.randomUUID().toString();
 
-    private final List<Session> sessions = new ArrayList<>();
+    private final List<ConnInfo> sessions = new ArrayList<>();
 
     NsdServiceInfo mService;
 
@@ -61,7 +65,7 @@ public class NsdHelper {
 
             @Override
             public void onServiceFound(NsdServiceInfo service) {
-                Log.i(TAG, "Service discovery success " + service);
+                Log.i(TAG, "Service discovery success " + service + ", attribute: " + service.getAttributes());
                 if (!service.getServiceType().equals(SERVICE_TYPE)) {
                     Log.i(TAG, "Unknown Service Type: " + service.getServiceType());
                 } else if (service.getServiceName().equals(mServiceName)) {
@@ -77,7 +81,7 @@ public class NsdHelper {
                 Log.i(TAG, "service lost: " + service);
 
                 // update
-                Session session = new Session(service.getServiceName(), service.getHost(), service.getPort());
+                ConnInfo session = new ConnInfo(service.getServiceName(), service.getHost(), service.getPort());
                 sessions.remove(session);
                 sessionListListener.onServiceListChanged(sessions);
             }
@@ -117,7 +121,7 @@ public class NsdHelper {
                 }
 
                 // update
-                Session session = new Session(serviceInfo.getServiceName(), serviceInfo.getHost(), serviceInfo.getPort());
+                ConnInfo session = new ConnInfo(serviceInfo.getServiceName(), serviceInfo.getHost(), serviceInfo.getPort());
                 if (!sessions.contains(session)) {
                     sessions.add(session);
                     sessionListListener.onServiceListChanged(sessions);
@@ -152,14 +156,16 @@ public class NsdHelper {
         };
     }
 
-    void registerService(int port) {
+    void registerService(ConnInfo connInfo) {
         tearDown();  // Cancel any previous registration request
+        Gson gson = new Gson();
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
-        serviceInfo.setPort(port);
+        serviceInfo.setHost(connInfo.getHost());
+        serviceInfo.setPort(connInfo.getPort());
         serviceInfo.setServiceName(mServiceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
-
         mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
+
     }
 
     void discoverServices() {
@@ -187,6 +193,6 @@ public class NsdHelper {
     }
 
     public interface SessionListListener {
-        void onServiceListChanged(List<Session> sessions);
+        void onServiceListChanged(List<ConnInfo> sessions);
     }
 }

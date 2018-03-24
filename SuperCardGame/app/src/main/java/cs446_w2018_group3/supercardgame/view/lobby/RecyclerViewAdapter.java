@@ -11,21 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.R;
-import cs446_w2018_group3.supercardgame.model.network.Session;
+import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    private List<Session> mData;
+    private List<ConnInfo> mData;
     private OnItemClickListener mItemClickListener;
 
-    RecyclerViewAdapter(Context context, List<Session> mData) {
-        if (mData == null) { mData = new ArrayList<>(); }
+    RecyclerViewAdapter(Context context, List<ConnInfo> mData) {
+        if (mData == null) {
+            mData = new ArrayList<>();
+        }
         this.mContext = context;
         this.mData = mData;
     }
 
-    public void updateList(List<Session> data) {
+    public void updateList(List<ConnInfo> data) {
         this.mData = data;
         notifyDataSetChanged();
     }
@@ -40,11 +42,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         //Here you can fill your row view
         if (holder instanceof ViewHolder) {
-            final Session model = getItem(position);
+            final ConnInfo model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
             genericViewHolder.itemTxtTitle.setText(model.getPlayerName());
-            genericViewHolder.itemTxtMessage.setText(String.format("%s:%s", model.getHost(), model.getPort()));
+            genericViewHolder.itemTxtMessage.setText(String.format("%s:%s", model.getHost().getHostAddress(), model.getPort()));
         }
     }
 
@@ -58,12 +60,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mItemClickListener = mItemClickListener;
     }
 
-    private Session getItem(int position) {
+    private ConnInfo getItem(int position) {
         return mData.get(position);
     }
-    
+
     public interface OnItemClickListener {
-        void onItemClick(View view, int position, Session device);
+        void onItemClick(View view, int position, ConnInfo connInfo);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
