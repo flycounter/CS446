@@ -25,12 +25,9 @@ public class DeckEditor implements IDeckEditor {
     private int maxDirt;
     private DBHelper deck;
 
-    DeckEditor( int gold, int maxWater, int maxFire, int maxAir, int maxDirt, DBHelper deck) {
+    public DeckEditor( int gold, int maxWater, int maxFire, int maxAir, int maxDirt, DBHelper deck) {
+
         this.gold = gold;
-        //this.water = water;
-        //this.fire = fire;
-        //this.air = air;
-        //this.dirt = dirt;
         this.maxWater = maxWater;
         this.maxFire = maxFire;
         this.maxAir = maxAir;
@@ -47,19 +44,19 @@ public class DeckEditor implements IDeckEditor {
             switch (cardType) {
                 case Water: {
                     maxWater++;
-                    deck.updateMaxCard(1, "max_water", gold, maxWater);
+                    deck.updateMaxCard("max_water", gold, maxWater);
                 }
                 case Fire: {
                     maxFire++;
-                    deck.updateMaxCard(1, "max_fire", gold, maxFire);
+                    deck.updateMaxCard("max_fire", gold, maxFire);
                 }
                 case Air: {
                     maxAir++;
-                    deck.updateMaxCard(1, "max_air", gold, maxAir);
+                    deck.updateMaxCard("max_air", gold, maxAir);
                 }
                 case Dirt: {
                     maxDirt++;
-                    deck.updateMaxCard(1, "max_dirt", gold, maxDirt);
+                    deck.updateMaxCard("max_dirt", gold, maxDirt);
                 }
                 default: {
                     throw new NotEnoughMoneyException();
@@ -76,7 +73,7 @@ public class DeckEditor implements IDeckEditor {
             if (water + fire + air + dirt < DECK_MIN){
                 throw new NotEnoughDeckException();
             }
-            deck.updateDeck(1, water, fire, air, dirt);
+            deck.updateDeck(water, fire, air, dirt);
         }
         catch (DeckEditException err) {
             Log.w("main", err);

@@ -1,6 +1,7 @@
 package cs446_w2018_group3.supercardgame;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,7 +9,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import cs446_w2018_group3.supercardgame.model.DBHelper;
 import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.runtime.DeckEditor;
 
 public class CardShopActivity extends AppCompatActivity {
     ImageView fire;
@@ -17,11 +20,23 @@ public class CardShopActivity extends AppCompatActivity {
     ImageView dirt;
     TextView title;
     Button exit;
+    DBHelper deck;
+    DeckEditor deckEditor;
+
+    //DBHelper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_shop);
-
+        // init database
+        deck = new DBHelper(this);
+        Cursor ret = deck.getData();
+        int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
+        int maxWater = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_WATER));
+        int maxFire = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_FIRE));
+        int maxAir = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_AIR));
+        int maxDirt = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_DIRT));
+        deckEditor = new DeckEditor(gold, maxWater, maxFire, maxAir, maxDirt, deck);
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);
