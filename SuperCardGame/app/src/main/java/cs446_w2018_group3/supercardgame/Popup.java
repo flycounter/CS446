@@ -24,11 +24,9 @@ public class Popup extends PopupWindow {
     Button  single;
     Button multi;
     Button tutorial;
-    GameViewModel viewModel;
-    public Popup(Activity context,GameViewModel model){
+    public Popup(Activity context){
         //windows setting
         View contentView = LayoutInflater.from(context).inflate(R.layout.start_popup,null);
-        this.viewModel = model;
         this.setContentView(contentView);
         this.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);

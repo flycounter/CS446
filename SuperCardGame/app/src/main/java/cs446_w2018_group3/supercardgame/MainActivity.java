@@ -45,15 +45,31 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Popup startPopup = new Popup(MainActivity.this, viewModel);
+                Popup startPopup = new Popup(MainActivity.this);
                 startPopup.showPopup(new View(MainActivity.this));
             }
         });
+        deckEdit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardEditActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
 
-
+        shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardShopActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
         //demo code
-        deckEdit.setEnabled(false);
-        shop.setEnabled(false);
+
         leaderBoard.setEnabled(false);
 
     }
