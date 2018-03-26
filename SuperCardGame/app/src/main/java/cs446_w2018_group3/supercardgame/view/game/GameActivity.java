@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
@@ -34,6 +34,7 @@ import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel.GameReadyCallback;
+import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
 public abstract class GameActivity extends AppCompatActivity implements StateEventListener, GameReadyCallback {
     private static final String TAG = GameActivity.class.getName();
@@ -57,6 +58,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     List<CheckBox> chosenBox;
     int gameMode;
 
+    private boolean isGameStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +144,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
                 try {
                     viewModel.useElementCard(viewModel.getOpponent().getValue().getId(), chosenCard.get(0));
                 }
-                catch (PlayerNotFoundException err) {
+                catch (NullPointerException err) {
                     // opponent not found during the game, something is wrong
                     Log.w("main", err);
                 }
@@ -219,83 +221,56 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         viewModel.init(getIntent().getExtras(), this, this); // player setup
+        observeViewModel(viewModel);
     }
 
     private void observeViewModel(final GameViewModel viewModel) {
         // wire up ui elements and LiveData
-        // NOTE: playerId is hard coded
-        try {
-            viewModel.getThisPlayer().observe(this, new Observer<Player>() {
-                @Override
-                public void onChanged(@Nullable Player player) {
-                    // update player status
-                    if (player == null) { return; }
-                    setStatus(
-                            player.getName(),
-                            player.getHP(),
-                            player.getAP(),
-                            player.getPlayerClass(),
-                            player.getHand().size(),
-                            2);
-                    // set hand
-                    resetHandView();
-                    setHand(player.getHand());
-                }
-            });
-        }
-        catch (PlayerNotFoundException err) {
-            // player not found, something is wrong. Maybe game wasn't inited correctly?
-            Log.w("main", err);
-        }
 
-        try {
-            viewModel.getOpponent().observe(this, new Observer<Player>() {
-                @Override
-                public void onChanged(@Nullable Player player) {
-                    // update opponent status
-                    if (player == null) {
-                        // don't set anything if player holder has no data
-                        return;
-                    }
-                    setStatus(
-                            player.getName(),
-                            player.getHP(),
-                            player.getAP(),
-                            player.getPlayerClass(),
-                            player.getHand().size(),
-                            1
-                    );
-                }
-            });
-        }
-        catch (PlayerNotFoundException err) {
-            // opponent not found, something is wrong. Maybe game wasn't inited correctly?
-            Log.w("main", err);
-        }
+        viewModel.getThisPlayer().observe(this, new Observer<Player>() {
+            @Override
+            public void onChanged(@Nullable Player player) {
+                // update player status
+                if (player == null) { return; }
+                setStatus(
+                        player.getName(),
+                        player.getHP(),
+                        player.getAP(),
+                        player.getPlayerClass(),
+                        player.getHand().size(),
+                        2);
+                // set hand
+                resetHandView();
+                setHand(player.getHand());
+                Log.i(TAG, "player info updated");
+            }
+        });
 
-        viewModel.getGameRuntime().getGameField().observe(this, new Observer<GameField>() {
+        viewModel.getOpponent().observe(this, new Observer<Player>() {
+            @Override
+            public void onChanged(@Nullable Player player) {
+                // update opponent status
+                if (player == null) {
+                    // don't set anything if player holder has no data
+                    return;
+                }
+                setStatus(
+                        player.getName(),
+                        player.getHP(),
+                        player.getAP(),
+                        player.getPlayerClass(),
+                        player.getHand().size(),
+                        1
+                );
+                Log.i(TAG, "opponent info updated");
+            }
+        });
+
+        viewModel.getGameField().observe(this, new Observer<GameField>() {
             @Override
             public void onChanged(@Nullable GameField gameField) {
                 if (gameField == null) { return; }
                 weather.setText(gameField.getWeather().getLabel());
-            }
-        });
-
-        viewModel.getGameRuntime().getCurrPlayer().observe(this, new Observer<Player>() {
-            @Override
-            public void onChanged(@Nullable Player player) {
-                if (player == null) { return; }
-                // check if curr player is the player on this client
-                try {
-                    if (player.equals(viewModel.getThisPlayer().getValue())) {
-                        // player's turn
-                        // todo update ui elements
-                    }
-                }
-                catch (PlayerNotFoundException err) {
-                    Log.w("main", err);
-                    // no player at this moment
-                }
             }
         });
     }
@@ -347,7 +322,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         });
     }
 
-    private void setHand(List<Card> cards) {
+    private void setHand(List<ElementCard> cards) {
         // NOTE: must be called after resetHandView()
         for (Card card : cards) {
             setCard(card);
@@ -480,22 +455,22 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
 
     @Override
     public void onTurnStart(TurnStartEvent e) {
-        try {
-            Log.i("main",
-                    String.format("TurnStartEvent, playerId: %s, receiver: %s",
-                            e.getSubjectId(), viewModel.getThisPlayer().getValue().getId()));
-            Log.i("main", "" + (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()));
-            if (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()) {
-                Log.i("main", "player's turn begins");
-                actionLog.setText("Action:\nNow it's your turn.");
-                combine.setEnabled(true);
-                use.setEnabled(true);
-                endTurn.setEnabled(true);
-            }
+        Log.i(TAG, String.format("TurnStartEvent, playerId: %s, receiverId: %s",
+                e.getSubjectId(), viewModel.getThisPlayer().getValue()));
+
+        if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
+            Log.i(TAG, "local player's turn");
+
+            actionLog.setText("Action:\nNow it's your turn.");
+            combine.setEnabled(true);
+            use.setEnabled(true);
+            endTurn.setEnabled(true);
         }
-        catch (PlayerNotFoundException err) {
-            Log.w("main", err);
-            // player doesn't exist when turn changes?
+        else {
+            actionLog.setText("Action:\nNow it's your opponent's turn.");
+            combine.setEnabled(false);
+            use.setEnabled(false);
+            endTurn.setEnabled(false);
         }
     }
 
@@ -512,22 +487,18 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
 
     @Override
     public void onGameReady() {
-        // start game
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // wait for 5 seconds to let data update finish?
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "Game ready");
-                        observeViewModel(viewModel);
-                        viewModel.start();
-                    }
-                }, 5000);
+        if (!isGameStarted) {
+            isGameStarted = true;
+            // start game
+            Log.i(TAG, "Game ready");
+            // called here to set up ui properly
+            // NOTE: shit solution here to call gameRuntime in UI
 
+            if (!((MultiGameViewModel) viewModel).isHost()) {
+                onTurnStart(new TurnStartEvent(viewModel.getGameRuntime().getCurrPlayer().getValue().getId()));
             }
-        });
-
+            viewModel.start();
+        }
     }
 }
+

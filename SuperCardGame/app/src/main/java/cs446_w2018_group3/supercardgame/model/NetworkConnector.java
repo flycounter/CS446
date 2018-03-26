@@ -83,7 +83,9 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                     payload = gson.toJson(e, PlayerUseCardEvent.class);
                     break;
                 case PLAYER_START_TURN:
-                    if (!mViewModel.isHost()) { return; }
+                    if (!mViewModel.isHost()) {
+                        return;
+                    }
                     payload = gson.toJson(e, TurnStartEvent.class);
                     break;
                 case PLAYER_END_TURN:
@@ -93,7 +95,9 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                     payload = gson.toJson(e, PlayerAddEvent.class);
                     break;
                 case GAME_END:
-                    if (!mViewModel.isHost()) { return; }
+                    if (!mViewModel.isHost()) {
+                        return;
+                    }
                     payload = gson.toJson(e, GameEndEvent.class);
                     break;
                 default:
@@ -103,7 +107,7 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
             sendable.sendMessage(gson.toJson(new PayloadInfo(PayloadInfo.Type.GAME_EVENT, e.getEventCode(), payload)));
 
         } catch (Exception err) {
-            Log.i(TAG, "failed to handle message: " + err);
+            Log.i(TAG, "failed to handle message: ", err);
         }
     }
 
@@ -181,14 +185,21 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                 break;
                 case SYNC_DATA:
                     if (mViewModel.isHost()) {
-                        // send sync data to client
+                        // message: sync data request
                         sendSyncData(mViewModel.getGameRuntime().getSyncData());
-                    }
-                    else {
-                        // sync data received from host
-                        mRemoteGameEventListener.onSyncDataReceived(gson.fromJson(payload.getPayload(), GameRuntimeData.class));
+                    } else {
+                        // message: sync data response
+                        // NOTE: need to swap local/remote in the sync data
+                        GameRuntimeData original = gson.fromJson(payload.getPayload(), GameRuntimeData.class);
+                        Log.i(TAG, "" + original);
+                        GameRuntimeData actual = new GameRuntimeData(
+                                original.getOtherPlayer(),
+                                original.getLocalPlayer(),
+                                original.getCurrPlayer(),
+                                original.getGameField(),
+                                original.getGameState());
+                        mRemoteGameEventListener.onSyncDataReceived(actual);
                         sendACK(PayloadInfo.Type.ACK_GAME_SYNC);
-                        mViewModel.onRemoteReady();
                     }
                     break;
                 case FIELD_DATA:
@@ -197,22 +208,22 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                 case PLAYER_DATA:
                     mRemoteGameEventListener.onPlayerDataReceived(gson.fromJson(payload.getPayload(), Player.class));
                     sendACK(PayloadInfo.Type.ACK_ADD_PLAYER);
+                    // NOTE: host should start the game and send sync message after game is inited (as state goes to TURN_START)
                     break;
                 case ACK_ADD_PLAYER:
                     // ACK_ADD_PLAYER received from host, request data sync
-                    requestSyncData();
+//                    requestSyncData();
                     break;
                 case ACK_GAME_SYNC:
-                    // client confirms game sync, start game
-                    mViewModel.onRemoteReady();
-
+                    // client confirms game sync
+                    break;
                 default:
                     // unknown event type
                     Log.w(TAG, "unknown message type: " + payloadType);
                     throw new UnknownMessageException();
             }
         } catch (Exception err) {
-            Log.i(TAG, "failed to handle message: " + err);
+            Log.i(TAG, "failed to handle message: ", err);
         }
     }
 }

@@ -16,6 +16,7 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.action
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
 /**
  * Created by JarvieK on 2018/3/25.
@@ -26,6 +27,8 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
 
     private final GameEventHandler mGameEventHandler;
     private LocalGameEventListener mLocalEventListener;
+    private MultiGameViewModel mViewModel;
+    private boolean onGameReadyNotified = false;
 
     public GameEventHandlerProxy() {
         mGameEventHandler = new GameEventHandler();
@@ -79,6 +82,8 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
         mGameEventHandler.bind(gameRuntime);
     }
 
+    public void bind(MultiGameViewModel viewModel) { mViewModel = viewModel; }
+
     @Override
     public void addStateEventListener(StateEventListener adapter) {
         mGameEventHandler.addStateEventListener(adapter);
@@ -120,6 +125,10 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
     @Override
     public void onSyncDataReceived(GameRuntimeData gameRuntimeData) {
         mGameEventHandler.getGameRuntime().replaceGameData(gameRuntimeData);
+        if (!onGameReadyNotified && mGameEventHandler.getGameRuntime().getState() == GameFSM.State.TURN_START) {
+            onGameReadyNotified = true;
+            mViewModel.onRemoteReady();
+        }
     }
 
     @Override
@@ -129,7 +138,7 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
         }
         catch(PlayerNotFoundException err) {
             Log.i(TAG, "player not found, adding as new player");
-            mGameEventHandler.getGameRuntime().addPlayer(player);
+            handlePlayerAddEvent(new PlayerAddEvent(player));
         }
     }
 

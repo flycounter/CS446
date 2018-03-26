@@ -9,7 +9,7 @@ import android.util.Log;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.runtime.IGameEventHandler;
@@ -59,12 +59,11 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         try {
             gameRuntime.start();
             gameRuntime.turnStart(); // starts the first player's turn
-        }
-        catch (PlayerCanNotEnterTurnException err) {
+        } catch (PlayerCanNotEnterTurnException err) {
             // NOTE: same code as in gameEventHandler.handlePlayerEndTurnEvent(PlayerEndTurnEvent e)
             // TODO: add method gameRuntime.getWinner()
             Player winner = null;
-            for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+            for (LiveData<Player> playerHolder : gameRuntime.getPlayers()) {
                 if (playerHolder.getValue().getHP() > 0) {
                     winner = playerHolder.getValue();
                 }
@@ -78,12 +77,12 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
             // game end
             gameEventHandler.handleGameEndEvent(new GameEndEvent(winner));
         }
-
-
     }
 
     // used by activity / fragments to get observables
-    public final GameRuntime getGameRuntime() { return gameRuntime; }
+    public final GameRuntime getGameRuntime() {
+        return gameRuntime;
+    }
 
     @Override
     public void combineCards(List<Integer> cardIds) {
@@ -113,24 +112,20 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         // TODO: notify ui that player's turn starts
     }
 
-    // called by view to add player to game
-    public void addPlayer(int id, String name) {
-        gameRuntime.addPlayer(new Player(id, name));
-    }
-
-    public LiveData<Player> getThisPlayer() throws PlayerNotFoundException {
+    public LiveData<Player> getThisPlayer() {
         // returns player that belongs to app user
-        return gameRuntime.getPlayer(player.getId());
+        return gameRuntime.getLocalPlayer();
     }
 
-    public LiveData<Player> getOpponent() throws PlayerNotFoundException {
-        try {
-            return gameRuntime.getPlayers().get(1);
-        }
-        catch (ArrayIndexOutOfBoundsException err) {
-            throw new PlayerNotFoundException();
-        }
+    public LiveData<Player> getOpponent() {
+        return gameRuntime.getOtherPlayer();
     }
+
+    public LiveData<Player> getCurrPlayer() {
+        return gameRuntime.getCurrPlayer();
+    }
+
+    public LiveData<GameField> getGameField() { return gameRuntime.getGameField(); }
 
     public interface GameReadyCallback {
         void onGameReady();

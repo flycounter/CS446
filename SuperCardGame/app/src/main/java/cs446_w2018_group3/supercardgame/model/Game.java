@@ -10,7 +10,6 @@ import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.CardNotF
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.ElementCardsCanNotCombineException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.model.dto.GameRuntimeData;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
@@ -42,14 +41,14 @@ public class Game {
             Player player = playerHolder.getValue();
             player.setHP(10);
             player.setAP(0);
-            List<Card> deck = player.getDeck();
+            List<ElementCard> deck = player.getDeck();
             for( int i = 0; i < 6; i++ ) {
-                deck.add( Card.createNewCard( Translate.CardType.Water ) );
-                deck.add( Card.createNewCard( Translate.CardType.Water ) );
-                deck.add( Card.createNewCard( Translate.CardType.Water ) );
-                deck.add( Card.createNewCard( Translate.CardType.Fire ) );
-                deck.add( Card.createNewCard( Translate.CardType.Air ) );
-                deck.add( Card.createNewCard( Translate.CardType.Dirt ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Fire ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Air ) );
+                deck.add( ElementCard.createNewCard( Translate.CardType.Dirt ) );
             }
 
             // update liveData
@@ -96,7 +95,7 @@ public class Game {
         player.addAP(PLAYER_AP_REGEN_PER_TURN);
 
         // draw cards from player's deck
-        List<Card> deck = player.getDeck();
+        List<ElementCard> deck = player.getDeck();
         Log.i(TAG, String.format("deck size: %d", player.getDeck().size()));
         for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
 //            Log.i(TAG, "drawing card from deck");

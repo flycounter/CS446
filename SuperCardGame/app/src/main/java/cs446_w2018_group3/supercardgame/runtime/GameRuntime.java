@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidStateException;
@@ -25,28 +26,20 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.Player
  */
 
 public class GameRuntime implements GameStateControl {
-    private final GameFSM fsm;
-    private final Game gameModel;
+    private static final String TAG = GameRuntime.class.getName();
+
     private IGameEventHandler gameEventHandler;
 
     // game objects
-    private List<MutableLiveData<Player>> players;
-    private MutableLiveData<Player> currPlayer; // NOTE: currPlayer is updated when turn changes
-    private MutableLiveData<GameField> gameField;
+    private final GameFSM fsm = new GameFSM();
+    private final Game gameModel = new Game();
+    private final MutableLiveData<Player> localPlayer = new MutableLiveData<>();
+    private final MutableLiveData<Player> otherPlayer = new MutableLiveData<>();
+    private final MutableLiveData<GameField> mGameField = new MutableLiveData<>();
+    private final MutableLiveData<Player> currPlayer = new MutableLiveData<>(); // NOTE: currPlayer is updated when turn changes
 
-    // references
-    private int currPlayerIdx;
 
     public GameRuntime() {
-        fsm = new GameFSM();
-        gameModel = new Game();
-
-        players = new ArrayList<>();
-        currPlayer = new MutableLiveData<>();
-        currPlayerIdx = 0;
-
-        gameField = new MutableLiveData<>();
-
         gameModel.bind(this);
     }
 
@@ -56,137 +49,124 @@ public class GameRuntime implements GameStateControl {
         gameEventHandler.bind(this);
     }
 
+    public void setGameStateChangeListener(GameFSM.GameStateChangeListener gameStateChangeListener) {
+        fsm.setGameStateChangeListener(gameStateChangeListener);
+    }
+
     // ================ getters & setters
 
-    public void replaceGameData(GameRuntimeData gameRuntimeData) {
-        for (Player player : gameRuntimeData.getPlayers()) {
-            MutableLiveData<Player> playerHolder = getMutablePlayer(player.getId());
-            if (playerHolder != null) {
-                if (Looper.myLooper() == Looper.getMainLooper())
-                    playerHolder.setValue(player);
-                else playerHolder.postValue(player);
-            }
-        }
 
-        if (Looper.myLooper() == Looper.getMainLooper())
-            gameField.setValue(gameRuntimeData.getGameField());
-        else gameField.postValue(gameRuntimeData.getGameField());
+    public LiveData<Player> getLocalPlayer() {
+        return localPlayer;
+    }
 
+    public LiveData<Player> getOtherPlayer() {
+        return otherPlayer;
+    }
+
+    synchronized void replaceGameData(GameRuntimeData gameRuntimeData) {
+        updateLocalPlayer(gameRuntimeData.getLocalPlayer());
+        updateOtherPlayer(gameRuntimeData.getOtherPlayer());
+        updateCurrPlayer(gameRuntimeData.getCurrPlayer());
         updateGameField(gameRuntimeData.getGameField());
+        fsm.setState(gameRuntimeData.getGameState());
+        Log.i(TAG, "game runtime data refreshed");
     }
 
-    public void addPlayer(Player player) {
-        // TODO: check whether player is already added
-        MutableLiveData<Player> mPlayer = new MutableLiveData<>();
+    void updateLocalPlayer(Player player) {
         if (Looper.myLooper() == Looper.getMainLooper())
-            mPlayer.setValue(player);
-        else mPlayer.postValue(player);
-        players.add(mPlayer);
-        Log.i("GameRuntime", String.format("player added: %s", player.getName()));
+            localPlayer.setValue(player);
+        else localPlayer.postValue(player);
     }
 
-    private MutableLiveData<Player> getMutableCurrPlayer() {
-        return currPlayer;
+    void updateOtherPlayer(Player player) {
+        if (Looper.myLooper() == Looper.getMainLooper())
+            otherPlayer.setValue(player);
+        else otherPlayer.postValue(player);
     }
 
-    private MutableLiveData<Player> getMutablePlayer(int playerId) {
-        for (MutableLiveData<Player> player : players) {
-            if (player.getValue().getId() == playerId) {
-                return player;
-            }
-        }
-
-        return null;
-    }
-
-    private List<MutableLiveData<Player>> getMutablePlayers() {
-        return players;
-    }
-
-    private MutableLiveData<GameField> getMutableGameField() {
-        return gameField;
+    void updateCurrPlayer(Player player) {
+        if (Looper.myLooper() == Looper.getMainLooper())
+            currPlayer.setValue(player);
+        else currPlayer.postValue(player);
     }
 
     // methods for viewmodel
     public LiveData<Player> getPlayer(int playerId) {
-        return getMutablePlayer(playerId);
+        if (localPlayer.getValue() != null && localPlayer.getValue().getId() == playerId) { return localPlayer; }
+        if (otherPlayer.getValue() != null && otherPlayer.getValue().getId() == playerId) { return otherPlayer; }
+        return null;
     }
 
     public LiveData<Player> getCurrPlayer() {
-        return getMutableCurrPlayer();
+        return currPlayer;
     }
 
     public List<LiveData<Player>> getPlayers() {
-        List<LiveData<Player>> list = new ArrayList<>();
-        list.addAll(players);
-        return list;
+        return Arrays.asList(localPlayer, otherPlayer);
     }
 
     public void setNextPlayer() {
-        currPlayerIdx = (currPlayerIdx + 1) % players.size();
+        if (currPlayer.getValue() == null) {
+            updateCurrPlayer(localPlayer.getValue());
+        }
+        else if (currPlayer.getValue() == localPlayer.getValue()) {
+            updateCurrPlayer(localPlayer.getValue());
+        }
+        else {
+            updateCurrPlayer(otherPlayer.getValue());
+        }
 
-        if (Looper.myLooper() == Looper.getMainLooper())
-            currPlayer.setValue(players.get(currPlayerIdx).getValue());
-        else currPlayer.postValue(players.get(currPlayerIdx).getValue());
-
-        Log.i("main", "next player: " + currPlayer.getValue().getName());
+        Log.i(TAG, "next player: " + currPlayer.getValue().getName());
     }
 
     private void setNextPlayer(Player player) throws PlayerNotFoundException {
-        int playerIdx = 0;
-
-        for (; playerIdx < players.size(); playerIdx++) {
-            if (players.get(playerIdx).getValue().getId() == player.getId()) {
-                break;
-            }
-        }
-
-        if (playerIdx == players.size()) {
-            // player not found
-            throw new PlayerNotFoundException();
-        }
-
-        currPlayerIdx = playerIdx;
-        if (Looper.myLooper() == Looper.getMainLooper()) currPlayer.setValue(player); else currPlayer.postValue(player);
-        Log.i("main", "next player: " + currPlayer.getValue().getName());
-    }
-
-    public void updatePlayer(Player player) throws PlayerNotFoundException {
-        for (MutableLiveData<Player> mPlayer : players) {
-            if (player.equals(mPlayer.getValue())) {
-                if (Looper.myLooper() == Looper.getMainLooper()) mPlayer.setValue(player); else mPlayer.postValue(player);
-                return;
-            }
+        if (player != null && (player == localPlayer.getValue() || player == otherPlayer.getValue())) {
+            updateCurrPlayer(player);
+            return;
         }
 
         // player not found
         throw new PlayerNotFoundException();
     }
 
+    public void updatePlayer(Player player) throws PlayerNotFoundException {
+        if (player == null) {
+            throw new PlayerNotFoundException();
+        }
+        if (player == localPlayer.getValue()) {
+            updateLocalPlayer(player);
+        }
+        else if (player == otherPlayer.getValue()) {
+            updateOtherPlayer(player);
+        }
+        else {
+            // player not found
+            throw new PlayerNotFoundException();
+        }
+    }
+
     public LiveData<GameField> getGameField() {
-        return getMutableGameField();
+        return mGameField;
     }
 
     public void updateGameField(GameField gameField) {
         if (Looper.myLooper() == Looper.getMainLooper())
-            getMutableGameField().setValue(gameField);
-        else getMutableGameField().postValue(gameField);
+            mGameField.setValue(gameField);
+        else mGameField.postValue(gameField);
     }
 
     Game getGameModel() {
         return gameModel;
     }
 
-    // NOTE: getFSM() is only accessible within package (for GameEventHandler to get state)
-    GameFSM getFSM() {
-        return fsm;
+    public GameRuntimeData getSyncData() {
+        return new GameRuntimeData(localPlayer.getValue(), otherPlayer.getValue(), currPlayer.getValue(), mGameField.getValue(), fsm.getState());
     }
 
-    public GameRuntimeData getSyncData() {
-        List<Player> playerList = new ArrayList<>();
-        List<LiveData<Player>> _playerList = getPlayers();
-        for (LiveData<Player> p: _playerList) { playerList.add(p.getValue()); }
-        return new GameRuntimeData(playerList, getGameField().getValue());
+    @Override
+    public GameFSM.State getState() {
+        return fsm.getState();
     }
 
     // ================ game control
@@ -196,35 +176,30 @@ public class GameRuntime implements GameStateControl {
             // state check
             if (fsm.getState() != GameFSM.State.IDLE) {
                 // TODO: start game during a game?
-                Log.w("main", "attempting to start game during a game; state: " + fsm.getState());
+                Log.w(TAG, "game already started; state: " + fsm.getState());
                 return;
             }
 
-            if (players.size() < 2) {
-                // need more than 2 players to start?
-                // ...
+            if (localPlayer.getValue() == null || otherPlayer.getValue() == null) {
+                Log.w(TAG, "cannot start game with one of the player being null");
                 return;
             }
 
             try {
                 // assume the first player joined takes the first turn
-                setNextPlayer();
+                setNextPlayer(localPlayer.getValue());
                 gameModel.init();
-                setNextPlayer(players.get(0).getValue());
-
+                setNextPlayer(localPlayer.getValue());
 
                 // state update
                 fsm.nextState(); // goes to TURN_START
-                Log.i("GameRuntime", "game started");
+                Log.i(TAG, "game started");
             } catch (PlayerNotFoundException err) {
-                // TODO: logs
-                Log.w("main", err);
+                Log.w(TAG, err);
             }
-
-
         } catch (InvalidStateException err) {
             // TODO: logs
-            Log.w("main", err);
+            Log.w(TAG, err);
         }
     }
 
@@ -241,8 +216,8 @@ public class GameRuntime implements GameStateControl {
             // state update
             fsm.nextState();
         } catch (PlayerNotFoundException | InvalidStateException err) {
-            Log.w("main", err);
-        }
+            Log.w(TAG, err);
+    }
     }
 
     @Override
@@ -253,7 +228,7 @@ public class GameRuntime implements GameStateControl {
             fsm.nextState(); // goes to TURN_START
         } catch (PlayerNotFoundException | InvalidStateException err) {
             // TODO: logs
-            Log.w("main", err);
+            Log.w(TAG, err);
         }
     }
 
@@ -295,6 +270,7 @@ public class GameRuntime implements GameStateControl {
             }
         } else {
             // unsupported player event
+            Log.w(TAG, "unsupported player event: " + e);
         }
     }
 }

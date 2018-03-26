@@ -136,7 +136,15 @@ public class GameEventHandler implements IGameEventHandler {
     public void handlePlayerAddEvent(PlayerAddEvent e) {
         try {
             gameRuntime.checkPlayerEventState(e);
-            gameRuntime.addPlayer(e.getPlayer());
+            if (gameRuntime.getLocalPlayer().getValue() == null) {
+                gameRuntime.updateLocalPlayer(e.getPlayer());
+            }
+            else if (gameRuntime.getOtherPlayer().getValue() == null) {
+                gameRuntime.updateOtherPlayer(e.getPlayer());
+            }
+            else {
+                Log.w(TAG, "cannot add more players: " + e.getPlayer());
+            }
         }
         catch (InvalidStateException | PlayerActionNotAllowed err) {
             Log.w(TAG, err);
