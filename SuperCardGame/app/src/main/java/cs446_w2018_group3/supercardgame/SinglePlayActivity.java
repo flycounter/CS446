@@ -3,6 +3,7 @@ package cs446_w2018_group3.supercardgame;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -31,6 +32,7 @@ import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
+
 
 public class SinglePlayActivity extends AppCompatActivity {
     //widgets
