@@ -28,7 +28,7 @@
         import java.util.List;
         import java.util.Map;
 
-        import cs446_w2018_group3.supercardgame.model.Player;
+        import cs446_w2018_group3.supercardgame.model.player.Player;
         import cs446_w2018_group3.supercardgame.model.Translate;
         import cs446_w2018_group3.supercardgame.model.cards.Card;
         import cs446_w2018_group3.supercardgame.model.field.GameField;
