@@ -14,7 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "MyUser.db";
     public static final int DATABASE_VERSION = 1;
     public static final String USER_TABLE_NAME = "deck";
-    public static final String DECK_COLUMN_ID = "id";
+    //public static final String DECK_COLUMN_ID = "id";
     public static final String DECK_COLUMN_GOLD = "gold";
     public static final String DECK_COLUMN_WATER = "water";
     public static final String DECK_COLUMN_FIRE = "fire";
@@ -33,7 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table deck " +
-                "(id integer primary key, gold integer, water integer, fire integer, air integer, dirt integer, maxWater integer, maxFire integer, maxAir integer, maxEarth, integer)"
+                "(gold integer, water integer, fire integer, air integer, dirt integer, maxWater integer, maxFire integer, maxAir integer, maxEarth, integer)"
         );
         init();
     }
@@ -58,29 +58,37 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("deck", null, contentValues);
     }
 
-    public Cursor getData(int id) {
+    public Cursor getData() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from deck where id="+id+"", null);
+        Cursor res = db.rawQuery("select * from deck", null);
         return res;
     }
 
-    public boolean updateDeck(Integer id, int water, int fire, int air, int dirt) {
+    public boolean updateDeck(int water, int fire, int air, int dirt) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("water", water);
         contentValues.put("fire", fire);
         contentValues.put("air", air);
         contentValues.put("dirt", dirt);
-        db.update("deck", contentValues, "id = ?", new String[]{ (Integer.toString(id)) });
+        db.update("deck", contentValues, null, null);
         return true;
     }
 
-    public boolean updateMaxCard(Integer id, String cardType, int gold, int num) {
+    public boolean updateMaxCard(String cardType, int gold, int num) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("gold", gold);
         contentValues.put(cardType, num);
-        db.update("deck", contentValues, "id = ?", new String[]{ (Integer.toString(id)) });
+        db.update("deck", contentValues, null, null);
+        return true;
+    }
+
+    public boolean updateGold(int gold) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("gold", gold);
+        db.update("deck", contentValues, null, null);
         return true;
     }
 
