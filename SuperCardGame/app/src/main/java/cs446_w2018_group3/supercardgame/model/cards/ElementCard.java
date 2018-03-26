@@ -2,7 +2,6 @@ package cs446_w2018_group3.supercardgame.model.cards;
 
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.buffs.*;
 
 /**
  * Created by yandong on 2018-02-25.
@@ -32,8 +31,6 @@ public abstract class ElementCard extends Card {
     }
 
     public static int calculateDamage (int damage, Player object) {
-
-
         return Math.max(0, damage);
     }
 

@@ -1,6 +1,5 @@
 package cs446_w2018_group3.supercardgame.model.buffs;
 
-import cs446_w2018_group3.supercardgame.util.events.payload.BuffPayload;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -36,9 +35,9 @@ public abstract class Buff {
         return remainingTurns;
     }
 
-    public BuffPayload getBuffInfo() {
-        return new BuffPayload(buffId, buffType);
-    }
+//    public BuffPayload getBuffInfo() {
+//        return new BuffPayload(buffId, buffType);
+//    }
 
     public abstract int applyBuff();
 
