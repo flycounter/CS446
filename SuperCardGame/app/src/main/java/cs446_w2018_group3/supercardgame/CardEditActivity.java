@@ -185,7 +185,7 @@ public class CardEditActivity extends AppCompatActivity {
        cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                PopupInfo popupInfo = new PopupInfo(CardEditActivity.this,CardDataMap.get(checkboxId));
+                PopupInfo popupInfo = new PopupInfo(CardEditActivity.this,card.getCardType());
                 popupInfo.showPopup(new View(CardEditActivity.this));
             }
         });

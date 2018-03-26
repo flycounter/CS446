@@ -327,7 +327,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                PopupInfo popupInfo = new PopupInfo(SinglePlayActivity.this,CardDataMap.get(checkboxId));
+                PopupInfo popupInfo = new PopupInfo(SinglePlayActivity.this,card.getCardType());
                 popupInfo.showPopup(new View(SinglePlayActivity.this));
             }
         });

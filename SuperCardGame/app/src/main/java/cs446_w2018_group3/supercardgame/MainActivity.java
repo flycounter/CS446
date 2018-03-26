@@ -59,9 +59,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardShopActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
         //demo code
-        shop.setEnabled(false);
+
         leaderBoard.setEnabled(false);
 
     }

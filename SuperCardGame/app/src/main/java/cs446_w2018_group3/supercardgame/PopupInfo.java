@@ -10,17 +10,20 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.model.cards.Card;
+
 /**
  * Created by GARY on 2018-03-23.
  */
 
 public class PopupInfo extends PopupWindow {
     TextView info;
-    public PopupInfo(Activity context,int CardId){
+    public PopupInfo(Activity context,Translate.CardType cardType){
         View contentView = LayoutInflater.from(context).inflate(R.layout.popup_info,null);
         this.setContentView(contentView);
-        this.setWidth(800);
-        this.setHeight(800);
+        this.setWidth(1000);
+        this.setHeight(1000);
         this.setFocusable(true);
         this.setOutsideTouchable(true);
         this.update();
@@ -29,7 +32,7 @@ public class PopupInfo extends PopupWindow {
         //conncet
         info = contentView.findViewById(R.id.CardInfo);
         info.setTextSize(26);
-        String infoText ="no info now";// getinfo from by cardId;
+        String infoText = Card.getInfo(cardType);
         info.setText(infoText);
         info.setTextColor(0xffffffff);
     }
