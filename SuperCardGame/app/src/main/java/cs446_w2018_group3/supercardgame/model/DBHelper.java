@@ -19,11 +19,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DECK_COLUMN_WATER = "water";
     public static final String DECK_COLUMN_FIRE = "fire";
     public static final String DECK_COLUMN_AIR = "air";
-    public static final String DECK_COLUMN_EARTH = "dirt";
+    public static final String DECK_COLUMN_DIRT = "dirt";
     public static final String DECK_COLUMN_MAX_WATER = "max_water";
     public static final String DECK_COLUMN_MAX_FIRE = "max_fire";
     public static final String DECK_COLUMN_MAX_AIR = "max_air";
-    public static final String DECK_COLUMN_MAX_EARTH = "max_earth";
+    public static final String DECK_COLUMN_MAX_DIRT = "max_dirt";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("max_water", 5);
         contentValues.put("max_fire", 5);
         contentValues.put("max_air", 5);
-        contentValues.put("max_earth", 5);
+        contentValues.put("max_dirt", 5);
         db.insert("deck", null, contentValues);
     }
 
