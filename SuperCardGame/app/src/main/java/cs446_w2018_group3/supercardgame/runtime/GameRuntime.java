@@ -5,7 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.os.Looper;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,25 +27,17 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.Player
 public class GameRuntime implements GameStateControl {
     private static final String TAG = GameRuntime.class.getName();
 
-    private IGameEventHandler gameEventHandler;
-
     // game objects
     private final GameFSM fsm = new GameFSM();
     private final Game gameModel = new Game();
+    private Player currPlayer;
     private final MutableLiveData<Player> localPlayer = new MutableLiveData<>();
     private final MutableLiveData<Player> otherPlayer = new MutableLiveData<>();
     private final MutableLiveData<GameField> mGameField = new MutableLiveData<>();
-    private final MutableLiveData<Player> currPlayer = new MutableLiveData<>(); // NOTE: currPlayer is updated when turn changes
 
 
     public GameRuntime() {
         gameModel.bind(this);
-    }
-
-    public void bind(IGameEventHandler gameEventHandler) {
-        // two way binding
-        this.gameEventHandler = gameEventHandler;
-        gameEventHandler.bind(this);
     }
 
     public void setGameStateChangeListener(GameFSM.GameStateChangeListener gameStateChangeListener) {
@@ -85,10 +76,9 @@ public class GameRuntime implements GameStateControl {
         else otherPlayer.postValue(player);
     }
 
-    void updateCurrPlayer(Player player) {
-        if (Looper.myLooper() == Looper.getMainLooper())
-            currPlayer.setValue(player);
-        else currPlayer.postValue(player);
+    private void updateCurrPlayer(Player player) {
+        // NOTE: not doing validation
+        currPlayer = player;
     }
 
     // methods for viewmodel
@@ -98,7 +88,7 @@ public class GameRuntime implements GameStateControl {
         return null;
     }
 
-    public LiveData<Player> getCurrPlayer() {
+    public Player getCurrPlayer() {
         return currPlayer;
     }
 
@@ -107,17 +97,18 @@ public class GameRuntime implements GameStateControl {
     }
 
     public void setNextPlayer() {
-        if (currPlayer.getValue() == null) {
+        Log.i(TAG, String.format("curr player: %s; local player: %s; remote player: %s", currPlayer, localPlayer.getValue(), otherPlayer.getValue()));
+        if (currPlayer == null) {
             updateCurrPlayer(localPlayer.getValue());
         }
-        else if (currPlayer.getValue() == localPlayer.getValue()) {
-            updateCurrPlayer(localPlayer.getValue());
-        }
-        else {
+        else if (currPlayer == localPlayer.getValue()) {
             updateCurrPlayer(otherPlayer.getValue());
         }
+        else {
+            updateCurrPlayer(localPlayer.getValue());
+        }
 
-        Log.i(TAG, "next player: " + currPlayer.getValue().getName());
+        Log.i(TAG, "next player: " + currPlayer.getName());
     }
 
     private void setNextPlayer(Player player) throws PlayerNotFoundException {
@@ -161,7 +152,7 @@ public class GameRuntime implements GameStateControl {
     }
 
     public GameRuntimeData getSyncData() {
-        return new GameRuntimeData(localPlayer.getValue(), otherPlayer.getValue(), currPlayer.getValue(), mGameField.getValue(), fsm.getState());
+        return new GameRuntimeData(localPlayer.getValue(), otherPlayer.getValue(), currPlayer, mGameField.getValue(), fsm.getState());
     }
 
     @Override
@@ -211,7 +202,7 @@ public class GameRuntime implements GameStateControl {
                 throw new InvalidStateException(fsm.getState());
             }
 
-            gameModel.playerTurnStart(getCurrPlayer().getValue());
+            gameModel.playerTurnStart(getCurrPlayer());
 
             // state update
             fsm.nextState();
@@ -224,7 +215,7 @@ public class GameRuntime implements GameStateControl {
     public void turnEnd() { // called by the player side (e.g. human players or a bot)
         try {
             fsm.nextState(); // goes to TURN_END
-            gameModel.playerTurnEnd(getCurrPlayer().getValue());
+            gameModel.playerTurnEnd(getCurrPlayer());
             fsm.nextState(); // goes to TURN_START
         } catch (PlayerNotFoundException | InvalidStateException err) {
             // TODO: logs
@@ -234,13 +225,10 @@ public class GameRuntime implements GameStateControl {
 
     void checkPlayerEventState(PlayerEvent e) throws PlayerActionNotAllowed, InvalidStateException {
         if (e instanceof ActionEvent) {
-            if (getCurrPlayer().getValue() == null) {
+            if (getCurrPlayer() == null) {
                 throw new PlayerActionNotAllowed();
             }
-            if (!getCurrPlayer()
-                    .getValue()
-                    .equals(
-                            getPlayer(e.getSubjectId()).getValue())) {
+            if (!getCurrPlayer().equals(getPlayer(e.getSubjectId()).getValue())) {
                 throw new PlayerActionNotAllowed();
             }
 

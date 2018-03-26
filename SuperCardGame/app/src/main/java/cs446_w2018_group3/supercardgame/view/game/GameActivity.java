@@ -458,31 +458,42 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         Log.i(TAG, String.format("TurnStartEvent, playerId: %s, receiverId: %s",
                 e.getSubjectId(), viewModel.getThisPlayer().getValue()));
 
-        if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
-            Log.i(TAG, "local player's turn");
-
-            actionLog.setText("Action:\nNow it's your turn.");
-            combine.setEnabled(true);
-            use.setEnabled(true);
-            endTurn.setEnabled(true);
-        }
-        else {
-            actionLog.setText("Action:\nNow it's your opponent's turn.");
-            combine.setEnabled(false);
-            use.setEnabled(false);
-            endTurn.setEnabled(false);
-        }
+        // android.util.AndroidRuntimeException: Animators may only be run on Looper threads
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
+                    Log.i(TAG, "local player's turn");
+                    actionLog.setText("Action:\nNow it's your turn.");
+                    combine.setEnabled(true);
+                    use.setEnabled(true);
+                    endTurn.setEnabled(true);
+                }
+                else {
+                    actionLog.setText("Action:\nNow it's your opponent's turn.");
+                    combine.setEnabled(false);
+                    use.setEnabled(false);
+                    endTurn.setEnabled(false);
+                }
+            }
+        });
     }
 
     @Override
     public void onGameEnd(GameEndEvent e) {
-        Player winner = e.getWinner();
-        String winnerName = (winner == null) ? "null" : winner.getName();
-        actionLog.setText(String.format("Game end. winner is %s", winnerName));
-        combine.setEnabled(false);
-        use.setEnabled(false);
-        endTurn.setEnabled(false);
-        surrender.setEnabled(false);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Player winner = e.getWinner();
+                String winnerName = (winner == null) ? "null" : winner.getName();
+                actionLog.setText(String.format("Game end. winner is %s", winnerName));
+                combine.setEnabled(false);
+                use.setEnabled(false);
+                endTurn.setEnabled(false);
+                surrender.setEnabled(false);
+            }
+        });
+
     }
 
     @Override
@@ -495,7 +506,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             // NOTE: shit solution here to call gameRuntime in UI
 
             if (!((MultiGameViewModel) viewModel).isHost()) {
-                onTurnStart(new TurnStartEvent(viewModel.getGameRuntime().getCurrPlayer().getValue().getId()));
+                onTurnStart(new TurnStartEvent(viewModel.getGameRuntime().getCurrPlayer().getId()));
             }
             viewModel.start();
         }

@@ -92,7 +92,7 @@ public class GameEventHandler implements IGameEventHandler {
             gameRuntime.checkPlayerEventState(_e);
             gameRuntime.turnEnd();
             gameRuntime.turnStart();
-            handleTurnStartEvent(new TurnStartEvent(gameRuntime.getCurrPlayer().getValue().getId()));
+            handleTurnStartEvent(new TurnStartEvent(gameRuntime.getCurrPlayer().getId()));
         }
         catch (InvalidStateException | PlayerActionException err) {
             if (err instanceof PlayerCanNotEnterTurnException) {

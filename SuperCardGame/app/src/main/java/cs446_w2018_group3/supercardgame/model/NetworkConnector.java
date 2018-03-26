@@ -19,11 +19,13 @@ import cs446_w2018_group3.supercardgame.network.Connection.IMessageConnector;
 import cs446_w2018_group3.supercardgame.network.Connection.Sendable;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.LocalGameEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.ActionEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.GameEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
@@ -66,7 +68,18 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
 
     @Override
     public void onGameEvent(GameEvent e) {
-        sendGameEvent(e);
+        if (!mViewModel.isHost() && e instanceof ActionEvent) {
+            // action event from client
+            sendGameEvent(e);
+        }
+        else {
+            // host
+            if (e instanceof StateEvent) {
+                sendGameEvent(e);
+            }
+
+            sendSyncData(mViewModel.getGameRuntime().getSyncData());
+        }
     }
 
     @Override

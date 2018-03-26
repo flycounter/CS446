@@ -14,7 +14,6 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.Player
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
-import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
@@ -22,16 +21,15 @@ import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
  * Created by JarvieK on 2018/3/25.
  */
 
-public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEventListener {
-    private static final String TAG = GameEventHandlerProxy.class.getName();
+public class MultiGameEventHandler extends GameEventHandler implements RemoteGameEventListener {
+    private static final String TAG = MultiGameEventHandler.class.getName();
 
-    private final GameEventHandler mGameEventHandler;
     private LocalGameEventListener mLocalEventListener;
     private MultiGameViewModel mViewModel;
     private boolean onGameReadyNotified = false;
 
-    public GameEventHandlerProxy() {
-        mGameEventHandler = new GameEventHandler();
+    public MultiGameEventHandler() {
+
     }
 
     private void dispatchGameEvent(GameEvent e) {
@@ -43,50 +41,38 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
 
     @Override
     public void handlePlayerUseCardEvent(PlayerUseCardEvent e) {
-        mGameEventHandler.handlePlayerUseCardEvent(e);
+        super.handlePlayerUseCardEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerCombineElementEvent(PlayerCombineElementEvent e) {
-        mGameEventHandler.handlePlayerCombineElementEvent(e);
+        super.handlePlayerCombineElementEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerEndTurnEvent(PlayerEndTurnEvent e) {
-        mGameEventHandler.handlePlayerEndTurnEvent(e);
+        super.handlePlayerEndTurnEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handleTurnStartEvent(TurnStartEvent e) {
-        mGameEventHandler.handleTurnStartEvent(e);
+        super.handleTurnStartEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handleGameEndEvent(GameEndEvent e) {
-        mGameEventHandler.handleGameEndEvent(e);
+        super.handleGameEndEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerAddEvent(PlayerAddEvent e) {
-        mGameEventHandler.handlePlayerAddEvent(e);
+        super.handlePlayerAddEvent(e);
         dispatchGameEvent(e);
-    }
-
-    @Override
-    public void bind(GameRuntime gameRuntime) {
-        mGameEventHandler.bind(gameRuntime);
-    }
-
-    public void bind(MultiGameViewModel viewModel) { mViewModel = viewModel; }
-
-    @Override
-    public void addStateEventListener(StateEventListener adapter) {
-        mGameEventHandler.addStateEventListener(adapter);
     }
 
     public void setLocalGameEventListener(LocalGameEventListener listener) {
@@ -99,22 +85,22 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
             // TODO: if GameEventHandler can handle GameEvent instead of the concrete events,
             // this code can be simpler and less error prone
             case PLAYER_COMBINE_ELEMENT:
-                handlePlayerCombineElementEvent((PlayerCombineElementEvent) e);
+                super.handlePlayerCombineElementEvent((PlayerCombineElementEvent) e);
                 break;
             case PLAYER_USE_CARD:
-                handlePlayerUseCardEvent((PlayerUseCardEvent) e);
+                super.handlePlayerUseCardEvent((PlayerUseCardEvent) e);
                 break;
             case PLAYER_START_TURN:
-                handleTurnStartEvent((TurnStartEvent) e);
+                super.handleTurnStartEvent((TurnStartEvent) e);
                 break;
             case PLAYER_END_TURN:
-                handlePlayerEndTurnEvent((PlayerEndTurnEvent) e);
+                super.handlePlayerEndTurnEvent((PlayerEndTurnEvent) e);
                 break;
             case PLAYER_ADD:
-                handlePlayerAddEvent((PlayerAddEvent) e);
+                super.handlePlayerAddEvent((PlayerAddEvent) e);
                 break;
             case GAME_END:
-                handleGameEndEvent((GameEndEvent) e);
+                super.handleGameEndEvent((GameEndEvent) e);
                 break;
             default:
                 // unknown event
@@ -124,17 +110,18 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
 
     @Override
     public void onSyncDataReceived(GameRuntimeData gameRuntimeData) {
-        mGameEventHandler.getGameRuntime().replaceGameData(gameRuntimeData);
-        if (!onGameReadyNotified && mGameEventHandler.getGameRuntime().getState() == GameFSM.State.TURN_START) {
-            onGameReadyNotified = true;
-            mViewModel.onRemoteReady();
-        }
+        // used by client only
+        getGameRuntime().replaceGameData(gameRuntimeData);
+//        if (!onGameReadyNotified && getGameRuntime().getState() == GameFSM.State.TURN_START) {
+//            onGameReadyNotified = true;
+//            mViewModel.onRemoteReady();
+//        }
     }
 
     @Override
     public void onPlayerDataReceived(Player player) {
         try {
-            mGameEventHandler.getGameRuntime().updatePlayer(player);
+            getGameRuntime().updatePlayer(player);
         }
         catch(PlayerNotFoundException err) {
             Log.i(TAG, "player not found, adding as new player");
@@ -144,6 +131,7 @@ public class GameEventHandlerProxy implements IGameEventHandler, RemoteGameEvent
 
     @Override
     public void onFieldDataReceived(GameField gameField) {
-        mGameEventHandler.getGameRuntime().updateGameField(gameField);
+        Log.e(TAG, "not implemented!");
+//        getGameRuntime().updateGameField(gameField);
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import cs446_w2018_group3.supercardgame.model.bot.Bot;
 import cs446_w2018_group3.supercardgame.model.player.AIPlayer;
 import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
+import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 
@@ -20,12 +21,13 @@ public class SingleGameViewModel extends GameViewModel {
     public SingleGameViewModel(Application application) {
         super(application);
         gameEventHandler = new GameEventHandler();
-        gameRuntime.bind(gameEventHandler);
+        gameEventHandler.bind(gameRuntime);
     }
 
     @Override
     public void init(Bundle bundle, GameReadyCallback gameReadyCallback, StateEventListener stateEventListener) {
         super.init(bundle, gameReadyCallback, stateEventListener);
+        gameRuntime = new GameRuntime();
         addLocalPlayer(null);
         // start after UI setup completes
         AIPlayer botPlayer = new AIPlayer(2, "Bot");

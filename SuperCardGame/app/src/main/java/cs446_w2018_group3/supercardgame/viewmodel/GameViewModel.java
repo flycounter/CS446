@@ -36,7 +36,6 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
 
     public GameViewModel(Application application) {
         super(application);
-        gameRuntime = new GameRuntime();
     }
 
     void addLocalPlayer(Player player) {
@@ -44,6 +43,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
             // default player
             player = new Player(1, "you");
         }
+        this.player = player;
 
         gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(player));
         Log.i(TAG, String.format("local player added: %s", player.getName()));
@@ -121,7 +121,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         return gameRuntime.getOtherPlayer();
     }
 
-    public LiveData<Player> getCurrPlayer() {
+    public Player getCurrPlayer() {
         return gameRuntime.getCurrPlayer();
     }
 
