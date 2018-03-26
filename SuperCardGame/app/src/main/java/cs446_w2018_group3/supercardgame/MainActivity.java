@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Popup startPopup = new Popup(MainActivity.this);
+                Popup startPopup = new Popup(MainActivity.this, viewModel);
                 startPopup.showPopup(new View(MainActivity.this));
             }
         });
