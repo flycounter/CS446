@@ -12,7 +12,7 @@ import cs446_w2018_group3.supercardgame.runtime.IDeckEditor;
  */
 
 public class DeckEditor implements IDeckEditor {
-    private int CARD_COST = 50;
+    private int CARD_COST = 5;
     private int DECK_MIN = 20;
     private int gold;
     //private int water;
