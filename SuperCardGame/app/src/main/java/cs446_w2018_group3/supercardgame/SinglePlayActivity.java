@@ -50,7 +50,6 @@ public class SinglePlayActivity extends AppCompatActivity {
     GameViewModel viewModel;
     Map<Integer, Integer> CardDataMap; // Map<checkbox_id, card_id>
     List<Integer> chosenCard; // store id of cards chosen by the player
-    List<CheckBox> chosenBox;
     int gameMode;
 
 
@@ -59,6 +58,8 @@ public class SinglePlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_single_play);
+        //disable landscape
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         //get the size of screen and set textsize
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -68,7 +69,6 @@ public class SinglePlayActivity extends AppCompatActivity {
             TEXTSIZE = 26;
         }
         chosenCard = new ArrayList<>();
-        chosenBox = new ArrayList<CheckBox>();
         CardDataMap = new HashMap<>();
         Intent intent = getIntent();
         gameMode = intent.getIntExtra("mode", 0);
@@ -345,6 +345,7 @@ public class SinglePlayActivity extends AppCompatActivity {
         LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         handView.addView(childLayout, childLayoutParams);
         ImageView cardView = new ImageView(this);
+        cardView.setClickable(true);
         final CheckBox cardBox = new CheckBox(this);
         String cardName = Translate.cardToString(card.getCardType());
         setCardImage(cardView, cardName);
@@ -380,6 +381,14 @@ public class SinglePlayActivity extends AppCompatActivity {
 
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
+            }
+        });
+
+        cardView.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                PopupInfo popupInfo = new PopupInfo(SinglePlayActivity.this,card.getCardType());
+                popupInfo.showPopup(new View(SinglePlayActivity.this));
             }
         });
     }
