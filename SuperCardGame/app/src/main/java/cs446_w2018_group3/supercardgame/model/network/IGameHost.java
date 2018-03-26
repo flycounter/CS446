@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.util.events.GameEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.GameEvent;
 
 /**
  * Created by JarvieK on 2018/3/23.

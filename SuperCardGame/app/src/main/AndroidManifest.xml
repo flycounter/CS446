@@ -21,11 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.game.GameActivity" />
-        <activity
-            android:name=".view.lobby.LobbyActivity"
-            android:label="@string/title_activity_lobby"
-            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".view.game.SingleGameActivity" />
+        <activity android:name=".view.game.MultiGameActivity" />
+        <activity android:name=".view.game.TutorialGameActivity" />
+        <activity android:name=".view.lobby.LobbyActivity" />
+
     </application>
 
 </manifest>

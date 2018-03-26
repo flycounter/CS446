@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 
@@ -20,8 +21,9 @@ import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 
-public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFragment.OnFragmentInteractionListener {
+public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFragment.OnFragmentInteractionListener, HostGameDialogFragment.OnFragmentInteractionListener {
     RecyclerView recyclerView;
+    Button hostGameBtn;
     LiveData<List<ConnInfo>> hostInfoList;
 
     private RecyclerViewAdapter mAdapter;
@@ -53,10 +55,28 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
         });
     }
 
+    private void setHostGameBtn() {
+        hostGameBtn = findViewById(R.id.host_game_btn);
+
+        hostGameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.hostGame();
+                showHostGameDialog();
+            }
+        });
+    }
+
     private void showJoinGameDialog() {
         FragmentManager fm = getSupportFragmentManager();
         DialogFragment dialogFragment = JoinGameDialogFragment.newInstance();
         dialogFragment.show(fm, "JoinGameDialog");
+    }
+
+    private void showHostGameDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogFragment dialogFragment = HostGameDialogFragment.newInstance();
+        dialogFragment.show(fm, "HostGameDialog");
     }
 
     @Override
@@ -69,10 +89,10 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
         viewModel.init(this);
 
         hostInfoList = viewModel.getLobby();
-        viewModel.hostGame();
 
         recyclerView = findViewById(R.id.lobby_recycler_view);
         setAdapter();
+        setHostGameBtn();
     }
 
     @Override
@@ -94,7 +114,7 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction() {
         // do nothing
     }
 }

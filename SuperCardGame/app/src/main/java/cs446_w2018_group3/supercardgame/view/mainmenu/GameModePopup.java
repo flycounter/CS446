@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 
 import cs446_w2018_group3.supercardgame.R;
+import cs446_w2018_group3.supercardgame.view.game.SingleGameActivity;
 import cs446_w2018_group3.supercardgame.view.lobby.LobbyActivity;
 import cs446_w2018_group3.supercardgame.view.game.GameActivity;
 
@@ -45,7 +46,7 @@ class GameModePopup extends PopupWindow {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.putExtra("mode", 1);
-                intent.setClass(v.getContext(), GameActivity.class);
+                intent.setClass(v.getContext(), SingleGameActivity.class);
                 // Start activity
                 v.getContext().startActivity(intent);
             }

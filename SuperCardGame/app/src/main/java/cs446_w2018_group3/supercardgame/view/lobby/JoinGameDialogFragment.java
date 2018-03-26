@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,12 +17,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
+import cs446_w2018_group3.supercardgame.view.game.MultiGameActivity;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 /**
@@ -36,7 +40,7 @@ public class JoinGameDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = JoinGameDialogFragment.class.getName();
     // TODO: Rename parameter arguments, choose names that match
 
-    private LobbyViewModel viewModel;
+    LobbyViewModel viewModel;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,6 +85,8 @@ public class JoinGameDialogFragment extends AppCompatDialogFragment {
         TextView roomName = v.findViewById(R.id.room_name);
         TextView roomInfo = v.findViewById(R.id.room_info);
         TextView connStatus = v.findViewById(R.id.conn_status);
+        ProgressBar progressBar = v.findViewById(R.id.progress_bar);
+        Button joinGameBtn = v.findViewById(R.id.join_game_btn);
 
         ConnInfo connInfo = viewModel.getConnInfoContainer().getValue();
         String connState = viewModel.getConnStateContainer().getValue();
@@ -88,6 +94,13 @@ public class JoinGameDialogFragment extends AppCompatDialogFragment {
         roomName.setText(connInfo != null ? connInfo.getPlayerName() : "");
         roomInfo.setText(connInfo != null ? String.format("%s:%s", connInfo.getHost().getHostAddress(), connInfo.getPort()) : "");
         connStatus.setText(connState);
+
+        joinGameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                joinGame(v);
+            }
+        });
 
         // set up observers
         viewModel.getConnInfoContainer().observe(this, new Observer<ConnInfo>() {
@@ -107,15 +120,37 @@ public class JoinGameDialogFragment extends AppCompatDialogFragment {
             }
         });
 
+        viewModel.getIsGameReadyContainer().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean isReady) {
+                if (isReady != null && isReady) {
+                    progressBar.setVisibility(View.GONE);
+                    joinGameBtn.setVisibility(View.VISIBLE);
+                }
+                else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    joinGameBtn.setVisibility(View.GONE);
+                }
+            }
+        });
+
         return v;
 
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction();
         }
+    }
+
+    private void joinGame(View view) {
+        viewModel.connectionListenerCleanup();
+
+        Intent intent = new Intent(getActivity(), MultiGameActivity.class);
+        intent.putExtra("isHost", false);
+        view.getContext().startActivity(intent);
     }
 
     @Override
@@ -147,6 +182,6 @@ public class JoinGameDialogFragment extends AppCompatDialogFragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction();
     }
 }

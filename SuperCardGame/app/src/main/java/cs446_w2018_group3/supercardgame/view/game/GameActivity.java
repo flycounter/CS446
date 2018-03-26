@@ -1,7 +1,6 @@
 package cs446_w2018_group3.supercardgame.view.game;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
@@ -24,17 +23,20 @@ import java.util.List;
 import java.util.Map;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
+import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel.GameReadyCallback;
 
-public class GameActivity extends AppCompatActivity {
+public abstract class GameActivity extends AppCompatActivity implements StateEventListener, GameReadyCallback {
+    private static final String TAG = GameActivity.class.getName();
     //widgets
     TextView oppStatus;
     TextView oppBuffEquip;
@@ -101,11 +103,6 @@ public class GameActivity extends AppCompatActivity {
         setTextSize(TEXTSIZE);
         //create hand cards
         resetHandView();
-
-
-        // viewmodel
-        final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
-        this.viewModel = viewModel;
 
         // listeners
         combine.setOnClickListener(new View.OnClickListener() {
@@ -221,11 +218,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        viewModel.init(); // player setup
-        observeViewModel(viewModel);
-        // start game
-        viewModel.start();
-
+        viewModel.init(getIntent().getExtras(), this, this); // player setup
     }
 
     private void observeViewModel(final GameViewModel viewModel) {
@@ -303,38 +296,6 @@ public class GameActivity extends AppCompatActivity {
                     Log.w("main", err);
                     // no player at this moment
                 }
-            }
-        });
-
-        viewModel.addStateEventListener(new StateEventAdapter() {
-            @Override
-            public void onTurnStart(TurnStartEvent e) {
-                try {
-                    Log.i("main",
-                            String.format("TurnStartEvent, playerId: %s, receiver: %s",
-                                    e.getSubjectId(), viewModel.getThisPlayer().getValue().getId()));
-                    Log.i("main", "" + (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()));
-                    if (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()) {
-                        Log.i("main", "player's turn begins");
-                        actionLog.setText("Action:\nNow it's your turn.");
-                        combine.setEnabled(true);
-                        use.setEnabled(true);
-                        endTurn.setEnabled(true);
-                    }
-                }
-                catch (PlayerNotFoundException err) {
-                    Log.w("main", err);
-                    // player doesn't exist when turn changes?
-                }
-            }
-
-            @Override
-            public void onGameEnd(Player winner) {
-                actionLog.setText("Game end. winner is " + winner.getName());
-                combine.setEnabled(false);
-                use.setEnabled(false);
-                endTurn.setEnabled(false);
-                surrender.setEnabled(false);
             }
         });
     }
@@ -514,7 +475,59 @@ public class GameActivity extends AppCompatActivity {
             case "Ice":
                 cardView.setImageResource(R.drawable.iceicon);
                 break;
-
         }
+    }
+
+    @Override
+    public void onTurnStart(TurnStartEvent e) {
+        try {
+            Log.i("main",
+                    String.format("TurnStartEvent, playerId: %s, receiver: %s",
+                            e.getSubjectId(), viewModel.getThisPlayer().getValue().getId()));
+            Log.i("main", "" + (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()));
+            if (e.getSubjectId() == viewModel.getThisPlayer().getValue().getId()) {
+                Log.i("main", "player's turn begins");
+                actionLog.setText("Action:\nNow it's your turn.");
+                combine.setEnabled(true);
+                use.setEnabled(true);
+                endTurn.setEnabled(true);
+            }
+        }
+        catch (PlayerNotFoundException err) {
+            Log.w("main", err);
+            // player doesn't exist when turn changes?
+        }
+    }
+
+    @Override
+    public void onGameEnd(GameEndEvent e) {
+        Player winner = e.getWinner();
+        String winnerName = (winner == null) ? "null" : winner.getName();
+        actionLog.setText(String.format("Game end. winner is %s", winnerName));
+        combine.setEnabled(false);
+        use.setEnabled(false);
+        endTurn.setEnabled(false);
+        surrender.setEnabled(false);
+    }
+
+    @Override
+    public void onGameReady() {
+        // start game
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // wait for 5 seconds to let data update finish?
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i(TAG, "Game ready");
+                        observeViewModel(viewModel);
+                        viewModel.start();
+                    }
+                }, 5000);
+
+            }
+        });
+
     }
 }
