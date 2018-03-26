@@ -4,12 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
-<<<<<<< HEAD
-import cs446_w2018_group3.supercardgame.Exceptions.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.model.Game;
-import cs446_w2018_group3.supercardgame.model.cards.AquaCard;
-import cs446_w2018_group3.supercardgame.model.cards.Card;
-=======
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +15,6 @@ import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.bot.Bot;
 import cs446_w2018_group3.supercardgame.model.player.AIPlayer;
 import cs446_w2018_group3.supercardgame.model.player.Player;
->>>>>>> develop
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
 import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEvent;
@@ -44,11 +37,6 @@ public class GameRuntime implements GameStateControl {
     // references
     private int currPlayerIdx;
 
-<<<<<<< HEAD
-    private Player nextPlayer;
-    private Game game;
-    private GameRuntime gameRuntime;
-=======
     public GameRuntime(GameEventHandler gameEventHandler) {
         fsm = new GameFSM();
         gameModel = new Game();
@@ -57,7 +45,6 @@ public class GameRuntime implements GameStateControl {
         players = new ArrayList<>();
         currPlayer = new MutableLiveData<>();
         currPlayerIdx = 0;
->>>>>>> develop
 
         gameField = new MutableLiveData<>();
 
@@ -232,22 +219,6 @@ public class GameRuntime implements GameStateControl {
         Log.i("main", "next player: " + currPlayer.getValue().getName());
     }
 
-<<<<<<< HEAD
-    public void handlePlayerStartTurnEvent() {
-        try {
-            //TODO: this is for demo only. Very mock up.
-            game.beforePlayerTurnStart(this.getOpponent().getValue());
-            game.beforePlayerTurnStart(this.getPlayer().getValue());
-            Card c = new AquaCard();
-            c.apply(this.getOpponent().getValue(), this.getPlayer().getValue());
-            game.playerTurnStart(this.getPlayer().getValue());
-        } catch ( PlayerCanNotEnterTurnException e ) {
-        }
-    }
-
-    public Player getNextPlayer() {
-        return nextPlayer;
-=======
     public void updatePlayer(Player player) throws PlayerNotFoundException {
         for (MutableLiveData<Player> mPlayer: players) {
             if (player.equals(mPlayer.getValue())) {
@@ -258,7 +229,6 @@ public class GameRuntime implements GameStateControl {
 
         // player not found
         throw new PlayerNotFoundException();
->>>>>>> develop
     }
 
     Game getGameModel() {
@@ -298,5 +268,4 @@ public class GameRuntime implements GameStateControl {
                 // unsupported player event
         }
     }
-
 }

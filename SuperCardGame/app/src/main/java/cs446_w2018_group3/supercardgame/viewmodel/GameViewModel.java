@@ -92,11 +92,6 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
     @Override
     public void turnEnd() {
         // TODO
-<<<<<<< HEAD
-        gameRuntime.handlePlayerEndTurnEvent(new PlayerEndTurnEvent(
-                gameRuntime.getPlayer().getValue().getId()));
-        gameRuntime.handlePlayerStartTurnEvent();
-=======
         gameEventHandler.handlePlayerEndTurnEvent(
                 new PlayerEndTurnEvent(player.getId()));
     }
@@ -127,6 +122,5 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
 
     public void addStateEventListener(StateEventAdapter adapter) {
         gameEventHandler.addStateEventListener(adapter);
->>>>>>> develop
     }
 }
