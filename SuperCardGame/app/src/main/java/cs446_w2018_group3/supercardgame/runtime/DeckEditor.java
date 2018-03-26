@@ -5,6 +5,8 @@ import cs446_w2018_group3.supercardgame.Exception.DeckEditException.NotEnoughDec
 import cs446_w2018_group3.supercardgame.Exception.DeckEditException.NotEnoughMoneyException;
 import cs446_w2018_group3.supercardgame.model.DBHelper;
 import cs446_w2018_group3.supercardgame.model.Translate;
+
+import android.database.Cursor;
 import android.util.Log;
 import cs446_w2018_group3.supercardgame.runtime.IDeckEditor;
 /**
@@ -14,49 +16,41 @@ import cs446_w2018_group3.supercardgame.runtime.IDeckEditor;
 public class DeckEditor implements IDeckEditor {
     private int CARD_COST = 5;
     private int DECK_MIN = 20;
-    private int gold;
+    //private int gold;
     //private int water;
     //private int fire;
     //private int air;
     //private int dirt;
-    private int maxWater;
-    private int maxFire;
-    private int maxAir;
-    private int maxDirt;
     private DBHelper deck;
 
-    public DeckEditor( int gold, int maxWater, int maxFire, int maxAir, int maxDirt, DBHelper deck) {
-
-        this.gold = gold;
-        this.maxWater = maxWater;
-        this.maxFire = maxFire;
-        this.maxAir = maxAir;
-        this.maxDirt = maxDirt;
+    public DeckEditor(DBHelper deck) {
         this.deck = deck;
     }
 
     public void addCard(Translate.CardType cardType) {
+        Cursor ret = deck.getData();
+        int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
+        int maxType;
         try {
             if (gold < CARD_COST) {
                 throw new NotEnoughMoneyException();
             }
-            gold = gold - CARD_COST;
             switch (cardType) {
                 case Water: {
-                    maxWater++;
-                    deck.updateMaxCard("max_water", gold, maxWater);
+                    maxType = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_WATER));
+                    deck.updateMaxCard("max_water", gold-CARD_COST, maxType+1);
                 }
                 case Fire: {
-                    maxFire++;
-                    deck.updateMaxCard("max_fire", gold, maxFire);
+                    maxType = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_FIRE));
+                    deck.updateMaxCard("max_fire", gold-CARD_COST, maxType+1);
                 }
                 case Air: {
-                    maxAir++;
-                    deck.updateMaxCard("max_air", gold, maxAir);
+                    maxType = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_AIR));
+                    deck.updateMaxCard("max_air", gold-CARD_COST, maxType+1);
                 }
                 case Dirt: {
-                    maxDirt++;
-                    deck.updateMaxCard("max_dirt", gold, maxDirt);
+                    maxType = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_DIRT));
+                    deck.updateMaxCard("max_dirt", gold-CARD_COST, maxType+1);
                 }
                 default: {
                     throw new NotEnoughMoneyException();

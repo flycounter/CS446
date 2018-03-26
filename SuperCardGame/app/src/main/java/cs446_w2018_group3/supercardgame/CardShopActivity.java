@@ -30,13 +30,13 @@ public class CardShopActivity extends AppCompatActivity {
         setContentView(R.layout.activity_card_shop);
         // init database
         deck = new DBHelper(this);
-        Cursor ret = deck.getData();
-        int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
-        int maxWater = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_WATER));
-        int maxFire = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_FIRE));
-        int maxAir = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_AIR));
-        int maxDirt = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_DIRT));
-        deckEditor = new DeckEditor(gold, maxWater, maxFire, maxAir, maxDirt, deck);
+        //Cursor ret = deck.getData();
+//        int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
+//        int maxWater = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_WATER));
+//        int maxFire = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_FIRE));
+//        int maxAir = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_AIR));
+//        int maxDirt = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_DIRT));
+        deckEditor = new DeckEditor(deck);
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);
@@ -96,4 +96,5 @@ public class CardShopActivity extends AppCompatActivity {
         });
 
     }
+
 }
