@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import cs446_w2018_group3.supercardgame.model.DBHelper;
 import cs446_w2018_group3.supercardgame.model.Translate;
@@ -28,17 +33,22 @@ public class CardShopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_shop);
+
         // init database
-        deck = new DBHelper(this);
-        Cursor ret = deck.getData(1);
-        ret.moveToFirst();
-        int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
-        System.out.printf("%d",gold);
+        //deck = new DBHelper(this);
+        //Cursor ret = deck.getData(1);
+        //ret.moveToFirst();
+        //int gold = 0;
+        //while (ret.moveToNext()) {
+        //    gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
+        //}
+
+        //Log.i("GOLD", String.valueOf(gold));
 //        int maxWater = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_WATER));
 //        int maxFire = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_FIRE));
 //        int maxAir = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_AIR));
 //        int maxDirt = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_MAX_DIRT));
-        deckEditor = new DeckEditor(deck);
+        //deckEditor = new DeckEditor(deck);
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);

@@ -33,9 +33,18 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table deck " +
-                        "(id integer, gold integer, water integer, fire integer, air integer, dirt integer, maxWater integer, maxFire integer, maxAir integer, maxEarth, integer)"
-        );
-        init(db);
+                        "(gold integer(10), " +
+                        "water integer(10), " +
+                        "fire integer(10), " +
+                        "air integer(10), " +
+                        "dirt integer(10), " +
+                        "max_water integer(10), " +
+                        "max_fire integer(10), " +
+                        "max_air integer(10), " +
+                        "max_dirt integer(10))");
+        db.execSQL(
+                "insert into deck (gold, water, fire, air, dirt, max_water, max_fire, max_air, max_dirt) " +
+                        "values (50, 5, 5, 5, 5, 5, 5, 5, 5)");
     }
 
     @Override
@@ -45,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void init(SQLiteDatabase db) {
         //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DECK_COLUMN_ID, 1);
+        //contentValues.put(DECK_COLUMN_ID, 1);
         contentValues.put(DECK_COLUMN_GOLD, 50);
         contentValues.put("water", 5);
         contentValues.put("fire", 5);
@@ -60,7 +69,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Cursor getData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from deck where id="+id+"", null);
+        //Cursor res = db.rawQuery("select * from deck where id="+id+"", null);
+        Cursor res = db.query("deck", new String[]{"gold"} , null, null, null, null, null);
         return res;
     }
 
