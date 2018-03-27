@@ -33,7 +33,7 @@ public class Player {
     private List<ElementCard> deck;
     private List<ElementCard> hand;
     private List<Buff> buffs;
-
+    private List<Integer> collection;// 0:water,1:fire,2:air,3:dirt
     public class test {}
 
     public Player( int id, String name ) {
@@ -66,6 +66,7 @@ public class Player {
     }
     public List<ElementCard> getDeck() { return deck; }
     public List<Buff> getBuffs() { return buffs; }
+    public List<Integer> getCollection(){return collection;}
 
     public void setHP( int newHP ) {
         hp = newHP;

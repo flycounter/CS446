@@ -1,15 +1,25 @@
 package cs446_w2018_group3.supercardgame;
 
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.greenrobot.greendao.database.Database;
+
 import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.player.Player;
+import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
+import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class CardShopActivity extends AppCompatActivity {
     ImageView fire;
@@ -18,11 +28,13 @@ public class CardShopActivity extends AppCompatActivity {
     ImageView dirt;
     TextView title;
     Button exit;
+    private DaoSession mSession;
+    GameViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_shop);
-
+        getSession();
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);
@@ -81,5 +93,14 @@ public class CardShopActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private DaoSession getSession() {
+        if (mSession == null) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Config.DB_NAME);
+            Database db = helper.getWritableDb();
+            helper.getReadableDb();
+            mSession = new DaoMaster(db).newSession();
+        }
+        return mSession;
     }
 }
