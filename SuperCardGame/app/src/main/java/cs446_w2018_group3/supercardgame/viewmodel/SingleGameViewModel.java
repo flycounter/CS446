@@ -35,6 +35,7 @@ public class SingleGameViewModel extends GameViewModel {
         AIPlayer botPlayer = new AIPlayer(2, "Bot");
         Bot bot = new Bot(botPlayer);
         bot.bind(gameEventHandler);
+        bot.bindLocalPlayer(this.player);
         gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(botPlayer));
         Log.i(TAG, String.format("bot player added: %s", botPlayer.getName()));
         gameReadyCallback.onGameReady();
