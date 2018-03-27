@@ -1,10 +1,16 @@
 package cs446_w2018_group3.supercardgame.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import cs446_w2018_group3.supercardgame.model.NetworkConnector;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.dao.User;
+import cs446_w2018_group3.supercardgame.model.dao.UserDao;
 import cs446_w2018_group3.supercardgame.model.dto.GameRuntimeData;
 import cs446_w2018_group3.supercardgame.model.network.INetworkConnector;
 import cs446_w2018_group3.supercardgame.model.player.Player;
@@ -27,6 +33,7 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
     private INetworkConnector mNetworkConnector;
     private boolean isHost;
     private boolean isRemoteStartGameNotified = false;
+    private DaoSession mSession;
 
     public MultiGameViewModel(Application application) {
         super(application);
@@ -44,12 +51,7 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
 
         super.init(bundle, gameReadyCallback, stateEventListener);
 
-        // TODO: load player from db
-        if (!isHost()) {
-            player = new Player(3, "remote player");
-        }
-
-        addLocalPlayer(player);
+        player = Player.getLocalPlayer(mSession);
 
         if (isHost()) {
             mNetworkConnector = new NetworkConnector(HostHandler.getHost(), (MultiGameEventHandler) gameEventHandler, this);

@@ -1,11 +1,15 @@
 package cs446_w2018_group3.supercardgame.model.player;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.dao.User;
 
 /**
  * Created by JarvieK on 2018/2/23.
@@ -115,5 +119,9 @@ public class Player {
     @Override
     public boolean equals(Object that) {
         return (that instanceof Player && ((Player) that).getId() == this.getId());
+    }
+
+    public static Player getLocalPlayer(DaoSession session) {
+        return new Gson().fromJson(User.getLocalUser(session.getUserDao()).getPlayerData(), Player.class);
     }
 }

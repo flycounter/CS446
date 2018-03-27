@@ -102,7 +102,6 @@ public class GameEventHandler implements IGameEventHandler {
         }
         catch (InvalidStateException | PlayerActionException err) {
             if (err instanceof PlayerCanNotEnterTurnException) {
-                // TODO: add method gameRuntime.getWinner()
                 Player winner = null;
                 for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
                     if (playerHolder.getValue().getHP() > 0) {
