@@ -128,7 +128,6 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
     public void requestSyncData() {
         Log.i(TAG, "sending sync request to remote");
         sendable.sendMessage(gson.toJson(new PayloadInfo(PayloadInfo.Type.SYNC_DATA, null)));
-        // TODO
     }
 
     @Override

@@ -72,7 +72,6 @@ public class P2pHost implements IHost {
 
             @Override
             public void onStart() {
-                // TODO: load playerName from db
                 connInfo = new ConnInfo(gameName, getAddress().getAddress(), getPort());
                 hostStartedListener.onStarted(connInfo);
             }
