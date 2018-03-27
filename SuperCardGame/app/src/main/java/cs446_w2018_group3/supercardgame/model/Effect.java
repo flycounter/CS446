@@ -11,6 +11,7 @@ import cs446_w2018_group3.supercardgame.model.buffs.DodgeBuff;
  */
 
 public class Effect {
+    private static final String TAG = Effect.class.getName();
     //private static Effect instance;
 
     //public static Effect getInstance() {
@@ -20,31 +21,34 @@ public class Effect {
     //    return instance;
     //}
 
-    public static void dealDamageEffect ( Player subject, Player object, int damage) {
+    public static void dealDamageEffect(Player subject, Player object, int damage) {
         Log.i("Buffs size: ", "" + object.getBuffs().size());
-        for ( Buff b : object.getBuffs() ) {
+        for (Buff b : object.getBuffs()) {
             Log.i("check", "Checking Buff" + b.getBuffType().toString());
-            if ( b instanceof DodgeBuff) {
+            if (b instanceof DodgeBuff) {
                 Log.i("check", b.getBuffType().toString());
                 return;
             }
         }   // check Dodge
         int shield = object.getShield();
         int curDamage = Math.max(0, damage - shield);
-        shield = Math.max(0,shield - damage);
+        shield = Math.max(0, shield - damage);
+        int newHP = object.getHP() - curDamage;
+
+        Log.i(TAG, String.format("object: %s; newHP: %s", object, newHP));
 
         object.setShield(shield);
-        object.setHP(object.getHP() - curDamage);
+        object.setHP(newHP);
     }
 
-    public static void decreaseAP ( Player subject, Player object, int num) {
+    public static void decreaseAP(Player subject, Player object, int num) {
         int newAP = object.getAP() - num;
         object.setAP(newAP);
         //object.setAP( Math.max(0, newAP) );
     }
 
-    public static void addShield ( Player subject, Player object, int num) {
-        subject.setShield( subject.getShield() + num );
+    public static void addShield(Player subject, Player object, int num) {
+        subject.setShield(subject.getShield() + num);
     }
 
 //    public static void dealDamageEffect ( Player subject, Player object, int damage) {

@@ -71,15 +71,17 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
 
     @Override
     public void onGameEvent(GameEvent e) {
-        if (!mViewModel.isHost() && e instanceof ActionEvent) {
-            // action event from client
-            sendGameEvent(e);
+        Log.i(TAG, "local game event received: " + e);
+        if (!mViewModel.isHost()) {
+            if (e instanceof ActionEvent) {
+                // action event from client
+                sendGameEvent(e);
+            }
         } else {
             // host
             if (e instanceof StateEvent) {
                 sendGameEvent(e);
             }
-
             sendSyncData(mViewModel.getGameRuntime().getSyncData());
         }
     }
@@ -119,6 +121,8 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                     // unknown event
                     throw new UnknownMessageException();
             }
+            Log.i(TAG, "sending game event to remote: " + e);
+
             sendable.sendMessage(gson.toJson(new PayloadInfo(PayloadInfo.Type.GAME_EVENT, e.getEventCode(), payload)));
 
         } catch (Exception err) {

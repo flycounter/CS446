@@ -1,4 +1,4 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.cardedit;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 

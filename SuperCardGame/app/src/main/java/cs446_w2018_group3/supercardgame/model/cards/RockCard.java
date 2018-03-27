@@ -11,7 +11,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public class RockCard extends ElementCard {
 
     public RockCard () {
-        super(Translate.CardType.Rock, 2, 3);
+//        super(Translate.CardType.Rock, 2, 3);
     }
 
     public void apply(Player subject, Player object) {

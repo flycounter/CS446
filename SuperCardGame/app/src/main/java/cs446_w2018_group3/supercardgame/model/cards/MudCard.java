@@ -10,7 +10,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 
 public class MudCard extends ElementCard {
     public MudCard () {
-        super(Translate.CardType.Mud, 2, 0);
+//        super(Translate.CardType.Mud, 2, 0);
     }
 
     public void apply(Player subject, Player object) {

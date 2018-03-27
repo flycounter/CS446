@@ -1,8 +1,10 @@
 package cs446_w2018_group3.supercardgame.view.game;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -24,7 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs446_w2018_group3.supercardgame.PopupInfo;
+import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
+import cs446_w2018_group3.supercardgame.view.cardedit.PopupInfo;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
@@ -40,9 +44,8 @@ import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel.GameReadyCallback;
-import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
-public abstract class GameActivity extends AppCompatActivity implements StateEventListener, GameReadyCallback {
+public abstract class GameActivity extends AppCompatActivity implements StateEventListener, ErrorMessageListener, GameReadyCallback {
     private static final String TAG = GameActivity.class.getName();
     //widgets
     TextView oppStatus;
@@ -100,8 +103,8 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         surrender = findViewById(R.id.Surrender);
         //start text
         actionLog.setTextColor(Color.RED);
-        setStatus("Dragon", 30, 10, "Boss", 5, 1);
-        setStatus("You", 20, 10, "None", 5, 2);
+        setStatus("default_opponent", 0, 0, "default_class", 0, 0, 1);
+        setStatus("default_player", 0, 0, "default_class", 0, 0, 2);
         List<String> emptyList = new ArrayList<String>();
         setBuffEquip(emptyList, emptyList, 1);
         setBuffEquip(emptyList, emptyList, 2);
@@ -152,8 +155,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
 
                 try {
                     viewModel.useElementCard(viewModel.getOpponent().getValue().getId(), chosenCard.get(0));
-                }
-                catch (NullPointerException err) {
+                } catch (NullPointerException err) {
                     // opponent not found during the game, something is wrong
                     Log.w("main", err);
                 }
@@ -193,8 +195,11 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     }
 
     //mode1:set oppStatus,mode2: set playerStatus
-    private void setStatus(String name, int hp, int ap, String pclass, int hand, int mode) {
-        String text = "Player:" + name + "    HP:" + Integer.toString(hp) + "    AP:" + Integer.toString(ap) + "    Class:" + pclass + "    Hand:" + Integer.toString(hand);
+    private void setStatus(String name, int hp, int ap, String pclass, int hand, int deck, int mode) {
+        String text = String.format("Player: %s\nHP: %s; AP:%s; Hand: %s; Deck: %s\nClass: %s",
+                name, hp, ap,
+                hand, deck,
+                pclass);
         if (mode == 1) {
             oppStatus.setText(text);
 
@@ -230,6 +235,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         viewModel.setSession(getSession());
+        viewModel.setmErrorMessageListener(this);
         viewModel.init(getIntent().getExtras(), this, this); // player setup
         observeViewModel(viewModel);
     }
@@ -241,13 +247,16 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             @Override
             public void onChanged(@Nullable Player player) {
                 // update player status
-                if (player == null) { return; }
+                if (player == null) {
+                    return;
+                }
                 setStatus(
                         player.getName(),
                         player.getHP(),
                         player.getAP(),
                         player.getPlayerClass(),
                         player.getHand().size(),
+                        player.getDeck().size(),
                         2);
                 // set hand
                 resetHandView();
@@ -270,6 +279,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
                         player.getAP(),
                         player.getPlayerClass(),
                         player.getHand().size(),
+                        player.getDeck().size(),
                         1
                 );
                 Log.i(TAG, "opponent info updated");
@@ -279,8 +289,10 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         viewModel.getGameField().observe(this, new Observer<GameField>() {
             @Override
             public void onChanged(@Nullable GameField gameField) {
-                if (gameField == null) { return; }
-                weather.setText(gameField.getWeather().getLabel());
+                if (gameField == null) {
+                    return;
+                }
+                weather.setText(String.format("Weather: %s", gameField.getWeather().getLabel()));
             }
         });
 
@@ -342,7 +354,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupInfo popupInfo = new PopupInfo(GameActivity.this,card.getCardType());
+                PopupInfo popupInfo = new PopupInfo(GameActivity.this, card.getCardType());
                 popupInfo.showPopup(new View(GameActivity.this));
 
             }
@@ -487,8 +499,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
                     combine.setEnabled(true);
                     use.setEnabled(true);
                     endTurn.setEnabled(true);
-                }
-                else {
+                } else {
                     actionLog.setText("Action:\nNow it's your opponent's turn.");
                     combine.setEnabled(false);
                     use.setEnabled(false);
@@ -525,6 +536,18 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             // NOTE: shit solution here to call gameRuntime in UI
             viewModel.start();
         }
+    }
+
+    @Override
+    public void onMessage(String message) {
+        Activity thisActivity = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private DaoSession getSession() {

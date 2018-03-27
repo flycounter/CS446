@@ -11,7 +11,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public class GaleCard extends ElementCard {
 
     public GaleCard () {
-        super(Translate.CardType.Gale, 2, 3);
+//        super(Translate.CardType.Gale, 2, 3);
     }
 
     public void apply(Player subject, Player object) {

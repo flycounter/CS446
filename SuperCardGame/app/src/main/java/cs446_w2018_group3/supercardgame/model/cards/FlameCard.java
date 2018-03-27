@@ -13,7 +13,7 @@ public class FlameCard extends ElementCard {
     private static final int FLAME_BURN_DURATION = 2;
 
     public FlameCard () {
-        super(Translate.CardType.Flame, 2, 2);
+//        super(Translate.CardType.Flame, 2, 2);
     }
 
     public void apply(Player subject, Player object) {

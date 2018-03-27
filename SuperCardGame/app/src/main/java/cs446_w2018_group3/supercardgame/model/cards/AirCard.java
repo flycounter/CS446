@@ -9,8 +9,8 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class AirCard extends ElementCard {
-    public AirCard () {
-        super(Translate.CardType.Air, 1, 1);
+    public AirCard() {
+//        super(Translate.CardType.Air, 1, 1);
     }
 
     public void apply(Player subject, Player object) {

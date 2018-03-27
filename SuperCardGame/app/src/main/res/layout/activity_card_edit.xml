@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
-    tools:context="cs446_w2018_group3.supercardgame.CardEditActivity">
+    tools:context="cs446_w2018_group3.supercardgame.view.cardedit.CardEditActivity">
 
     <LinearLayout
         android:id="@+id/ExitSave"

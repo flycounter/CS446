@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
-import cs446_w2018_group3.supercardgame.CardEditActivity;
-import cs446_w2018_group3.supercardgame.CardShopActivity;
+import cs446_w2018_group3.supercardgame.view.cardedit.CardEditActivity;
+import cs446_w2018_group3.supercardgame.view.cardshop.CardShopActivity;
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;

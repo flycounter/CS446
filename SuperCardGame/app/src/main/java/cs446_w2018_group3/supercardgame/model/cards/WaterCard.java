@@ -11,7 +11,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 
 public class WaterCard extends ElementCard {
     public WaterCard() {
-        super(Translate.CardType.Water, 1, 1);
+//        super(Translate.CardType.Water, 1, 1);
     }
 
     private static final int WATER_WET_DURATION = 1;

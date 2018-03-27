@@ -1,7 +1,6 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.cardshop;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -9,19 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.User;
-import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 
 /**
  * Created by GARY on 2018-03-25.

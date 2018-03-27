@@ -32,7 +32,8 @@ public class Game {
     private Random rng = new Random(System.currentTimeMillis()); // seed = curr unix time
 
     // Pseudo game constructor. Create a game with a sandbag opponent, and with only water cards in deck. Sunny weather
-    public Game() { }
+    public Game() {
+    }
 
     public void bind(GameRuntime gameRuntime) {
         this.gameRuntime = gameRuntime;
@@ -40,19 +41,10 @@ public class Game {
 
     public void init() throws PlayerNotFoundException {
         // for each player
-        for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+        for (LiveData<Player> playerHolder : gameRuntime.getPlayers()) {
             Player player = playerHolder.getValue();
             player.setHP(10);
             player.setAP(0);
-            List<ElementCard> deck = player.getDeck();
-            for( int i = 0; i < 6; i++ ) {
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Fire ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Air ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Dirt ) );
-            }
 
             // update liveData
             gameRuntime.updatePlayer(player);
@@ -70,8 +62,8 @@ public class Game {
     }
 
     public static Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
-        for ( Card c : player.getHand() ) {
-            if ( c.getCardId() == cardId ) {
+        for (Card c : player.getHand()) {
+            if (c.getCardId() == cardId) {
                 return c;
             }
         }
@@ -134,7 +126,7 @@ public class Game {
         gameRuntime.setNextPlayer();
     }
 
-    public void useCard(Player subject, Player target, Card card) throws PlayerInsufficientApException,PlayerNotFoundException, CardNotFoundException {
+    public void useCard(Player subject, Player target, Card card) throws PlayerInsufficientApException, PlayerNotFoundException, CardNotFoundException {
         // check whether subject player has enough AP
         if (subject.getAP() < card.getCost()) {
             throw new PlayerInsufficientApException();

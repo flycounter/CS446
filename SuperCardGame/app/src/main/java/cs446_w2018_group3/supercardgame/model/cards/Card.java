@@ -31,6 +31,8 @@ public abstract class Card {
 
     public abstract void apply(Player subject, Player object);
 
+    public Card() {}
+
     public Card(Translate.CardType cardType) {
         this.cardType = cardType;
         this.cardId = id;

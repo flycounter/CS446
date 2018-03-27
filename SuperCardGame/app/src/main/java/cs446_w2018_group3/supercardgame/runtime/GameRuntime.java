@@ -151,10 +151,9 @@ public class GameRuntime implements GameStateControl {
     }
 
     public void updateLogInfo(String msg) {
-//        if (Looper.myLooper() == Looper.getMainLooper())
-//            logInfo.setValue(msg);
-//        else logInfo.postValue(msg);
-        logInfo.setValue(msg);
+        if (Looper.myLooper() == Looper.getMainLooper())
+            logInfo.setValue(msg);
+        else logInfo.postValue(msg);
     }
 
     Game getGameModel() {

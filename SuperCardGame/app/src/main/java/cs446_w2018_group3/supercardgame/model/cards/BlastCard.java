@@ -11,7 +11,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public class BlastCard extends ElementCard {
 
     public BlastCard () {
-        super(Translate.CardType.Blast, 2, 4);
+//        super(Translate.CardType.Blast, 2, 4);
     }
 
     public void apply(Player subject, Player object) {

@@ -10,7 +10,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 
 public class DirtCard extends ElementCard {
     public DirtCard () {
-        super(Translate.CardType.Dirt, 1, 1);
+//        super(Translate.CardType.Dirt, 1, 1);
     }
     public void apply(Player subject, Player object) {
         Effect.dealDamageEffect(subject, object, damage);

@@ -1,24 +1,16 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.cardedit;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -30,16 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
-import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class CardEditActivity extends AppCompatActivity {
     //widgets

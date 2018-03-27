@@ -25,8 +25,8 @@
         <activity android:name=".view.game.MultiGameActivity" />
         <activity android:name=".view.game.TutorialGameActivity" />
         <activity android:name=".view.lobby.LobbyActivity" />
-        <activity android:name=".CardEditActivity" />
-        <activity android:name=".CardShopActivity"></activity>
+        <activity android:name=".view.cardedit.CardEditActivity" />
+        <activity android:name=".view.cardshop.CardShopActivity"></activity>
 
     </application>
 

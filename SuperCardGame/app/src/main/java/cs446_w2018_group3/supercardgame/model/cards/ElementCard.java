@@ -1,5 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
+import android.util.Log;
+
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.buffs.*;
@@ -9,6 +11,8 @@ import cs446_w2018_group3.supercardgame.model.buffs.*;
  */
 
 public class ElementCard extends Card {
+    private static final String TAG = ElementCard.class.getName();
+
     static Translate.CardType[][] combineRule = {
             {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
             {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
@@ -19,7 +23,7 @@ public class ElementCard extends Card {
 
     @Override
     public void apply(Player subject, Player object) {
-        // stub
+        Log.e(TAG, "stub!");
     }
 
     public static Boolean canCombine(ElementCard card1, ElementCard card2) {
@@ -39,8 +43,34 @@ public class ElementCard extends Card {
         return Math.max(0, damage);
     }
 
+    ElementCard() {
+
+    }
+
     public ElementCard(Translate.CardType cardType, int level, int damage) {
         super(cardType);
+        // NOTE: TODO: replace with factory
+
+        switch (cardType) {
+            case Air:
+
+            case Aqua:
+            case Blast:
+            case Dirt:
+            case Fire:
+            case Flame:
+            case Gale:
+            case Ice:
+            case Lava:
+            case Mud:
+            case Rock:
+            case Sand:
+            case Steam:
+            case Water:
+            default:
+                // nothing
+        }
+
         this.level = level;
         this.damage = damage;
     }

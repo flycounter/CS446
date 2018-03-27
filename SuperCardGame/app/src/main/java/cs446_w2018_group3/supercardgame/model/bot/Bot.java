@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.BotException.BotNotEnoughBaseCardInHandException;
+import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.cards.SandCard;
 import cs446_w2018_group3.supercardgame.model.cards.SteamCard;
@@ -36,6 +37,19 @@ public class Bot implements IBot {
     public Bot(Player player) {
         botPlayer = player;
         setStateEventListener(new StateEventAdapter());
+
+        List<ElementCard> deck = new ArrayList<>();
+
+        for( int i = 0; i < 6; i++ ) {
+            deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+            deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+            deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
+            deck.add( ElementCard.createNewCard( Translate.CardType.Fire ) );
+            deck.add( ElementCard.createNewCard( Translate.CardType.Air ) );
+            deck.add( ElementCard.createNewCard( Translate.CardType.Dirt ) );
+        }
+
+        player.setDeck(deck);
     }
 
     public void bind(IGameEventHandler gameEventHandler) {

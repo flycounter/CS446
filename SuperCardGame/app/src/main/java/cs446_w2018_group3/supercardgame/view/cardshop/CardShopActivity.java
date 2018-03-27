@@ -1,11 +1,8 @@
-package cs446_w2018_group3.supercardgame;
+package cs446_w2018_group3.supercardgame.view.cardshop;
 
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,15 +15,14 @@ import org.greenrobot.greendao.database.Database;
 import java.math.BigDecimal;
 import java.util.List;
 
+import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
-import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class CardShopActivity extends AppCompatActivity {
     ImageView fire;

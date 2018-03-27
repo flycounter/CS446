@@ -12,7 +12,7 @@ public class SteamCard extends ElementCard {
     private static final int STEAM_DODGE_DURATION = 2;
 
     public SteamCard() {
-        super(Translate.CardType.Steam, 2, 0);
+//        super(Translate.CardType.Steam, 2, 0);
     }
 
     public void apply(Player subject, Player object) {

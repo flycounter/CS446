@@ -13,7 +13,7 @@ public class LavaCard extends ElementCard {
     private static final int LAVA_BURN_DURATION = 2;
 
     public LavaCard() {
-        super(Translate.CardType.Lava, 2, 3);
+//        super(Translate.CardType.Lava, 2, 3);
     }
 
     public void apply(Player subject, Player object) {

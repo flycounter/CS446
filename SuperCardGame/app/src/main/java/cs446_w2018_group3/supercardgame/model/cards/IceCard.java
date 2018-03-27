@@ -13,7 +13,7 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public class IceCard extends ElementCard {
 
     public IceCard() {
-        super(Translate.CardType.Ice, 2, 2);
+//        super(Translate.CardType.Ice, 2, 2);
     }
 
     private static final int ICE_FREEZE_DURATION = 1;

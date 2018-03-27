@@ -13,7 +13,7 @@ public class AquaCard extends ElementCard {
 
     private static final int AQUA_WET_DURATION = 2;
     public AquaCard () {
-        super(Translate.CardType.Aqua, 2, 3);
+//        super(Translate.CardType.Aqua, 2, 3);
     }
 
     public void apply(Player subject, Player object) {
