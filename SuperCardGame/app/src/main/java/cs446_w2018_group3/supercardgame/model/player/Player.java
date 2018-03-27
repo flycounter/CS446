@@ -5,7 +5,6 @@ import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 
 /**
  * Created by JarvieK on 2018/2/23.
@@ -26,8 +25,8 @@ public class Player {
     private int hp = PLAYER_DEFAULT_HP;
     private int ap = PLAYER_DEFAULT_AP;
     private int shield;
-    private List<ElementCard> deck;
-    private List<ElementCard> hand;
+    private List<Card> deck;
+    private List<Card> hand;
     private List<Buff> buffs;
 
     public class test {}
@@ -36,8 +35,8 @@ public class Player {
         this.id = id;
         this.name = name;
         shield = 0;
-        deck = new ArrayList<ElementCard>();
-        hand = new ArrayList<ElementCard>();
+        deck = new ArrayList<>();
+        hand = new ArrayList<>();
         buffs = new ArrayList<>();
     }
 
@@ -57,10 +56,10 @@ public class Player {
     public int getShield() {
         return shield;
     }
-    public List<ElementCard> getHand() {
+    public List<Card> getHand() {
         return hand;
     }
-    public List<ElementCard> getDeck() { return deck; }
+    public List<Card> getDeck() { return deck; }
     public List<Buff> getBuffs() { return buffs; }
 
     public void setHP( int newHP ) {
@@ -73,13 +72,13 @@ public class Player {
     public void setShield( int newShield ) {
         shield = newShield;
     }
-    public void addCardToHand(ElementCard c ) {
+    public void addCardToHand( Card c ) {
         hand.add(c);
     }
     public void removeCardFromHand(Card c ) {
         hand.remove(c);
     }
-    public void setDeck(List<ElementCard> deck) {
+    public void setDeck(List<Card> deck) {
         this.deck.clear();
         this.deck.addAll(deck);
     }

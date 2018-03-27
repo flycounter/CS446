@@ -44,7 +44,7 @@ public abstract class Card {
         return cardType;
     }
 
-    public static ElementCard createNewCard (Translate.CardType cardType) {
+    public static Card createNewCard (Translate.CardType cardType) {
         switch (cardType) {
             case Water: return new WaterCard();
             case Fire: return new FireCard();

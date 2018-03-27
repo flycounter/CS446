@@ -21,7 +21,6 @@ import cs446_w2018_group3.supercardgame.model.cards.*;
 
 public class Game {
     // configurations
-    private static final String TAG = Game.class.getName();
     public static final int PLAYER_AP_REGEN_PER_TURN = 3;
     public static final int PLAYER_CARD_DRAW_PER_TURN = 5;
 
@@ -41,14 +40,14 @@ public class Game {
             Player player = playerHolder.getValue();
             player.setHP(10);
             player.setAP(0);
-            List<ElementCard> deck = player.getDeck();
+            List<Card> deck = player.getDeck();
             for( int i = 0; i < 6; i++ ) {
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Fire ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Air ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Dirt ) );
+                deck.add( Card.createNewCard( Translate.CardType.Water ) );
+                deck.add( Card.createNewCard( Translate.CardType.Water ) );
+                deck.add( Card.createNewCard( Translate.CardType.Water ) );
+                deck.add( Card.createNewCard( Translate.CardType.Fire ) );
+                deck.add( Card.createNewCard( Translate.CardType.Air ) );
+                deck.add( Card.createNewCard( Translate.CardType.Dirt ) );
             }
 
             // update liveData
@@ -62,8 +61,17 @@ public class Game {
         // update LiveData
         gameRuntime.updateGameField(gameField);
 
-        Log.i(TAG, "game ready");
+        Log.i("Game", "game start done");
     }
+//
+//    private Player getPlayer(int playerId) throws PlayerNotFoundException {
+//        Player result = gameRuntime.getPlayer(playerId).getValue();
+//        if (result == null) {
+//            throw new PlayerNotFoundException();
+//        }
+//
+//        return result;
+//    }
 
     public static Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
         for ( Card c : player.getHand() ) {
@@ -89,16 +97,16 @@ public class Game {
     }
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
-        Log.i(TAG, "game model: playerTurnStart");
+        Log.i("main", "game model: playerTurnStart");
         beforePlayerTurnStart(player);
         // update player's AP
         player.addAP(PLAYER_AP_REGEN_PER_TURN);
 
         // draw cards from player's deck
-        List<ElementCard> deck = player.getDeck();
-        Log.i(TAG, String.format("deck size: %d", player.getDeck().size()));
+        List<Card> deck = player.getDeck();
+        Log.i("Game", String.format("deck size: %d", player.getDeck().size()));
         for (int i = 0; i < PLAYER_CARD_DRAW_PER_TURN && deck.size() > 0; i++) {
-//            Log.i(TAG, "drawing card from deck");
+//            Log.i("Game", "drawing card from deck");
             player.addCardToHand(deck.remove(rng.nextInt(deck.size())));
         }
 
@@ -107,7 +115,7 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
-        Log.i(TAG, "game model: playerTurnEnd");
+        Log.i("main", "game model: playerTurnEnd");
         // nothing to do at this moment?
         // update player AP??? isn't the game supposed to carry on AP to the next turn?
         player.setAP(0);

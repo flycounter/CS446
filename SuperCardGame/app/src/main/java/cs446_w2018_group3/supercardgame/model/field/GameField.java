@@ -8,6 +8,7 @@ import cs446_w2018_group3.supercardgame.model.player.Player;
 
 public class GameField {
     private Weather weather;
+    private Player nextPlayer;
 
     public GameField() {
         // create field with random weather
@@ -15,4 +16,12 @@ public class GameField {
     }
 
     public Weather getWeather() { return weather; }
+
+    public Player getNextPlayer() {
+        return nextPlayer;
+    }
+
+    public void setNextPlayer(Player nextPlayer) {
+        this.nextPlayer = nextPlayer;
+    }
 }

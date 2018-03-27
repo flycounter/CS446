@@ -1,11 +1,4 @@
 <resources>
     <string name="app_name">SuperCardGame</string>
     <string name="title_activity_single_play">SinglePlayActivity</string>
-    <string name="title_activity_multiplayer_game">MultiplayerGameActivity</string>
-    <string name="title_activity_lobby">Lobby</string>
-
-    <string name="hello_world">Hello world!</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
