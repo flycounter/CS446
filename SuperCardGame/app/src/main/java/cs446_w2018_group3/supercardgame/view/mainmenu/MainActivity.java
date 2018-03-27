@@ -6,6 +6,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -141,9 +142,10 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
                 Gson gson = new Gson();
                 Random rng = new Random();
                 User user = new User();
+                user.setId((long) rng.nextInt(987654321));
+                Log.i(TAG, "userId generated: " + user.getId());
 
                 Player player = new Player(new BigDecimal(user.getId()).intValueExact(), userName);
-                user.setId(rng.nextLong());
                 user.setPlayerData(gson.toJson(player));
                 User.replaceUser(getSession().getUserDao(), user);
             }

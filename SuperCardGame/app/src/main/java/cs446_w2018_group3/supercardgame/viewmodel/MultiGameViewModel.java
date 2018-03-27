@@ -32,8 +32,6 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
     private final static String TAG = MultiGameViewModel.class.getName();
     private INetworkConnector mNetworkConnector;
     private boolean isHost;
-    private boolean isRemoteStartGameNotified = false;
-    private DaoSession mSession;
 
     public MultiGameViewModel(Application application) {
         super(application);
@@ -52,12 +50,13 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
         super.init(bundle, gameReadyCallback, stateEventListener);
 
         player = Player.getLocalPlayer(mSession);
+        addLocalPlayer(player);
 
         if (isHost()) {
             mNetworkConnector = new NetworkConnector(HostHandler.getHost(), (MultiGameEventHandler) gameEventHandler, this);
         } else {
             mNetworkConnector = new NetworkConnector(ClientHandler.getClient(), (MultiGameEventHandler) gameEventHandler, this);
-            mNetworkConnector.sendPlayerData(gameRuntime.getLocalPlayer().getValue());
+            mNetworkConnector.sendPlayerData(player);
         }
 
         ((MultiGameEventHandler) gameEventHandler).setLocalGameEventListener((LocalGameEventListener) mNetworkConnector);
