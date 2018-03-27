@@ -8,33 +8,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerActionException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerActionNotAllowed;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidStateException;
-import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.PlayerStateException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.GameStateException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
-import cs446_w2018_group3.supercardgame.util.events.GameEndEvent;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/2/24.
  */
 
 public class GameEventHandler implements IGameEventHandler {
+    private static final String TAG = GameEventHandler.class.getName();
     private Game game;
     private GameRuntime gameRuntime;
 
     // event listener
-    private List<StateEventAdapter> stateEventAdapters;
+    private List<StateEventListener> stateEventListeners;
 
     public GameEventHandler() {
-        stateEventAdapters = new ArrayList<>();
+        stateEventListeners = new ArrayList<>();
     }
 
     @Override
@@ -52,8 +55,8 @@ public class GameEventHandler implements IGameEventHandler {
 
             game.useCard(subject, target, card);
         }
-        catch (PlayerStateException | PlayerActionException err) {
-            Log.w("main", err);
+        catch (GameStateException | PlayerActionException err) {
+            Log.w(TAG, err);
             // TODO: send err to UI
         }
     }
@@ -77,8 +80,8 @@ public class GameEventHandler implements IGameEventHandler {
 
             game.playerCombineElementsEventHandler(player, cards);
         }
-        catch (PlayerStateException | PlayerActionException err) {
-            Log.w("main", err);
+        catch (GameStateException | PlayerActionException err) {
+            Log.w(TAG, err);
             // TODO: send err to UI
         }
     }
@@ -89,11 +92,7 @@ public class GameEventHandler implements IGameEventHandler {
             gameRuntime.checkPlayerEventState(_e);
             gameRuntime.turnEnd();
             gameRuntime.turnStart();
-            TurnStartEvent e = new TurnStartEvent(gameRuntime.getCurrPlayer().getValue().getId());
-            Log.i("main", "notifying turn start event");
-            for (StateEventAdapter adapter: stateEventAdapters) {
-                adapter.onTurnStart(e);
-            }
+            handleTurnStartEvent(new TurnStartEvent(gameRuntime.getCurrPlayer().getId()));
         }
         catch (InvalidStateException | PlayerActionException err) {
             if (err instanceof PlayerCanNotEnterTurnException) {
@@ -106,7 +105,7 @@ public class GameEventHandler implements IGameEventHandler {
                 }
 
                 if (winner == null) {
-                    Log.w("main", "all players' HP reaches zero");
+                    Log.w(TAG, "all players' HP reaches zero");
                     return;
                 }
 
@@ -114,26 +113,58 @@ public class GameEventHandler implements IGameEventHandler {
                 handleGameEndEvent(new GameEndEvent(winner));
                 return;
             }
-            Log.w("main", err);
+            Log.w(TAG, err);
             // TODO: send err to UI
         }
     }
 
     @Override
     public void handleGameEndEvent(GameEndEvent e) {
-        for (StateEventAdapter adapter: stateEventAdapters) {
-            adapter.onGameEnd(e.getWinner());
+        for (StateEventListener listener: stateEventListeners) {
+            listener.onGameEnd(e);
         }
     }
 
-    void bind(GameRuntime gameRuntime) {
+    @Override
+    public void handleTurnStartEvent(TurnStartEvent e) {
+        for (StateEventListener listener: stateEventListeners) {
+            listener.onTurnStart(e);
+        }
+    }
+
+    @Override
+    public void handlePlayerAddEvent(PlayerAddEvent e) {
+        try {
+            gameRuntime.checkPlayerEventState(e);
+            if (gameRuntime.getLocalPlayer().getValue() == null) {
+                gameRuntime.updateLocalPlayer(e.getPlayer());
+            }
+            else if (gameRuntime.getOtherPlayer().getValue() == null) {
+                gameRuntime.updateOtherPlayer(e.getPlayer());
+            }
+            else {
+                Log.w(TAG, "cannot add more players: " + e.getPlayer());
+            }
+        }
+        catch (InvalidStateException | PlayerActionNotAllowed err) {
+            Log.w(TAG, err);
+//            TODO: send err to UI
+        }
+    }
+
+    @Override
+    public void bind(GameRuntime gameRuntime) {
         this.gameRuntime = gameRuntime;
         this.game = gameRuntime.getGameModel();
     }
 
+    protected GameRuntime getGameRuntime() {
+        return this.gameRuntime;
+    }
+
     @Override
-    public void addStateEventListener(StateEventAdapter adapter) {
-        stateEventAdapters.add(adapter);
-        Log.i("main", "state event listener added");
+    public void addStateEventListener(StateEventListener listener) {
+        stateEventListeners.add(listener);
+        Log.i(TAG, "state event listener added");
     }
 }
