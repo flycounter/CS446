@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs446_w2018_group3.supercardgame.PopupInfo;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
@@ -341,7 +342,9 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cardBox.performClick();
+                PopupInfo popupInfo = new PopupInfo(GameActivity.this,card.getCardType());
+                popupInfo.showPopup(new View(GameActivity.this));
+
             }
         });
     }
@@ -371,14 +374,6 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
 
     private void runTutorial() {
         //For demo
-//        ArrayList<Card> hand = new ArrayList<>();
-//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        hand.add( Card.createNewCard( Translate.CardType.Water ) );
-//        viewModel.getGameRuntime().getPlayer().getValue().hand = hand;
-        //For Aiur
         combine.setEnabled(false);
         use.setEnabled(false);
         endTurn.setEnabled(false);
@@ -543,4 +538,3 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         return mSession;
     }
 }
-

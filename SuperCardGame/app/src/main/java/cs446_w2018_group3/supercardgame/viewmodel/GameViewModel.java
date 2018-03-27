@@ -150,8 +150,10 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         deliverErrorMessage(message);
     }
 
+
     public void setSession(DaoSession session) {
         Log.i(TAG, "session set: " + session);
         mSession = session;
     }
 }
+

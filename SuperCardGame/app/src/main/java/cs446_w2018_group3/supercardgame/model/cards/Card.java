@@ -67,6 +67,27 @@ public abstract class Card {
         return null;
     }
 
+    public static String getInfo(Translate.CardType cardType){
+
+        switch (cardType){
+            case  Water: return "Water card.Base element.Deal 1 damage.";
+            case  Fire: return "Fire card.Base element.Deal 1 damage.";
+            case  Air: return "Air card.Base element.Deal 1 damage.";
+            case  Dirt: return "Dirt card.Base element.Deal 1 damage.";
+            case  Aqua: return "Aqua card.High level element.Combine by 2 water.Deal 3 damage.";
+            case  Steam: return "Steam card.Combined element.Combine by water and fire.Your opponent might miss attack in next 3 turns.";
+            case  Ice: return "Ice card.Combined element.Combine by water and air.Freeze your opponent and he will lose the ability of combining elements in next turn.";
+            case  Mud: return "Mud card.Combined element.Combine by dirt and water.So hard to move in mud!Decrease your opponent ap by 3 in next turn.";
+            case  Flame: return "Flame card.High level element.Combine by 2 fire.Deal 2 damage per turn to your opponent.Last 2 turns.";
+            case  Blast: return "Blast card.Combined element.Combine by fire and air.";
+            case Lava: return "Lava card.Combined element.Combine by fire and dirt.";
+            case Gale: return "Gale card.High level element.Combine by 2 air.Deal 3 damage.";
+            case Sand: return "Sand card.Combined element.Combine by dirt and air.Gain 3 shields.";
+            case Rock: return "Rock card.High level element.Combine by 2 dirt.Deal 3 damage.";
+        }
+        return "unkonwed card.";
+    }
+
     public CardInfo getCardInfo () {
         return new CardInfo(cardId, cardType);
     }
