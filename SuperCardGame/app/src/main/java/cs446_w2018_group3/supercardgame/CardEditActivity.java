@@ -20,13 +20,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.greenrobot.greendao.database.Database;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.dao.User;
+import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
@@ -38,13 +49,15 @@ public class CardEditActivity extends AppCompatActivity {
     Button remove;
     TextView collectionText;
     TextView deckText;
-    GameViewModel viewModel;
+    DaoSession mSession;
     //cache deck
-    List<Card> cacheDeck;
-    List<Card> collection;
+    Player mPlayer;
+    User mUser;
+    List<ElementCard> cacheDeck;
+    List<ElementCard> collection;
     Map<Integer, Integer> CardDataMap;
-    List<Integer> addList; // store id of cards chosen to add into deck
-    List<Integer> removeList;//card chosen to remove from deck
+    List<ElementCard> addList; // store id of cards chosen to add into deck
+    List<ElementCard> removeList;//card chosen to remove from deck
     int TEXT_SIZE;
 
     @Override
@@ -60,19 +73,12 @@ public class CardEditActivity extends AppCompatActivity {
         addList = new ArrayList<>();
         cacheDeck = new ArrayList<>();
         collection = new ArrayList<>();
-        //get and update cacheDeck
-      /*  viewModel.getDeck().observe(this, new Observer<List<Card>>() {
-            @Override
-            public void onChanged(Player player) {
-                if (cacheDeck.size() == 0) {
-                    //todo
-                }
-                if (collection.size() == 0) {
-                    //todo
-                }
-                //todo
-            }
-        }); */
+        getSession();
+        mUser = User.getLocalUser(mSession.getUserDao());
+        cacheDeck = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck();
+        collection= new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck();
+        String userName = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
+        mPlayer = new Player(new BigDecimal(mUser.getId()).intValueExact(), userName);
         //connect wigets
         add = findViewById(R.id.AddButton);
         remove = findViewById(R.id.RemoveButton);
@@ -86,7 +92,8 @@ public class CardEditActivity extends AppCompatActivity {
         add.setText("ADD");
         remove.setText("REMOVE");
         collectionText.setText("Your collection");
-        deckText.setText("Your deck          Card number:10");
+        int cardNo = cacheDeck.size();
+        deckText.setText("Your deck          Card number:"+Integer.toString(cardNo));
         setTextSize(TEXT_SIZE);
         //button listener
         exit.setOnClickListener(new View.OnClickListener() {
@@ -101,24 +108,50 @@ public class CardEditActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //todo
+                mPlayer.setDeck(cacheDeck);
+                mPlayer.setCollectionDeck(collection);
+                Gson gson = new Gson();
+                mUser.setPlayerData(gson.toJson(mPlayer));
+                User.replaceUser(mSession.getUserDao(),mUser);
             }
         });
-        //create a fake deck and collection
-        for(int i=0;i<10;i++){
-            Card water =Card.createNewCard(Translate.CardType.Water);
-            Card fire = Card.createNewCard(Translate.CardType.Fire);
-            cacheDeck.add(water);
-            collection.add(fire);
-        }
-        //create card view
-        //resetContainer();
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(ElementCard cards : addList){
+                    cacheDeck.add(cards);
+                }
+                for(ElementCard cards: addList){
+                    collection.remove(cards);
+                }
+                addList.clear();
+                resetContainer();
+                setContainer(collection,1);
+                setContainer(cacheDeck,2);
+            }
+        });
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(ElementCard cards : removeList){
+                    cacheDeck.remove(cards);
+                }
+                for(ElementCard cards: removeList){
+                    collection.add(cards);
+                }
+                removeList.clear();
+                resetContainer();
+                setContainer(collection,1);
+                setContainer(cacheDeck,2);
+            }
+        });
+
         setContainer(collection,1);
         setContainer(cacheDeck,2);
 
     }
     //create a card and add it into collection container(mode 1) or deck container(mode 2)
-    private void setCard(Card card,int mode){
+    private void setCard(ElementCard card,int mode){
         //create a view for card and checkbox
         final LinearLayout childLayout = new LinearLayout(this);
         childLayout.setOrientation(LinearLayout.VERTICAL);
@@ -146,36 +179,24 @@ public class CardEditActivity extends AppCompatActivity {
 
         // data binding (in a lame way)
         // NOTE: need to be aware of variable scope
-        int checkboxId = CardDataMap.size();
-        CardDataMap.put(checkboxId, card.getCardId());
 
         cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
                     if(mode==1) {
-                        addList.add(CardDataMap.get(checkboxId));
+                        addList.add(card);
                     }
                     else{
-                        removeList.add(CardDataMap.get(checkboxId));
+                        removeList.add(card);
                     }
                 } else {
-                    List<Integer> cardsToDelete = new ArrayList<>();
                     if(mode==1) {
-                        for (Integer id : addList) {
-                            if (id.equals(CardDataMap.get(checkboxId))) {
-                                cardsToDelete.add(id);
-                            }
+                                addList.remove(card);
                         }
-                        addList.removeAll( cardsToDelete );
-                    }
                     else{
-                        for (Integer id : removeList) {
-                            if (id.equals(CardDataMap.get(checkboxId))) {
-                                cardsToDelete.add(id);
-                            }
-                        }
-                        removeList.removeAll( cardsToDelete );
+
+                             removeList.remove(card);
                     }
                 }
             }
@@ -190,9 +211,9 @@ public class CardEditActivity extends AppCompatActivity {
         });
     }
 
-    private void setContainer(List<Card> cards,int mode) {
+    private void setContainer(List<ElementCard> cards,int mode) {
         // NOTE: must be called after resetHandView()
-        for (Card card: cards) {
+        for (ElementCard card: cards) {
             setCard(card,mode);
         }
     }
@@ -205,6 +226,8 @@ public class CardEditActivity extends AppCompatActivity {
         removeList.clear();
         addList.clear();
         CardDataMap.clear();
+        int cardNo=cacheDeck.size();
+        deckText.setText("Your deck          Card number:"+Integer.toString(cardNo));
     }
 
     private void setCardImage(ImageView cardView,String cardName){
@@ -231,8 +254,14 @@ public class CardEditActivity extends AppCompatActivity {
         collectionText.setTextSize(textSize);
     }
 
-    private void observeViewModel(GameViewModel viewModel) {
-        //todo
+    private DaoSession getSession() {
+        if (mSession == null) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Config.DB_NAME);
+            Database db = helper.getWritableDb();
+            helper.getReadableDb();
+            mSession = new DaoMaster(db).newSession();
+        }
+        return mSession;
     }
 
 }

@@ -29,7 +29,6 @@ public class CardShopActivity extends AppCompatActivity {
     TextView title;
     Button exit;
     private DaoSession mSession;
-    GameViewModel viewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

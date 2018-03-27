@@ -166,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
                 Log.i(TAG, "userId generated: " + user.getId());
 
                 Player player = new Player(new BigDecimal(user.getId()).intValueExact(), userName);
+                if(user.getPlayerData()==null) {
+                    player.setDefault();
+                }
                 user.setPlayerData(gson.toJson(player));
                 User.replaceUser(getSession().getUserDao(), user);
             }

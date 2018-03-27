@@ -3,6 +3,7 @@ package cs446_w2018_group3.supercardgame.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.util.events.payload.*;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
@@ -20,7 +21,8 @@ public class Player {
     private List<Card> deck;
     public List<Card> hand;
     private List<Buff> buffs;
-
+    private List<Integer> collection; //0:water,1:fire 2:dirt 3:air
+    private int gold;
     public class test {}
 
     public Player( int id, String name ) {
@@ -31,6 +33,8 @@ public class Player {
         buffs = new ArrayList<Buff>();
     }
 
+    public List<Integer> getCollection(){return collection;}
+    public void setCollection(int index,int value){collection.set(index,value);}
     public int getId() {
         return id;
     }
@@ -51,7 +55,8 @@ public class Player {
     }
     public List<Card> getDeck() { return deck; }
     public List<Buff> getBuffs() { return buffs; }
-
+    public int getGold(){return gold;}
+    public void setGold(int newGold){gold=newGold;}
     public void setHP( int newHP ) {
         health = newHP;
     }
@@ -67,7 +72,7 @@ public class Player {
     public void removeCardFromHand(Card c ) {
         hand.remove(c);
     }
-    public void setDeck(List<Card> deck) { this.deck = deck; }
+    public void setDeck(List deck) { this.deck = deck; }
     public void addBuff (Buff b) {
         if(buffs.size() == 0) {
             buffs = new ArrayList<>();

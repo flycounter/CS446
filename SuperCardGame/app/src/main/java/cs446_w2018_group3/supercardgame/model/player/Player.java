@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.buffs.Buff;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
@@ -34,8 +35,49 @@ public class Player {
     private List<ElementCard> hand;
     private List<Buff> buffs;
     private List<Integer> collection;// 0:water,1:fire,2:air,3:dirt
-    public class test {}
+    private  List<ElementCard> collectionDeck;
 
+    int gold;
+
+    public class test {}
+    public List<ElementCard> getCollectionDeck(){return collectionDeck;}
+    public void setCollectionDeck(List<ElementCard> aDeck){
+        this.collectionDeck.clear();
+        this.collectionDeck.addAll(aDeck);
+    }
+
+    public void setDefault(){
+        for(int i=0;i<5;i++){
+            ElementCard water =Card.createNewCard(Translate.CardType.Water);
+            ElementCard fire = Card.createNewCard(Translate.CardType.Fire);
+            ElementCard air =Card.createNewCard(Translate.CardType.Air);
+            ElementCard dirt = Card.createNewCard(Translate.CardType.Dirt);
+            deck.add(water);
+            deck.add(fire);
+            deck.add(air);
+            deck.add(dirt);
+        }
+        for(int i=0;i<4;i++){
+            collection.add(5);
+        }
+        for(int i=0;i<collection.get(0);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Water);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<collection.get(1);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Fire);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<collection.get(2);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Air);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<collection.get(3);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Dirt);
+            collectionDeck.add(newCard);
+        }
+        gold=500;
+    }
     public Player( int id, String name ) {
         this.id = id;
         this.name = name;
@@ -43,6 +85,8 @@ public class Player {
         deck = new ArrayList<ElementCard>();
         hand = new ArrayList<ElementCard>();
         buffs = new ArrayList<>();
+        collection = new ArrayList<Integer>();
+        collectionDeck = new ArrayList<ElementCard>();
     }
 
     public int getId() {
@@ -67,6 +111,9 @@ public class Player {
     public List<ElementCard> getDeck() { return deck; }
     public List<Buff> getBuffs() { return buffs; }
     public List<Integer> getCollection(){return collection;}
+    public int getGold(){return gold;}
+    public void setGold(int newGold){gold=newGold;}
+    public void setCollection(int index,int value){collection.set(index,value);}
 
     public void setHP( int newHP ) {
         hp = newHP;
