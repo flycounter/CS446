@@ -1,7 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.player;
 
 import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
 
 /**
  * Created by JarvieK on 2018/3/1.
