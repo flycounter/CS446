@@ -8,9 +8,11 @@ import java.util.Random;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.CardNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.ElementCardsCanNotCombineException;
+import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerInsufficientApException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
+import cs446_w2018_group3.supercardgame.model.field.Weather.Weather;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.model.cards.*;
@@ -24,6 +26,7 @@ public class Game {
     private static final String TAG = Game.class.getName();
     public static final int PLAYER_AP_REGEN_PER_TURN = 3;
     public static final int PLAYER_CARD_DRAW_PER_TURN = 5;
+    public static final int PLAYER_COMBINE_ELEMENT_COST = 1;
 
     private GameRuntime gameRuntime;
     private Random rng = new Random(System.currentTimeMillis()); // seed = curr unix time
@@ -78,7 +81,7 @@ public class Game {
     private void beforePlayerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
         // apply buff first
         player.applyBuff();
-
+        gameRuntime.getGameField().getValue().getWeather().apply(player);
         // update LiveData
         gameRuntime.updatePlayer(player);
 
@@ -123,7 +126,13 @@ public class Game {
         gameRuntime.setNextPlayer();
     }
 
-    public void useCard(Player subject, Player target, Card card) throws PlayerNotFoundException, CardNotFoundException {
+    public void useCard(Player subject, Player target, Card card) throws PlayerInsufficientApException,PlayerNotFoundException, CardNotFoundException {
+        // check whether subject player has enough AP
+        if (subject.getAP() < card.getCost()) {
+            throw new PlayerInsufficientApException();
+        }
+        subject.setAP(subject.getAP() - card.getCost());
+
         // take card from subject's hand
         subject.removeCardFromHand(card);
 
@@ -136,16 +145,18 @@ public class Game {
     }
 
     public void playerCombineElementsEventHandler(Player player, List<ElementCard> cards)
-            throws PlayerNotFoundException, CardNotFoundException, ElementCardsCanNotCombineException {
+            throws PlayerInsufficientApException, PlayerNotFoundException, CardNotFoundException, ElementCardsCanNotCombineException {
 
         // validation
         if (!ElementCard.canCombine(cards.get(0), cards.get(1))) {
             throw new ElementCardsCanNotCombineException(cards);
         }
+        if (player.getAP() < PLAYER_COMBINE_ELEMENT_COST) {
+            throw new PlayerInsufficientApException();
+        }
 
         // do combination
         // TODO: update the method to support arbitrary number of cards
-        // TODO: check player's AP
         Translate.CardType cardType = ElementCard.combine(cards.get(0).getCardType(), cards.get(1).getCardType());
         ElementCard newCard = (ElementCard) Card.createNewCard(cardType);
 
@@ -153,6 +164,7 @@ public class Game {
             throw new ElementCardsCanNotCombineException(cards);
         }
 
+        player.setAP(player.getAP() - PLAYER_COMBINE_ELEMENT_COST);
         player.addCardToHand(newCard);
         player.removeCardFromHand(cards.get(0));
         player.removeCardFromHand(cards.get(1));

@@ -10,11 +10,11 @@ public class Translate {
     }
 
     public static enum Weather {
-         Sunny, Rain, Cloudy
+         Sunny, Rainy, Cloudy
     }
 
     public static enum BuffType {
-        Burn, Dodge
+        Burn, Dodge, Wet
     }
 
     public static int cardToInt (CardType card) {
