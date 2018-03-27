@@ -92,7 +92,7 @@ public class Game {
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
         String msg;
-        msg = player.getName() + " turn start.";
+        msg = player.getName() + " turn starts";
         // update log info
         gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnStart");
@@ -114,7 +114,7 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
-        String msg = player.getName() + "turn end";
+        String msg = player.getName() + "turn ends";
         gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnEnd");
         // nothing to do at this moment?
@@ -138,7 +138,7 @@ public class Game {
 
         // apply card to target
         card.apply(subject, target);
-        String msg = subject.getName() + " use " + card.getCardType().toString() + " card to " + target.getName();
+        String msg = subject.getName() + " use a " + card.getCardType().toString() + " card to " + target.getName();
         // update LiveData
         gameRuntime.updatePlayer(subject);
         gameRuntime.updatePlayer(target);
@@ -162,9 +162,9 @@ public class Game {
         if (newCard == null) {
             throw new ElementCardsCanNotCombineException(cards);
         }
-        String msg = player.getName() + " combine ";
-        msg = msg + cards.get(0).getCardType().toString() + " and " + cards.get(1).getCardType().toString();
-        msg = msg + " gets " + newCard.getCardType().toString();
+        String msg = player.getName() + " combines ";
+        msg = msg + cards.get(0).getCardType().toString() + " card and " + cards.get(1).getCardType().toString();
+        msg = msg + " card get a " + newCard.getCardType().toString() + " card";
         player.addCardToHand(newCard);
         player.removeCardFromHand(cards.get(0));
         player.removeCardFromHand(cards.get(1));

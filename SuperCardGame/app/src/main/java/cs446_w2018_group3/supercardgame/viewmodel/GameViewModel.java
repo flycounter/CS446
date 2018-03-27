@@ -137,9 +137,9 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         if (Looper.myLooper() == Looper.getMainLooper()) actionLogMessage.setValue(message); else actionLogMessage.postValue(message);
     }
 
-    public LiveData<String> getActionLogMessage() {
-        return actionLogMessage;
-    }
+//    public LiveData<String> getActionLogMessage() { return actionLogMessage; }
+
+    public LiveData<String> getActionLogMessage() { return gameRuntime.getLogInfo(); }
 
     public interface GameReadyCallback {
         void onGameReady();
