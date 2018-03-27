@@ -14,5 +14,6 @@ public class TutorialGameActivity extends GameActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this).get(SingleGameViewModel.class);
+
     }
 }

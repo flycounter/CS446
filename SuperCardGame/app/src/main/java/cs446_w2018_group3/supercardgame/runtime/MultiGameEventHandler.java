@@ -25,18 +25,15 @@ public class MultiGameEventHandler extends GameEventHandler implements RemoteGam
     private static final String TAG = MultiGameEventHandler.class.getName();
 
     private LocalGameEventListener mLocalEventListener;
-    private MultiGameViewModel mViewModel;
-    private boolean onGameReadyNotified = false;
 
     public MultiGameEventHandler() {
 
     }
 
     private void dispatchGameEvent(GameEvent e) {
-        if (mLocalEventListener == null) {
-            return;
+        if (mLocalEventListener != null) {
+            mLocalEventListener.onGameEvent(e);
         }
-        mLocalEventListener.onGameEvent(e);
     }
 
     @Override

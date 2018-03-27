@@ -475,7 +475,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     @Override
     public void onTurnStart(TurnStartEvent e) {
         Log.i(TAG, String.format("TurnStartEvent, playerId: %s, receiverId: %s",
-                e.getSubjectId(), viewModel.getThisPlayer().getValue()));
+                e.getSubjectId(), viewModel.getThisPlayer().getValue().getId()));
 
         // android.util.AndroidRuntimeException: Animators may only be run on Looper threads
         runOnUiThread(new Runnable() {
@@ -534,6 +534,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             helper.getReadableDb();
             mSession = new DaoMaster(db).newSession();
         }
+        Log.i(TAG, mSession.toString());
         return mSession;
     }
 }

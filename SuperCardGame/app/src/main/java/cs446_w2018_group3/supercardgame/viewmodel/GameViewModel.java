@@ -53,7 +53,6 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         this.player = player;
 
         gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(player));
-        gameEventHandler.setErrorMessageListener(this);
         Log.i(TAG, String.format("local player added: %s", player.getName()));
     }
 
@@ -61,6 +60,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         mGameReadyCallback = gameReadyCallback;
         mStateEventListener = stateEventListener;
         gameEventHandler.addStateEventListener(mStateEventListener);
+        gameEventHandler.setErrorMessageListener(this);
     }
 
     public void start() {
@@ -146,11 +146,13 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
 
     @Override
     public void onMessage(String message) {
+        Log.w(TAG, "error message to UI: " + message);
         deliverErrorMessage(message);
     }
 
 
     public void setSession(DaoSession session) {
+        Log.i(TAG, "session set: " + session);
         mSession = session;
     }
 }
