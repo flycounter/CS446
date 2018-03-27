@@ -8,84 +8,102 @@
     tools:context="cs446_w2018_group3.supercardgame.CardEditActivity">
 
     <LinearLayout
+        android:id="@+id/ExitSave"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeckScroll">
 
-        <TextView
-            android:id="@+id/CollectionText"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="TextView" />
+        <Button
+            android:id="@+id/SaveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="180dp">
+        <Button
+            android:id="@+id/ExitEditButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+    </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/CollectionContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
-        </HorizontalScrollView>
+    <TextView
+        android:id="@+id/DeckText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/AddRemove" />
 
-        <TextView
-            android:id="@+id/DeckText"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="TextView" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/AddButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:id="@+id/RemoveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-        </LinearLayout>
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="180dp">
-
-            <LinearLayout
-                android:id="@+id/DeckContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"></LinearLayout>
-        </HorizontalScrollView>
+    <HorizontalScrollView
+        android:id="@+id/DeckScroll"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintTop_toBottomOf="@+id/DeckText">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/DeckContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"></LinearLayout>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/CollectionText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <HorizontalScrollView
+        android:id="@+id/CollectScrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CollectionText">
+
+        <LinearLayout
+            android:id="@+id/CollectionContainer"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/SaveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:id="@+id/ExitEditButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Button" />
         </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/AddRemove"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/CollectScrollContainer">
+
+        <Button
+            android:id="@+id/AddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/RemoveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Button" />
 
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
