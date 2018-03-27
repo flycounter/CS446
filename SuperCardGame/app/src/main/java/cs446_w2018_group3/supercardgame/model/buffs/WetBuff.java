@@ -8,7 +8,13 @@ import cs446_w2018_group3.supercardgame.model.player.Player;
  */
 
 public class WetBuff extends Buff {
-    public WetBuff(Translate.BuffType label, Player subject, Player object, int turns) {
-        super(label, subject, object, turns);
+    private static final Translate.BuffType TYPE = Translate.BuffType.Wet;
+
+    public WetBuff(int turns) {
+        super(TYPE, turns);
+    }
+
+    public WetBuff(int id, Translate.BuffType type, int remainingTurns) {
+        super(id, type, remainingTurns);
     }
 }

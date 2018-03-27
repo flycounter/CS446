@@ -18,6 +18,6 @@ public class AquaCard extends ElementCard {
 
     public void apply(Player subject, Player object) {
         Effect.dealDamageEffect(subject, object, damage);
-        object.addBuff(new WetBuff(Translate.BuffType.Wet, subject, object, AQUA_WET_DURATION));
+        object.addBuff(new WetBuff(AQUA_WET_DURATION));
     }
 }

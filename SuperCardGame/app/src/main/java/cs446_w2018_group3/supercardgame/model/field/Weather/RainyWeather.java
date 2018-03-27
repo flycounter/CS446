@@ -10,12 +10,14 @@ import cs446_w2018_group3.supercardgame.model.player.Player;
 
 public class RainyWeather extends Weather {
     private static final int RAINY_WET_DURATION = 1;
+
     public RainyWeather() {
         this.label = "Rainy";
     }
+
     @Override
     public void apply(Player player) {
         // Applies wet buff to a player
-        player.addBuff(new WetBuff(Translate.BuffType.Wet, player, player, RAINY_WET_DURATION));
+        player.addBuff(new WetBuff(RAINY_WET_DURATION));
     }
 }

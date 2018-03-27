@@ -167,11 +167,13 @@ public class Player {
         this.deck.clear();
         this.deck.addAll(deck);
     }
-    public void addBuff (Buff b) { buffs.add(b); }
+    public void addBuff (Buff b) {
+        buffs.add(b);
+    }
     public void removeBuff(Buff b) { buffs.remove(b); }
     public void removeBuff (int id) {
         for ( Buff b: buffs ) {
-            if (b.getBuffId() == id) {
+            if (b.getId() == id) {
                 buffs.remove(b);
                 break;
             }
@@ -188,8 +190,8 @@ public class Player {
         int turns;
         List<Buff> buffsToRemove = new ArrayList<>();
         for ( Buff b: buffs ) {
-            turns = b.applyBuff();
-            if ( turns == 0 ) {
+            b.applyBuff(this);
+            if (b.getRemainingTurns() <= 0) {
                 buffsToRemove.add(b);
             }
         }

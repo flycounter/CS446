@@ -8,12 +8,17 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class DodgeBuff extends Buff {
-    public DodgeBuff(Translate.BuffType label, Player subject, Player object) {
-        super( label, subject ,object ,2 );
+    private static final Translate.BuffType TYPE = Translate.BuffType.Dodge;
+    public DodgeBuff(int turns) {
+        super(TYPE, turns);
     }
 
-    public int applyBuff() {
-        remainingTurns -= 1;
-        return remainingTurns;
+    public DodgeBuff(int id, Translate.BuffType type, int remainingTurns) {
+        super(id, type, remainingTurns);
+    }
+
+    @Override
+    public void applyBuff(Player player) {
+        super.applyBuff(player);
     }
 }

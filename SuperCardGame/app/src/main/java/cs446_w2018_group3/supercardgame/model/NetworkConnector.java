@@ -3,10 +3,13 @@ package cs446_w2018_group3.supercardgame.model;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.java_websocket.WebSocket;
 
 import cs446_w2018_group3.supercardgame.Exception.NetworkException.UnknownMessageException;
+import cs446_w2018_group3.supercardgame.model.buffs.Buff;
+import cs446_w2018_group3.supercardgame.model.buffs.BuffAdapter;
 import cs446_w2018_group3.supercardgame.model.dto.GameRuntimeData;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.network.INetworkConnector;
@@ -41,7 +44,7 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
     private final MultiGameViewModel mViewModel;
     private final RemoteGameEventListener mRemoteGameEventListener;
 
-    private final Gson gson = new Gson();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(Buff.class, new BuffAdapter()).create();
 
 
     public NetworkConnector(IClient client,
@@ -71,8 +74,7 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
         if (!mViewModel.isHost() && e instanceof ActionEvent) {
             // action event from client
             sendGameEvent(e);
-        }
-        else {
+        } else {
             // host
             if (e instanceof StateEvent) {
                 sendGameEvent(e);
@@ -133,7 +135,8 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
     @Override
     public void sendSyncData(GameRuntimeData gameRuntimeData) {
         Log.i(TAG, "sending sync data to remote");
-        sendable.sendMessage(gson.toJson(new PayloadInfo(PayloadInfo.Type.SYNC_DATA, gson.toJson(gameRuntimeData))));
+        String serializedData = gson.toJson(gameRuntimeData);
+        sendable.sendMessage(gson.toJson(new PayloadInfo(PayloadInfo.Type.SYNC_DATA, serializedData)));
     }
 
     @Override
@@ -193,6 +196,7 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                             throw new UnknownMessageException();
                     }
                     mRemoteGameEventListener.onGameEventReceived(e);
+
                 }
                 break;
                 case SYNC_DATA:

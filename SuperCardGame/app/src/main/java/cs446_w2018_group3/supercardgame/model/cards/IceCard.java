@@ -12,15 +12,17 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 
 public class IceCard extends ElementCard {
 
-    public IceCard () {
+    public IceCard() {
         super(Translate.CardType.Ice, 2, 2);
     }
+
     private static final int ICE_FREEZE_DURATION = 1;
+
     public void apply(Player subject, Player object) {
         Effect.dealDamageEffect(subject, object, damage);
-        for (Buff b:object.getBuffs()) {
-            if (b.getLabel() == Translate.BuffType.Wet) {
-                object.addBuff(new FreezeBuff(Translate.BuffType.Freeze, subject, object, ICE_FREEZE_DURATION));
+        for (Buff b : object.getBuffs()) {
+            if (b.getBuffType() == Translate.BuffType.Wet) {
+                object.addBuff(new FreezeBuff(ICE_FREEZE_DURATION));
                 break;
             }
         }
