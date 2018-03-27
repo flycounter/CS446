@@ -40,7 +40,6 @@ import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
  */
 public class HostGameDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = HostGameDialogFragment.class.getName();
-    // TODO: Rename parameter arguments, choose names that match
 
     LobbyViewModel viewModel;
 
@@ -56,7 +55,6 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
      *
      * @return A new instance of fragment HostGameDialogFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static HostGameDialogFragment newInstance() {
         HostGameDialogFragment fragment = new HostGameDialogFragment();
         fragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
@@ -140,7 +138,6 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
 
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
             mListener.onFragmentInteraction();
@@ -183,7 +180,6 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction();
     }
 }
