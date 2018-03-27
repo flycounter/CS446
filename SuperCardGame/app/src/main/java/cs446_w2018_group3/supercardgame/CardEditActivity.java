@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cs446_w2018_group3.supercardgame.model.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
+import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 import cs446_w2018_group3.supercardgame.viewmodel.GameViewModel;
 
 public class CardEditActivity extends AppCompatActivity {
@@ -48,15 +48,13 @@ public class CardEditActivity extends AppCompatActivity {
     int TEXT_SIZE;
 
     @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_edit);
         //disable landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         TEXT_SIZE =26;
         //viewModel
-        final GameViewModel viewModel = ViewModelProviders.of(this).get(GameViewModel.class);
-        this.viewModel = viewModel;
         CardDataMap = new HashMap<>();
         removeList = new ArrayList<>();
         addList = new ArrayList<>();
@@ -75,7 +73,7 @@ public class CardEditActivity extends AppCompatActivity {
                 //todo
             }
         }); */
-      //connect wigets
+        //connect wigets
         add = findViewById(R.id.AddButton);
         remove = findViewById(R.id.RemoveButton);
         save = findViewById(R.id.SaveButton);
@@ -151,7 +149,7 @@ public class CardEditActivity extends AppCompatActivity {
         int checkboxId = CardDataMap.size();
         CardDataMap.put(checkboxId, card.getCardId());
 
-       cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
@@ -182,7 +180,8 @@ public class CardEditActivity extends AppCompatActivity {
                 }
             }
         });
-       cardView.setOnClickListener(new View.OnClickListener(){
+
+        cardView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 PopupInfo popupInfo = new PopupInfo(CardEditActivity.this,card.getCardType());
@@ -233,7 +232,7 @@ public class CardEditActivity extends AppCompatActivity {
     }
 
     private void observeViewModel(GameViewModel viewModel) {
-      //todo
+        //todo
     }
 
 }

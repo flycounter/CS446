@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 
 public class CardShopActivity extends AppCompatActivity {
     ImageView fire;

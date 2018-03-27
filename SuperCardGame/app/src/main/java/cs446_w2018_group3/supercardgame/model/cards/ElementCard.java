@@ -8,7 +8,7 @@ import cs446_w2018_group3.supercardgame.model.buffs.*;
  * Created by yandong on 2018-02-25.
  */
 
-public abstract class ElementCard extends Card {
+public class ElementCard extends Card {
     static Translate.CardType[][] combineRule = {
             {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
             {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
@@ -18,7 +18,9 @@ public abstract class ElementCard extends Card {
     int damage;
 
     @Override
-    public abstract void apply(Player subject, Player object);
+    public void apply(Player subject, Player object) {
+        // stub
+    }
 
     public static Boolean canCombine(ElementCard card1, ElementCard card2) {
         return card1.getLevel() == 1 && card2.getLevel() == 1;

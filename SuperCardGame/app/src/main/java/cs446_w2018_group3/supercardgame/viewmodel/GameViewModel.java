@@ -3,75 +3,92 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
-import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
+import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
-import cs446_w2018_group3.supercardgame.runtime.GameEventHandler;
-import cs446_w2018_group3.supercardgame.util.events.GameEndEvent;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.StateEventAdapter;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerCombineElementEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerEndTurnEvent;
-import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
-import cs446_w2018_group3.supercardgame.util.events.playerevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.runtime.IGameEventHandler;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 
 /**
  * Created by JarvieK on 2018/2/25.
  */
 
-public class GameViewModel extends AndroidViewModel implements PlayerAction {
-    private final GameRuntime gameRuntime;
-    private final GameEventHandler gameEventHandler;
+public abstract class GameViewModel extends AndroidViewModel implements PlayerAction, ErrorMessageListener {
+    private static final String TAG = GameViewModel.class.getName();
+    GameRuntime gameRuntime;
+    IGameEventHandler gameEventHandler;
+    GameReadyCallback mGameReadyCallback;
+    StateEventListener mStateEventListener;
 
-    private Player player;
+    private final MutableLiveData<String> actionLogMessage = new MutableLiveData<>();
+
+    Player player;
 
     public GameViewModel(Application application) {
         super(application);
-
-        gameEventHandler = new GameEventHandler();
-        gameRuntime = new GameRuntime(gameEventHandler);
     }
 
-    public void init() {
-        // start after UI setup completes
-        player = new Player(1, "you");
-        gameRuntime.addPlayer(player);
-        gameRuntime.addBot();
+    void addLocalPlayer(Player player) {
+        if (player == null) {
+            // default player
+            player = new Player(1, "you");
+        }
+        this.player = player;
+
+        gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(player));
+        gameEventHandler.setErrorMessageListener(this);
+        Log.i(TAG, String.format("local player added: %s", player.getName()));
+    }
+
+    public void init(Bundle bundle, GameReadyCallback gameReadyCallback, StateEventListener stateEventListener) {
+        mGameReadyCallback = gameReadyCallback;
+        mStateEventListener = stateEventListener;
+        gameEventHandler.addStateEventListener(mStateEventListener);
     }
 
     public void start() {
-        gameRuntime.start();
         try {
+            gameRuntime.start();
             gameRuntime.turnStart(); // starts the first player's turn
-        }
-        catch (PlayerCanNotEnterTurnException err) {
+        } catch (PlayerCanNotEnterTurnException err) {
             // NOTE: same code as in gameEventHandler.handlePlayerEndTurnEvent(PlayerEndTurnEvent e)
             // TODO: add method gameRuntime.getWinner()
             Player winner = null;
-            for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+            for (LiveData<Player> playerHolder : gameRuntime.getPlayers()) {
                 if (playerHolder.getValue().getHP() > 0) {
                     winner = playerHolder.getValue();
                 }
             }
 
             if (winner == null) {
-                Log.w("main", "all players' HP reaches zero");
+                Log.w(TAG, "all players' HP reaches zero");
                 return;
             }
 
             // game end
             gameEventHandler.handleGameEndEvent(new GameEndEvent(winner));
         }
-
-
     }
 
     // used by activity / fragments to get observables
-    public final GameRuntime getGameRuntime() { return gameRuntime; }
+    public final GameRuntime getGameRuntime() {
+        return gameRuntime;
+    }
 
     @Override
     public void combineCards(List<Integer> cardIds) {
@@ -101,26 +118,35 @@ public class GameViewModel extends AndroidViewModel implements PlayerAction {
         // TODO: notify ui that player's turn starts
     }
 
-    // called by view to add player to game
-    public void addPlayer(int id, String name) {
-        gameRuntime.addPlayer(new Player(id, name));
-    }
-
-    public LiveData<Player> getThisPlayer() throws PlayerNotFoundException {
+    public LiveData<Player> getThisPlayer() {
         // returns player that belongs to app user
-        return gameRuntime.getPlayer(player.getId());
+        return gameRuntime.getLocalPlayer();
     }
 
-    public LiveData<Player> getOpponent() throws PlayerNotFoundException {
-        try {
-            return gameRuntime.getPlayers().get(1);
-        }
-        catch (ArrayIndexOutOfBoundsException err) {
-            throw new PlayerNotFoundException();
-        }
+    public LiveData<Player> getOpponent() {
+        return gameRuntime.getOtherPlayer();
     }
 
-    public void addStateEventListener(StateEventAdapter adapter) {
-        gameEventHandler.addStateEventListener(adapter);
+    public Player getCurrPlayer() {
+        return gameRuntime.getCurrPlayer();
+    }
+
+    public LiveData<GameField> getGameField() { return gameRuntime.getGameField(); }
+
+    public void deliverErrorMessage(String message) {
+        if (Looper.myLooper() == Looper.getMainLooper()) actionLogMessage.setValue(message); else actionLogMessage.postValue(message);
+    }
+
+    public LiveData<String> getActionLogMessage() {
+        return actionLogMessage;
+    }
+
+    public interface GameReadyCallback {
+        void onGameReady();
+    }
+
+    @Override
+    public void onMessage(String message) {
+        deliverErrorMessage(message);
     }
 }
