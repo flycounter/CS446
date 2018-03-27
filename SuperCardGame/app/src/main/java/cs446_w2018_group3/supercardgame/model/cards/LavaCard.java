@@ -1,5 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.cards;
 
+import cs446_w2018_group3.supercardgame.model.Effect;
+import cs446_w2018_group3.supercardgame.model.buffs.BurningBuff;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -14,6 +16,7 @@ public class LavaCard extends ElementCard {
     }
 
     public void apply(Player subject, Player object) {
-
+        Effect.dealDamageEffect(subject, object, damage);
+        object.addBuff(new BurningBuff(Translate.BuffType.Burn, subject, object, 2,1));
     }
 }

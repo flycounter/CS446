@@ -11,9 +11,4 @@ public class WetBuff extends Buff {
     public WetBuff(Translate.BuffType label, Player subject, Player object, int turns) {
         super(label, subject, object, turns);
     }
-    @Override
-    public int applyBuff() {
-        remainingTurns -= 1;
-        return remainingTurns;
-    }
 }

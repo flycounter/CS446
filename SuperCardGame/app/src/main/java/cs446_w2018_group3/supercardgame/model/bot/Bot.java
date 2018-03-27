@@ -58,13 +58,7 @@ public class Bot implements IBot {
             Log.i("main",
                     String.format("TurnStartEvent, playerId: %s, receiver: %s", e.getSubjectId(), botPlayer.getId()));
             if (e.getSubjectId() == botPlayer.getId()) {
-                // wait for 2 sec
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException err) {
-                    Log.i(Bot.class.getName(),
-                            "Interrupted during psudo waiting");
-                }
+                delay(500);
                 botAction();
                 mGameEventHandler.handlePlayerEndTurnEvent(new PlayerEndTurnEvent(botPlayer.getId()));
             } else {
@@ -77,11 +71,21 @@ public class Bot implements IBot {
             // nothing
         }
     }
-
+    private void delay(int millis) {
+        // wait for millis ms
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException err) {
+            Log.i(Bot.class.getName(),
+                    "Interrupted during psudo waiting");
+        }
+    }
     /* Bot decision static methods */
     private void botAction() {
         processHand(botPlayer.getHand());
         TurnStrategy strategy = makeStrategyDecision();
+        Log.i(Bot.class.getName(),
+                "Chosen Strategy is: " + strategy);
         makeMoves(strategy);
     }
     private void makeMoves (TurnStrategy strategy) {
@@ -92,6 +96,8 @@ public class Bot implements IBot {
                         && botPlayer.getAP() > 2
                         && i < 2; i += 1) {
                     try {
+                        Log.i(Bot.class.getName(),
+                                "Combining");
                         combineBaseCardInHand();
                     } catch (BotNotEnoughBaseCardInHandException e) {
                         break;
@@ -113,6 +119,8 @@ public class Bot implements IBot {
             for ( ElementCard c:botPlayer.getHand() ) {
                 if (c.getClass() == SandCard.class
                         ||  c.getClass() == SteamCard.class) {
+                    Log.i(Bot.class.getName(),
+                            "Using Defencive Card " + c.getLabel());
                     mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getCardId()));
                     break;
                 }
@@ -124,6 +132,8 @@ public class Bot implements IBot {
         for (int i = 0; i < AP; i += 1) {
             for ( ElementCard c:botPlayer.getHand() ) {
                 if (c.getLevel() >= 2) {
+                    Log.i(Bot.class.getName(),
+                            "Using Hybrid Card " + c.getLabel());
                     mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getCardId()));
                     break;
                 }
@@ -134,6 +144,8 @@ public class Bot implements IBot {
         int AP = botPlayer.getAP();
         for (int i = 0; i < AP; i += 1) {
             if(!botPlayer.getHand().isEmpty()) {
+                Log.i(Bot.class.getName(),
+                        "Using Any Card " + botPlayer.getHand().get(0).getLabel());
                 mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), botPlayer.getHand().get(0).getCardId()));
             }
         }
@@ -153,7 +165,9 @@ public class Bot implements IBot {
     }
     /* Bot always tries to use hybrid cards */
     private TurnStrategy makeStrategyDecision() {
-        if (botPlayer.getAP() == 0 ) {
+        Log.i(Bot.class.getName(),
+                "hybridCardsCount: " + hybridCardsCount + " AP: " + botPlayer.getAP());
+        if (botPlayer.getAP() <= 0 ) {
             return TurnStrategy.IDLE;
         } else if (hybridCardsCount <= botPlayer.getAP()) {
             return TurnStrategy.COMBINE;
@@ -166,7 +180,7 @@ public class Bot implements IBot {
     private void processHand(List<ElementCard> hand) {
         hybridCardsCount = 0;
         for (ElementCard c:hand) {
-            if (c.getLevel() >= 1) {
+            if (c.getLevel() > 1) {
                 hybridCardsCount += 1;
             }
         }
