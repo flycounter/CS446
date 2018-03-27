@@ -33,7 +33,9 @@ public class GameFSM {
 
     void setState(State state) {
         this.state = state;
-        mGameStateChangeListener.onStateChange(state);
+        if (mGameStateChangeListener != null) {
+            mGameStateChangeListener.onStateChange(state);
+        }
     }
 
     private State getNextState(State state) throws InvalidStateException {

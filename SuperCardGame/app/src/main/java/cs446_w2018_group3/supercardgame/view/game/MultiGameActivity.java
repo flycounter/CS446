@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import cs446_w2018_group3.supercardgame.model.player.Player;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
 /**
@@ -48,5 +49,13 @@ public class MultiGameActivity extends GameActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onGameReady() {
+        super.onGameReady();
+        if (!((MultiGameViewModel) viewModel).isHost()) {
+            onTurnStart(new TurnStartEvent(viewModel.getGameRuntime().getCurrPlayer().getId()));
+        }
     }
 }

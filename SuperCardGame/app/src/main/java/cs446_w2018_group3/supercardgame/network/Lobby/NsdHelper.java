@@ -21,13 +21,8 @@ import android.net.nsd.NsdServiceInfo;
 import android.net.nsd.NsdManager;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 
@@ -42,7 +37,7 @@ public class NsdHelper {
     private static final String SERVICE_TYPE = "_websocket._tcp.";
     private static final String TAG = "NsdHelper";
     private static final String SERVICE_NAME = "SuperCardGame";
-    private String mServiceName = SERVICE_NAME + ":" + UUID.randomUUID().toString();
+    private String mServiceName = SERVICE_NAME; // default
 
     private final List<ConnInfo> sessions = new ArrayList<>();
 
@@ -152,14 +147,13 @@ public class NsdHelper {
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 Log.i(TAG, "Service unregistration failed: " + errorCode);
             }
-
         };
     }
 
     void registerService(ConnInfo connInfo) {
         tearDown();  // Cancel any previous registration request
-        Gson gson = new Gson();
         NsdServiceInfo serviceInfo = new NsdServiceInfo();
+        mServiceName = String.format("%s:%s", SERVICE_NAME, connInfo.getGameName());
         serviceInfo.setHost(connInfo.getHost());
         serviceInfo.setPort(connInfo.getPort());
         serviceInfo.setServiceName(mServiceName);

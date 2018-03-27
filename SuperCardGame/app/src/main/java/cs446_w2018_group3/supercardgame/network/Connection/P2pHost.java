@@ -31,7 +31,7 @@ public class P2pHost implements IHost {
     }
 
     @Override
-    public void start(HostStartedListener hostStartedListener) {
+    public void start(String gameName, HostStartedListener hostStartedListener) {
         this.hostStartedListener = hostStartedListener;
         // listen on websocket
         if (ws != null) {
@@ -73,7 +73,7 @@ public class P2pHost implements IHost {
             @Override
             public void onStart() {
                 // TODO: load playerName from db
-                connInfo = new ConnInfo("PlayerName", getAddress().getAddress(), getPort());
+                connInfo = new ConnInfo(gameName, getAddress().getAddress(), getPort());
                 hostStartedListener.onStarted(connInfo);
             }
         };

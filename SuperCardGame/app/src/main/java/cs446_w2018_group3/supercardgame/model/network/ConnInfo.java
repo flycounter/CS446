@@ -7,18 +7,18 @@ import java.net.InetAddress;
  */
 
 public class ConnInfo {
-    private final String playerName;
+    private final String gameName;
     private final InetAddress host;
     private final int port;
 
-    public ConnInfo(String playerName, InetAddress host, int port) {
-        this.playerName = playerName;
+    public ConnInfo(String gameName, InetAddress host, int port) {
+        this.gameName = gameName;
         this.host = host;
         this.port = port;
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public String getGameName() {
+        return gameName;
     }
 
     public InetAddress getHost() {
@@ -33,7 +33,7 @@ public class ConnInfo {
     public boolean equals(Object that) {
         return (that != null) &&
                 (that instanceof ConnInfo) &&
-                (this.getPlayerName().equals(((ConnInfo) that).getPlayerName()) &&
+                (this.getGameName().equals(((ConnInfo) that).getGameName()) &&
                         ((this.getHost() == null && ((ConnInfo) that).getHost() == null) ||
                                 (this.getHost() != null && ((ConnInfo) that).getHost() != null) &&
                                         this.getHost().equals(((ConnInfo) that).getHost())) &&

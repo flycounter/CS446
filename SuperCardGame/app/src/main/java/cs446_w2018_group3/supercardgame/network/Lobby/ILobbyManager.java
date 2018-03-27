@@ -13,7 +13,7 @@ import cs446_w2018_group3.supercardgame.util.cb;
 
 public interface ILobbyManager {
     LiveData<List<ConnInfo>> getLobby();
-    void hostGame();
+    void hostGame(String gameName);
     void sendConfirmationMessage(cb cb);
     void joinGame(ConnInfo connInfo);
     void start();

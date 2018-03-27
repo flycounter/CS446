@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +21,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
@@ -91,7 +93,7 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
         ConnInfo connInfo = viewModel.getConnInfoContainer().getValue();
         String connState = viewModel.getConnStateContainer().getValue();
 
-        roomName.setText(connInfo != null ? connInfo.getPlayerName() : "");
+        roomName.setText(connInfo != null ? connInfo.getGameName() : "");
         roomInfo.setText(connInfo != null ? String.format("%s:%s", connInfo.getHost().getHostAddress(), connInfo.getPort()) : "");
         connStatus.setText(connState);
 
@@ -107,7 +109,7 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
             @Override
             public void onChanged(@Nullable ConnInfo connInfo) {
                 Log.i(TAG, "onChanged: connInfo: " + new Gson().toJson(connInfo));
-                roomName.setText(connInfo != null ? connInfo.getPlayerName() : "");
+                roomName.setText(connInfo != null ? connInfo.getGameName() : "");
                 roomInfo.setText(connInfo != null ? String.format("%s:%s", connInfo.getHost().getHostAddress(), connInfo.getPort()) : "");
             }
         });

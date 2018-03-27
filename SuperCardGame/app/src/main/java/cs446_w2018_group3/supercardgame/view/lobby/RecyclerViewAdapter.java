@@ -45,7 +45,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             final ConnInfo model = getItem(position);
             ViewHolder genericViewHolder = (ViewHolder) holder;
 
-            genericViewHolder.itemTxtTitle.setText(model.getPlayerName());
+            genericViewHolder.itemTxtTitle.setText(model.getGameName());
             genericViewHolder.itemTxtMessage.setText(String.format("%s:%s", model.getHost().getHostAddress(), model.getPort()));
         }
     }
