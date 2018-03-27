@@ -199,7 +199,7 @@ public class GameRuntime implements GameStateControl {
                 Log.w(TAG, err);
             }
         } catch (InvalidStateException err) {
-            // TODO: logs
+            // TODO: error message to UI
             Log.w(TAG, err);
         }
     }
@@ -228,7 +228,7 @@ public class GameRuntime implements GameStateControl {
             gameModel.playerTurnEnd(getCurrPlayer());
             fsm.nextState(); // goes to TURN_START
         } catch (PlayerNotFoundException | InvalidStateException err) {
-            // TODO: logs
+            // TODO: error message to UI
             Log.w(TAG, err);
         }
     }

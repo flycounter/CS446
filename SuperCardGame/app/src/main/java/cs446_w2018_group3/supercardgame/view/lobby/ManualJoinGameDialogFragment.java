@@ -42,7 +42,6 @@ import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
  */
 public class ManualJoinGameDialogFragment extends AppCompatDialogFragment {
     private static final String TAG = ManualJoinGameDialogFragment.class.getName();
-    // TODO: Rename parameter arguments, choose names that match
 
     LobbyViewModel viewModel;
 
@@ -58,7 +57,6 @@ public class ManualJoinGameDialogFragment extends AppCompatDialogFragment {
      *
      * @return A new instance of fragment ManualJoinGameDialogFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ManualJoinGameDialogFragment newInstance() {
         ManualJoinGameDialogFragment fragment = new ManualJoinGameDialogFragment();
         return fragment;
@@ -83,6 +81,8 @@ public class ManualJoinGameDialogFragment extends AppCompatDialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_manual_join_game, container, false);
+
+        getDialog().setTitle("Join game");
 
         TextView hostHolder = v.findViewById(R.id.host);
         TextView portHolder = v.findViewById(R.id.port);
@@ -136,7 +136,6 @@ public class ManualJoinGameDialogFragment extends AppCompatDialogFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(InetAddress host, int port);
     }
 }

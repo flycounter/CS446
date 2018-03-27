@@ -42,6 +42,14 @@ public class GameEventHandler implements IGameEventHandler {
         stateEventListeners = new ArrayList<>();
     }
 
+    private void deliverErrorMessage(Exception err) {
+
+        if (mErrorMessageListener != null) {
+            Log.i(TAG, "error message delivery to " + mErrorMessageListener);
+            mErrorMessageListener.onMessage(err.getMessage());
+        }
+    }
+
     @Override
     public void handlePlayerUseCardEvent(PlayerUseCardEvent e) {
         try {
@@ -58,10 +66,7 @@ public class GameEventHandler implements IGameEventHandler {
             game.useCard(subject, target, card);
         }
         catch (GameStateException | PlayerActionException err) {
-            Log.w(TAG, err);
-            if (mErrorMessageListener != null) {
-                mErrorMessageListener.onMessage(err.getMessage());
-            }
+            deliverErrorMessage(err);
         }
     }
 
@@ -85,10 +90,7 @@ public class GameEventHandler implements IGameEventHandler {
             game.playerCombineElementsEventHandler(player, cards);
         }
         catch (GameStateException | PlayerActionException err) {
-            Log.w(TAG, err);
-            if (mErrorMessageListener != null) {
-                mErrorMessageListener.onMessage(err.getMessage());
-            }
+            deliverErrorMessage(err);
         }
     }
 
@@ -102,7 +104,6 @@ public class GameEventHandler implements IGameEventHandler {
         }
         catch (InvalidStateException | PlayerActionException err) {
             if (err instanceof PlayerCanNotEnterTurnException) {
-                // TODO: add method gameRuntime.getWinner()
                 Player winner = null;
                 for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
                     if (playerHolder.getValue().getHP() > 0) {
@@ -119,10 +120,7 @@ public class GameEventHandler implements IGameEventHandler {
                 handleGameEndEvent(new GameEndEvent(winner));
                 return;
             }
-            Log.w(TAG, err);
-            if (mErrorMessageListener != null) {
-                mErrorMessageListener.onMessage(err.getMessage());
-            }
+            deliverErrorMessage(err);
         }
     }
 
@@ -155,10 +153,7 @@ public class GameEventHandler implements IGameEventHandler {
             }
         }
         catch (InvalidStateException | PlayerActionNotAllowed err) {
-            Log.w(TAG, err);
-            if (mErrorMessageListener != null) {
-                mErrorMessageListener.onMessage(err.getMessage());
-            }
+            deliverErrorMessage(err);
         }
     }
 
@@ -180,6 +175,7 @@ public class GameEventHandler implements IGameEventHandler {
 
     @Override
     public void setErrorMessageListener(ErrorMessageListener errorMessageListener) {
+        Log.i(TAG, "ErrorMessageListener set");
         mErrorMessageListener = errorMessageListener;
     }
 }

@@ -40,7 +40,10 @@ public abstract class Buff {
         return new BuffPayload(buffId, buffType);
     }
 
-    public abstract int applyBuff();
+    public int applyBuff() {
+        remainingTurns -= 1;
+        return remainingTurns;
+    }
 
     @Override
     public boolean equals(Object that) {

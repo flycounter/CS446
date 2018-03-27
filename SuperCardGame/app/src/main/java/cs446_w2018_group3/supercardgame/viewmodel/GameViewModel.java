@@ -11,6 +11,7 @@ import android.util.Log;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
@@ -34,6 +35,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
     IGameEventHandler gameEventHandler;
     GameReadyCallback mGameReadyCallback;
     StateEventListener mStateEventListener;
+    DaoSession mSession;
 
     private final MutableLiveData<String> actionLogMessage = new MutableLiveData<>();
 
@@ -51,7 +53,6 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         this.player = player;
 
         gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(player));
-        gameEventHandler.setErrorMessageListener(this);
         Log.i(TAG, String.format("local player added: %s", player.getName()));
     }
 
@@ -59,6 +60,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         mGameReadyCallback = gameReadyCallback;
         mStateEventListener = stateEventListener;
         gameEventHandler.addStateEventListener(mStateEventListener);
+        gameEventHandler.setErrorMessageListener(this);
     }
 
     public void start() {
@@ -67,7 +69,6 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
             gameRuntime.turnStart(); // starts the first player's turn
         } catch (PlayerCanNotEnterTurnException err) {
             // NOTE: same code as in gameEventHandler.handlePlayerEndTurnEvent(PlayerEndTurnEvent e)
-            // TODO: add method gameRuntime.getWinner()
             Player winner = null;
             for (LiveData<Player> playerHolder : gameRuntime.getPlayers()) {
                 if (playerHolder.getValue().getHP() > 0) {
@@ -101,14 +102,12 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
 
     @Override
     public void useElementCard(int targetId, int cardId) {
-        // TODO
         gameEventHandler.handlePlayerUseCardEvent(
                 new PlayerUseCardEvent(player.getId(), targetId, cardId));
     }
 
     @Override
     public void turnEnd() {
-        // TODO
         gameEventHandler.handlePlayerEndTurnEvent(
                 new PlayerEndTurnEvent(player.getId()));
     }
@@ -147,6 +146,12 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
 
     @Override
     public void onMessage(String message) {
+        Log.w(TAG, "error message to UI: " + message);
         deliverErrorMessage(message);
+    }
+
+    public void setSession(DaoSession session) {
+        Log.i(TAG, "session set: " + session);
+        mSession = session;
     }
 }

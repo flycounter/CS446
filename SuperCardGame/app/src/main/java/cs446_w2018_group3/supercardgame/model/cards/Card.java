@@ -27,6 +27,7 @@ public abstract class Card {
     static int id = 0;
     int cardId;
     Translate.CardType cardType;
+    final int DEFAULT_COST = 1;
 
     public abstract void apply(Player subject, Player object);
 
@@ -35,6 +36,8 @@ public abstract class Card {
         this.cardId = id;
         id++;
     }
+
+    public int getCost() { return this.DEFAULT_COST; }
 
     public int getCardId() {
         return this.cardId;

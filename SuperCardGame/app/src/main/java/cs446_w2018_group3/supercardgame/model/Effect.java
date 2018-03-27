@@ -39,7 +39,8 @@ public class Effect {
 
     public static void decreaseAP ( Player subject, Player object, int num) {
         int newAP = object.getAP() - num;
-        object.setAP( Math.max(0, newAP) );
+        object.setAP(newAP);
+        //object.setAP( Math.max(0, newAP) );
     }
 
     public static void addShield ( Player subject, Player object, int num) {

@@ -17,12 +17,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
@@ -52,13 +57,16 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     int TEXTSIZE;
     int clickCount;
     int stepCount;
-    GameViewModel viewModel;
+
     Map<Integer, Integer> CardDataMap; // Map<checkbox_id, card_id>
     List<Integer> chosenCard; // store id of cards chosen by the player
     List<CheckBox> chosenBox;
     int gameMode;
 
     private boolean isGameStarted = false;
+
+    GameViewModel viewModel;
+    DaoSession mSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +181,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             @Override
             public void onClick(View v) {
                 actionLog.setText("Action:\nYou shall not surrender.");
-                //todo
+                // TODO: implement code for surrender
             }
         });
         if (gameMode == 3) {
@@ -220,6 +228,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        viewModel.setSession(getSession());
         viewModel.init(getIntent().getExtras(), this, this); // player setup
         observeViewModel(viewModel);
     }
@@ -471,7 +480,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     @Override
     public void onTurnStart(TurnStartEvent e) {
         Log.i(TAG, String.format("TurnStartEvent, playerId: %s, receiverId: %s",
-                e.getSubjectId(), viewModel.getThisPlayer().getValue()));
+                e.getSubjectId(), viewModel.getThisPlayer().getValue().getId()));
 
         // android.util.AndroidRuntimeException: Animators may only be run on Looper threads
         runOnUiThread(new Runnable() {
@@ -521,6 +530,17 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             // NOTE: shit solution here to call gameRuntime in UI
             viewModel.start();
         }
+    }
+
+    private DaoSession getSession() {
+        if (mSession == null) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Config.DB_NAME);
+            Database db = helper.getWritableDb();
+            helper.getReadableDb();
+            mSession = new DaoMaster(db).newSession();
+        }
+        Log.i(TAG, mSession.toString());
+        return mSession;
     }
 }
 
