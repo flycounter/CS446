@@ -14,7 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "MyUser.db";
     public static final int DATABASE_VERSION = 1;
     public static final String USER_TABLE_NAME = "deck";
-    //public static final String DECK_COLUMN_ID = "id";
+    public static final String DECK_COLUMN_ID = "id";
     public static final String DECK_COLUMN_GOLD = "gold";
     public static final String DECK_COLUMN_WATER = "water";
     public static final String DECK_COLUMN_FIRE = "fire";
@@ -33,20 +33,20 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table deck " +
-                "(gold integer, water integer, fire integer, air integer, dirt integer, maxWater integer, maxFire integer, maxAir integer, maxEarth, integer)"
+                        "(id integer, gold integer, water integer, fire integer, air integer, dirt integer, maxWater integer, maxFire integer, maxAir integer, maxEarth, integer)"
         );
-        init();
+        init(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void init() {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void init(SQLiteDatabase db) {
+        //SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", 1);
-        contentValues.put("gold", 50);
+        contentValues.put(DECK_COLUMN_ID, 1);
+        contentValues.put(DECK_COLUMN_GOLD, 50);
         contentValues.put("water", 5);
         contentValues.put("fire", 5);
         contentValues.put("air", 5);
@@ -55,12 +55,12 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("max_fire", 5);
         contentValues.put("max_air", 5);
         contentValues.put("max_dirt", 5);
-        db.insert("deck", null, contentValues);
+        db.insert(USER_TABLE_NAME, null, contentValues);
     }
 
-    public Cursor getData() {
+    public Cursor getData(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from deck", null);
+        Cursor res = db.rawQuery("select * from deck where id="+id+"", null);
         return res;
     }
 
@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("fire", fire);
         contentValues.put("air", air);
         contentValues.put("dirt", dirt);
-        db.update("deck", contentValues, null, null);
+        db.update(USER_TABLE_NAME, contentValues, null, null);
         return true;
     }
 

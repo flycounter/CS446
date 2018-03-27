@@ -28,7 +28,7 @@ public class DeckEditor implements IDeckEditor {
     }
 
     public void addCard(Translate.CardType cardType) {
-        Cursor ret = deck.getData();
+        Cursor ret = deck.getData(1);
         int gold = ret.getInt(ret.getColumnIndex(DBHelper.DECK_COLUMN_GOLD));
         int maxType;
         try {
