@@ -63,6 +63,8 @@ public class Game {
         gameRuntime.updateGameField(gameField);
 
         Log.i(TAG, "game ready");
+        String msg = "Game Started";
+        gameRuntime.updateLogInfo(msg);
     }
 
     public static Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
@@ -89,9 +91,14 @@ public class Game {
     }
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
+        String msg;
+        msg = player.getName() + " turn start.";
+        // update log info
+        gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnStart");
         beforePlayerTurnStart(player);
         // update player's AP
+        msg = player.getName() + " regain AP";
         player.addAP(PLAYER_AP_REGEN_PER_TURN);
 
         // draw cards from player's deck
@@ -107,6 +114,8 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
+        String msg = player.getName() + "turn end";
+        gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnEnd");
         // nothing to do at this moment?
         // update player AP??? isn't the game supposed to carry on AP to the next turn?
@@ -129,10 +138,11 @@ public class Game {
 
         // apply card to target
         card.apply(subject, target);
-
+        String msg = subject.getName() + " use " + card.getCardType().toString() + " card to " + target.getName();
         // update LiveData
         gameRuntime.updatePlayer(subject);
         gameRuntime.updatePlayer(target);
+        gameRuntime.updateLogInfo(msg);
     }
 
     public void playerCombineElementsEventHandler(Player player, List<ElementCard> cards)
@@ -152,12 +162,15 @@ public class Game {
         if (newCard == null) {
             throw new ElementCardsCanNotCombineException(cards);
         }
-
+        String msg = player.getName() + " combine ";
+        msg = msg + cards.get(0).getCardType().toString() + " and " + cards.get(1).getCardType().toString();
+        msg = msg + " gets " + newCard.getCardType().toString();
         player.addCardToHand(newCard);
         player.removeCardFromHand(cards.get(0));
         player.removeCardFromHand(cards.get(1));
 
         // update LiveData
         gameRuntime.updatePlayer(player);
+        gameRuntime.updateLogInfo(msg);
     }
 }
