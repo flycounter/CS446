@@ -3,7 +3,9 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.List;
@@ -20,17 +22,20 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.action
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 
 /**
  * Created by JarvieK on 2018/2/25.
  */
 
-public abstract class GameViewModel extends AndroidViewModel implements PlayerAction {
+public abstract class GameViewModel extends AndroidViewModel implements PlayerAction, ErrorMessageListener {
     private static final String TAG = GameViewModel.class.getName();
     GameRuntime gameRuntime;
     IGameEventHandler gameEventHandler;
     GameReadyCallback mGameReadyCallback;
     StateEventListener mStateEventListener;
+
+    private final MutableLiveData<String> actionLogMessage = new MutableLiveData<>();
 
     Player player;
 
@@ -46,6 +51,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         this.player = player;
 
         gameEventHandler.handlePlayerAddEvent(new PlayerAddEvent(player));
+        gameEventHandler.setErrorMessageListener(this);
         Log.i(TAG, String.format("local player added: %s", player.getName()));
     }
 
@@ -127,7 +133,20 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
 
     public LiveData<GameField> getGameField() { return gameRuntime.getGameField(); }
 
+    public void deliverErrorMessage(String message) {
+        if (Looper.myLooper() == Looper.getMainLooper()) actionLogMessage.setValue(message); else actionLogMessage.postValue(message);
+    }
+
+    public LiveData<String> getActionLogMessage() {
+        return actionLogMessage;
+    }
+
     public interface GameReadyCallback {
         void onGameReady();
+    }
+
+    @Override
+    public void onMessage(String message) {
+        deliverErrorMessage(message);
     }
 }

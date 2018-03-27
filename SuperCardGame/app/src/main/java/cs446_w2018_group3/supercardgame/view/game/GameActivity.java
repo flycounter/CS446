@@ -102,7 +102,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         surrender.setText("Surrender");
         weather.setText("Weather:");
         actionLog.setText("Action:\n");
-        setTextSize(TEXTSIZE);
+//        setTextSize(TEXTSIZE);
         //create hand cards
         resetHandView();
 
@@ -273,6 +273,13 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
                 weather.setText(gameField.getWeather().getLabel());
             }
         });
+
+        viewModel.getActionLogMessage().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                actionLog.setText(s);
+            }
+        });
     }
 
     private void setCard(Card card) {
@@ -290,7 +297,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         cardView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
+        cardView.setAdjustViewBounds(true);
         childLayout.addView(cardBox, boxLayoutParams);
         childLayout.addView(cardView, cardLayoutParams);
 
@@ -319,6 +326,13 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
 
                 }
                 Log.i("view", String.format("chosen cards: %s", chosenCard.toString()));
+            }
+        });
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardBox.performClick();
             }
         });
     }

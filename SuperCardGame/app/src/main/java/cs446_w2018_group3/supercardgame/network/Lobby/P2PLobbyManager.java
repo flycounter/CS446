@@ -19,7 +19,7 @@ import cs446_w2018_group3.supercardgame.network.Connection.ConnectionListener;
 import cs446_w2018_group3.supercardgame.network.Connection.IHost;
 import cs446_w2018_group3.supercardgame.network.Connection.P2pClient;
 import cs446_w2018_group3.supercardgame.network.Connection.P2pHost;
-import cs446_w2018_group3.supercardgame.util.cb;
+import cs446_w2018_group3.supercardgame.util.listeners.cb;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 /**

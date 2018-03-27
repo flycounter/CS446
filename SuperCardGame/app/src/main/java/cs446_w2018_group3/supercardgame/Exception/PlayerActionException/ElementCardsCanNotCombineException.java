@@ -1,5 +1,6 @@
 package cs446_w2018_group3.supercardgame.Exception.PlayerActionException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,15 +13,23 @@ import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 
 public class ElementCardsCanNotCombineException extends PlayerActionException {
     private List<ElementCard> cards;
+    private String message;
 
     public ElementCardsCanNotCombineException(List<ElementCard> cards) {
-        super(String.format("cannot combine cards: %s",
-                cards.stream()
-                        .map(Card::getLabel)
-                        .collect(Collectors.toList())
-                ));
+        super();
         this.cards = cards;
+
+        List<String> labels = new ArrayList<>();
+        for (ElementCard card: cards) {
+            labels.add(card.getLabel());
+        }
+        message = "Cannot combine cards: " + labels.toString();
     }
 
     public List<ElementCard> getCards() { return cards; }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
 }

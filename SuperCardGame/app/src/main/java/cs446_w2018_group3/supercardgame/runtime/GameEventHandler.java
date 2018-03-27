@@ -23,6 +23,7 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.action
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 
 /**
  * Created by JarvieK on 2018/2/24.
@@ -35,6 +36,7 @@ public class GameEventHandler implements IGameEventHandler {
 
     // event listener
     private List<StateEventListener> stateEventListeners;
+    private ErrorMessageListener mErrorMessageListener;
 
     public GameEventHandler() {
         stateEventListeners = new ArrayList<>();
@@ -57,7 +59,9 @@ public class GameEventHandler implements IGameEventHandler {
         }
         catch (GameStateException | PlayerActionException err) {
             Log.w(TAG, err);
-            // TODO: send err to UI
+            if (mErrorMessageListener != null) {
+                mErrorMessageListener.onMessage(err.getMessage());
+            }
         }
     }
 
@@ -82,7 +86,9 @@ public class GameEventHandler implements IGameEventHandler {
         }
         catch (GameStateException | PlayerActionException err) {
             Log.w(TAG, err);
-            // TODO: send err to UI
+            if (mErrorMessageListener != null) {
+                mErrorMessageListener.onMessage(err.getMessage());
+            }
         }
     }
 
@@ -114,7 +120,9 @@ public class GameEventHandler implements IGameEventHandler {
                 return;
             }
             Log.w(TAG, err);
-            // TODO: send err to UI
+            if (mErrorMessageListener != null) {
+                mErrorMessageListener.onMessage(err.getMessage());
+            }
         }
     }
 
@@ -148,7 +156,9 @@ public class GameEventHandler implements IGameEventHandler {
         }
         catch (InvalidStateException | PlayerActionNotAllowed err) {
             Log.w(TAG, err);
-//            TODO: send err to UI
+            if (mErrorMessageListener != null) {
+                mErrorMessageListener.onMessage(err.getMessage());
+            }
         }
     }
 
@@ -166,5 +176,10 @@ public class GameEventHandler implements IGameEventHandler {
     public void addStateEventListener(StateEventListener listener) {
         stateEventListeners.add(listener);
         Log.i(TAG, "state event listener added");
+    }
+
+    @Override
+    public void setErrorMessageListener(ErrorMessageListener errorMessageListener) {
+        mErrorMessageListener = errorMessageListener;
     }
 }

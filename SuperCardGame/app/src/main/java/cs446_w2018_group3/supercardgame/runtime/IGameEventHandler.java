@@ -7,6 +7,7 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.action
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 
 /**
  * Created by JarvieK on 2018/2/26.
@@ -20,5 +21,6 @@ public interface IGameEventHandler {
     void handleGameEndEvent(GameEndEvent e);
     void handlePlayerAddEvent(PlayerAddEvent e);
     void bind(GameRuntime gameRuntime);
+    void setErrorMessageListener(ErrorMessageListener errorMessageListener);
     void addStateEventListener(StateEventListener adapter);
 }
