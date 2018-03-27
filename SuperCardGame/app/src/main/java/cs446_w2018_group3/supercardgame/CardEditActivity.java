@@ -110,6 +110,8 @@ public class CardEditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mPlayer.setDeck(cacheDeck);
                 mPlayer.setCollectionDeck(collection);
+                mPlayer.setGold(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold());
+                mPlayer.setCollection(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection());
                 Gson gson = new Gson();
                 mUser.setPlayerData(gson.toJson(mPlayer));
                 User.replaceUser(mSession.getUserDao(),mUser);

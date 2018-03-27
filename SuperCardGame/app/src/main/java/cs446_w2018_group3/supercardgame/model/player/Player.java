@@ -41,6 +41,26 @@ public class Player {
 
     public class test {}
     public List<ElementCard> getCollectionDeck(){return collectionDeck;}
+    public List<ElementCard> createCollectionDeck(List<Integer> mCollection){
+            List<ElementCard> collectionDeck=new ArrayList<>();
+        for(int i=0;i<mCollection.get(0);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Water);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<mCollection.get(1);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Fire);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<mCollection.get(2);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Air);
+            collectionDeck.add(newCard);
+        }
+        for(int i=0;i<mCollection.get(3);i++){
+            ElementCard newCard = Card.createNewCard(Translate.CardType.Dirt);
+            collectionDeck.add(newCard);
+        }
+        return collectionDeck;
+    }
     public void setCollectionDeck(List<ElementCard> aDeck){
         this.collectionDeck.clear();
         this.collectionDeck.addAll(aDeck);
@@ -60,22 +80,7 @@ public class Player {
         for(int i=0;i<4;i++){
             collection.add(5);
         }
-        for(int i=0;i<collection.get(0);i++){
-            ElementCard newCard = Card.createNewCard(Translate.CardType.Water);
-            collectionDeck.add(newCard);
-        }
-        for(int i=0;i<collection.get(1);i++){
-            ElementCard newCard = Card.createNewCard(Translate.CardType.Fire);
-            collectionDeck.add(newCard);
-        }
-        for(int i=0;i<collection.get(2);i++){
-            ElementCard newCard = Card.createNewCard(Translate.CardType.Air);
-            collectionDeck.add(newCard);
-        }
-        for(int i=0;i<collection.get(3);i++){
-            ElementCard newCard = Card.createNewCard(Translate.CardType.Dirt);
-            collectionDeck.add(newCard);
-        }
+        setCollectionDeck(createCollectionDeck(collection));
         gold=500;
     }
     public Player( int id, String name ) {
@@ -88,7 +93,34 @@ public class Player {
         collection = new ArrayList<Integer>();
         collectionDeck = new ArrayList<ElementCard>();
     }
-
+    public void addCardToCollection(ElementCard newCard,int num){
+        for(int i=0;i<num;i++) {
+            collectionDeck.add(newCard);
+        }
+        int old=0;
+        switch (newCard.getCardType()){
+            case Water:
+                old = collection.get(0);
+                collection.set(0,old+num);
+                break;
+            case Fire:
+                old = collection.get(1);
+                collection.set(1,old+num);
+                break;
+            case Air:
+                old = collection.get(2);
+                collection.set(2,old+num);
+                break;
+            case Dirt:
+                old = collection.get(3);
+                collection.set(3,old+num);
+                break;
+        }
+    }
+    public void setCollection(List<Integer> newCollection){
+       collection.clear();
+       collection.addAll(newCollection);
+    }
     public int getId() {
         return id;
     }
@@ -113,7 +145,7 @@ public class Player {
     public List<Integer> getCollection(){return collection;}
     public int getGold(){return gold;}
     public void setGold(int newGold){gold=newGold;}
-    public void setCollection(int index,int value){collection.set(index,value);}
+
 
     public void setHP( int newHP ) {
         hp = newHP;

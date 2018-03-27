@@ -11,11 +11,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.greenrobot.greendao.database.Database;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import cs446_w2018_group3.supercardgame.model.Translate;
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
@@ -29,11 +36,29 @@ public class CardShopActivity extends AppCompatActivity {
     TextView title;
     Button exit;
     private DaoSession mSession;
+    int fireNo,waterNo,airNo,dirtNo,gold;
+    List<Integer> collection;
+    User mUser;
+    Player mPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_shop);
         getSession();
+        mUser = User.getLocalUser(mSession.getUserDao());
+        collection= new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection();
+        String userName = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
+        mPlayer = new Player(new BigDecimal(mUser.getId()).intValueExact(), userName);
+        mPlayer.setCollection(collection);
+        mPlayer.setCollectionDeck(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck());
+        mPlayer.setGold(gold);
+        mPlayer.setDeck(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck());
+        waterNo = collection.get(0);
+        fireNo = collection.get(1);
+        airNo = collection.get(2);
+        dirtNo = collection.get(3);
+        gold = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold();
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);
@@ -66,34 +91,34 @@ public class CardShopActivity extends AppCompatActivity {
         fire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Fire);
+                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Fire,CardShopActivity.this);
                 shopPopup.showPopup(new View(CardShopActivity.this));
             }
         });
         air.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Air);
+                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Air,CardShopActivity.this);
                 shopPopup.showPopup(new View(CardShopActivity.this));
             }
         });
         dirt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Dirt);
+                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Dirt,CardShopActivity.this);
                 shopPopup.showPopup(new View(CardShopActivity.this));
             }
         });
         water.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Water);
+                ShopPopup shopPopup = new ShopPopup(CardShopActivity.this, Translate.CardType.Water,CardShopActivity.this);
                 shopPopup.showPopup(new View(CardShopActivity.this));
             }
         });
 
     }
-    private DaoSession getSession() {
+    public DaoSession getSession() {
         if (mSession == null) {
             DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Config.DB_NAME);
             Database db = helper.getWritableDb();

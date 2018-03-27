@@ -1,6 +1,7 @@
 package cs446_w2018_group3.supercardgame;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Gravity;
@@ -14,8 +15,13 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
+import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.dao.User;
+import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 
 /**
  * Created by GARY on 2018-03-25.
@@ -27,8 +33,10 @@ public class ShopPopup extends PopupWindow {
     TextView status;
     SeekBar seekBar;
     int gold,own,buy,cost;
+    Translate.CardType cardType;
+    CardShopActivity parent;
 
-    public ShopPopup(Activity context, Translate.CardType cardType){
+    public ShopPopup(Activity context, Translate.CardType cardType,CardShopActivity parent){
         View contentView = LayoutInflater.from(context).inflate(R.layout.shop_popup,null);
         this.setContentView(contentView);
         this.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -43,9 +51,11 @@ public class ShopPopup extends PopupWindow {
         name = contentView.findViewById(R.id.ShopPopupTitle);
         status=contentView.findViewById(R.id.BuyStatus);
         seekBar=contentView.findViewById(R.id.PopupSeekBar);
+        this.cardType = cardType;
+        this.parent = parent;
         //get data from database
-        gold=0;
-        own=0;
+        this.gold=parent.gold;
+        getOwn();
         buy=0;
         cost=0;
         //init text and seekbar
@@ -81,6 +91,16 @@ public class ShopPopup extends PopupWindow {
                 }
             }
         });
+        buyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gold= gold-cost;
+                parent.gold=gold;
+                own = own+buy;
+                upDateData(buy);
+
+            }
+        });
 
 
     }
@@ -100,5 +120,23 @@ public class ShopPopup extends PopupWindow {
         status = status + "     Buy:"+Integer.toString(buy);
         status = status + "     Cost:"+Integer.toString(cost);
         this.status.setText(status);
+    }
+    private void getOwn(){
+         switch(cardType){
+             case Water: own = parent.waterNo;break;
+             case Air:own = parent.airNo;break;
+             case Fire: own = parent.fireNo;break;
+             case Dirt:own = parent.dirtNo;break;
+         }
+    }
+    private void upDateData(int buy){
+        ElementCard newCard=Card.createNewCard(cardType);
+        parent.gold=gold;
+        parent.mPlayer.setGold(gold);
+        parent.mPlayer.addCardToCollection(newCard,buy);
+        Gson gson = new Gson();
+        parent.mUser.setPlayerData(gson.toJson(parent.mPlayer));
+        User.replaceUser(parent.getSession().getUserDao(),parent.mUser);
+        setStatus(gold,own,0,0);
     }
 }
