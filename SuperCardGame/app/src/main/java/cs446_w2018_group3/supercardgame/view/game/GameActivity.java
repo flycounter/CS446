@@ -64,7 +64,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_single_play);
+        setContentView(R.layout.activity_game);
         //get the size of screen and set textsize
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -280,16 +280,17 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         final LinearLayout handView = findViewById(R.id.HandContainer);
         final LinearLayout childLayout = new LinearLayout(this);
         childLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams childLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         handView.addView(childLayout, childLayoutParams);
         ImageView cardView = new ImageView(this);
         final CheckBox cardBox = new CheckBox(this);
         String cardName = Translate.cardToString(card.getCardType());
         setCardImage(cardView, cardName);
         cardBox.setText(cardName);
-        cardBox.setTextSize(32);
-        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(450, 400);
-        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(450, 200);
+        cardView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        LinearLayout.LayoutParams cardLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams boxLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
         childLayout.addView(cardBox, boxLayoutParams);
         childLayout.addView(cardView, cardLayoutParams);
 
@@ -504,10 +505,6 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             Log.i(TAG, "Game ready");
             // called here to set up ui properly
             // NOTE: shit solution here to call gameRuntime in UI
-
-            if (!((MultiGameViewModel) viewModel).isHost()) {
-                onTurnStart(new TurnStartEvent(viewModel.getGameRuntime().getCurrPlayer().getId()));
-            }
             viewModel.start();
         }
     }

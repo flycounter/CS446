@@ -37,11 +37,12 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
     public void init(Bundle bundle, GameReadyCallback gameReadyCallback, StateEventListener stateEventListener) {
         isHost = bundle.getBoolean("isHost");
         Log.i(TAG, "isHost: " + isHost());
-        super.init(bundle, gameReadyCallback, stateEventListener);
 
         gameRuntime  = new MultiGameRuntime(isHost());
         gameEventHandler.bind(gameRuntime);
         gameRuntime.setGameStateChangeListener(this);
+
+        super.init(bundle, gameReadyCallback, stateEventListener);
 
         // TODO: load player from db
         if (!isHost()) {
@@ -105,13 +106,5 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
     @Override
     public void onStateChange(GameFSM.State state) {
         dataSync();
-//        if (state == GameFSM.State.PLAYER_TURN) {
-//            Log.i(TAG, "onPlayerTurn: isGameReady: " + isRemoteStartGameNotified);
-//            // trigger once
-//            if (!isRemoteStartGameNotified) {
-//                isRemoteStartGameNotified = true;
-//                dataSync();
-//            }
-//        }
     }
 }

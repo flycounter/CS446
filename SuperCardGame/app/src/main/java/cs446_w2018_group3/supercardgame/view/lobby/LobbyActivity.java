@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.net.InetAddress;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
@@ -21,9 +21,14 @@ import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 
-public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFragment.OnFragmentInteractionListener, HostGameDialogFragment.OnFragmentInteractionListener {
+public class LobbyActivity extends AppCompatActivity implements
+        JoinGameDialogFragment.OnFragmentInteractionListener,
+        HostGameDialogFragment.OnFragmentInteractionListener,
+        ManualJoinGameDialogFragment.OnFragmentInteractionListener {
+
     RecyclerView recyclerView;
     Button hostGameBtn;
+    Button joinGameBtn;
     LiveData<List<ConnInfo>> hostInfoList;
 
     private RecyclerViewAdapter mAdapter;
@@ -57,7 +62,6 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
 
     private void setHostGameBtn() {
         hostGameBtn = findViewById(R.id.host_game_btn);
-
         hostGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +69,23 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
                 showHostGameDialog();
             }
         });
+    }
+
+    private void setJoinGameBtn() {
+        joinGameBtn = findViewById(R.id.join_game_btn);
+        joinGameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showManualJoinGameDialog();
+            }
+        });
+
+    }
+
+    private void showManualJoinGameDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        DialogFragment dialogFragment = ManualJoinGameDialogFragment.newInstance();
+        dialogFragment.show(fm, "ManualJoinGameDialog");
     }
 
     private void showJoinGameDialog() {
@@ -93,6 +114,7 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
         recyclerView = findViewById(R.id.lobby_recycler_view);
         setAdapter();
         setHostGameBtn();
+        setJoinGameBtn();
     }
 
     @Override
@@ -116,5 +138,12 @@ public class LobbyActivity extends AppCompatActivity implements JoinGameDialogFr
     @Override
     public void onFragmentInteraction() {
         // do nothing
+    }
+
+    @Override
+    public void onFragmentInteraction(InetAddress host, int port) {
+        ConnInfo connInfo = new ConnInfo(viewModel.getGameName(), host, port);
+        viewModel.joinGame(connInfo);
+        showJoinGameDialog();
     }
 }

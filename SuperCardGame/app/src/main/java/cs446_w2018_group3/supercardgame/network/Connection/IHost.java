@@ -11,7 +11,7 @@ import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 public interface IHost extends Sendable {
     String GAME_JOIN_CONFIRMATION = "GAME_JOIN_CONFIRMATION";
 
-    void start(HostStartedListener hostStartedListener);
+    void start(String gameName, HostStartedListener hostStartedListener);
 
     void stop();
 

@@ -20,14 +20,16 @@ public class SingleGameViewModel extends GameViewModel {
 
     public SingleGameViewModel(Application application) {
         super(application);
-        gameEventHandler = new GameEventHandler();
-        gameEventHandler.bind(gameRuntime);
     }
 
     @Override
     public void init(Bundle bundle, GameReadyCallback gameReadyCallback, StateEventListener stateEventListener) {
-        super.init(bundle, gameReadyCallback, stateEventListener);
         gameRuntime = new GameRuntime();
+        gameEventHandler = new GameEventHandler();
+        gameEventHandler.bind(gameRuntime);
+
+        super.init(bundle, gameReadyCallback, stateEventListener);
+
         addLocalPlayer(null);
         // start after UI setup completes
         AIPlayer botPlayer = new AIPlayer(2, "Bot");

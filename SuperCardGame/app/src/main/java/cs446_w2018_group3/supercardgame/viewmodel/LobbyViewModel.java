@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.UUID;
 
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 import cs446_w2018_group3.supercardgame.network.Lobby.ILobbyManager;
@@ -26,6 +27,9 @@ public class LobbyViewModel extends AndroidViewModel {
     private final MutableLiveData<String> connStateContainer = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isGameReadyContainer = new MutableLiveData<>();
 
+    private String gameName;
+    private String playerName = "default_player_name";
+
     public LobbyViewModel(@NonNull Application application) {
         super(application);
     }
@@ -36,7 +40,8 @@ public class LobbyViewModel extends AndroidViewModel {
     }
 
     public void hostGame() {
-        lobbyManager.hostGame();
+        gameName = String.format("%s's game", playerName);
+        lobbyManager.hostGame(gameName);
     }
 
     public void sendConfirmationMessage(cb cb) {
@@ -77,6 +82,10 @@ public class LobbyViewModel extends AndroidViewModel {
         if (Looper.myLooper() == Looper.getMainLooper()) connStateContainer.setValue(message); else connStateContainer.postValue(message);
     }
 
+    public void changeConnInfo(ConnInfo connInfo) {
+        if (Looper.myLooper() == Looper.getMainLooper()) connInfoContainer.setValue(connInfo); else connInfoContainer.postValue(connInfo);
+    }
+
     public LiveData<String> getConnStateContainer() {
         return connStateContainer;
     }
@@ -87,5 +96,9 @@ public class LobbyViewModel extends AndroidViewModel {
 
     public LiveData<Boolean> getIsGameReadyContainer() {
         return isGameReadyContainer;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 }

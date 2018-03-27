@@ -62,19 +62,20 @@ public class P2PLobbyManager implements ILobbyManager {
     }
 
     @Override
-    public void hostGame() {
+    public void hostGame(String gameName) {
         // remove previously registered service
         mNsdHelper.tearDown();
         // start server
         mViewModel.changeConnectionStateMessage("starting host");
         mViewModel.changeIsGameReadyFlag(false);
-        host.start(new IHost.HostStartedListener() {
+        host.start(gameName, new IHost.HostStartedListener() {
             @Override
             public void onStarted(ConnInfo connInfo) {
                 Log.i(TAG, "host started");
                 // start service discovery
                 mNsdHelper.registerService(connInfo);
                 // update UI
+                mViewModel.changeConnInfo(connInfo);
                 mViewModel.changeConnectionStateMessage("waiting for clients to join");
                 mConnectionListener = new ConnectionListener() {
                     @Override
