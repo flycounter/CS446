@@ -2,7 +2,7 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 
 import java.util.List;
 
-import cs446_w2018_group3.supercardgame.util.events.stateevent.TurnStartEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 
 /**
  * Created by JarvieK on 2018/2/25.

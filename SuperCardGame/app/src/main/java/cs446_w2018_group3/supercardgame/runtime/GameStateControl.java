@@ -10,4 +10,7 @@ public interface GameStateControl {
     void start();
     void turnStart() throws PlayerCanNotEnterTurnException;
     void turnEnd();
+    GameFSM.State getState();
+
+
 }

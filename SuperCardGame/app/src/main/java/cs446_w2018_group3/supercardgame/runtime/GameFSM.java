@@ -16,22 +16,24 @@ public class GameFSM {
     private final State DEFAULT_STATE = State.IDLE;
 
     private State state;
+    private GameStateChangeListener mGameStateChangeListener;
 
-    public GameFSM() {
+    GameFSM() {
         this.state = DEFAULT_STATE;
     }
 
-    public void nextState() throws InvalidStateException {
+    void nextState() throws InvalidStateException {
         Log.i("FSM", String.format("curr state: %s; next state: %s", state, getNextState(state)));
         setState(getNextState(this.state));
     }
 
-    public State getState() {
+    State getState() {
         return state;
     }
 
-    private void setState(State state) {
+    void setState(State state) {
         this.state = state;
+        mGameStateChangeListener.onStateChange(state);
     }
 
     private State getNextState(State state) throws InvalidStateException {
@@ -47,5 +49,13 @@ public class GameFSM {
             default:
                 throw new InvalidStateException(state);
         }
+    }
+
+    public void setGameStateChangeListener(GameStateChangeListener gameStateChangeListener) {
+        mGameStateChangeListener = gameStateChangeListener;
+    }
+
+    public interface GameStateChangeListener {
+        void onStateChange(State state);
     }
 }
