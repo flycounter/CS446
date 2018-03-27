@@ -9,14 +9,20 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  */
 
 public class BurningBuff extends Buff {
-    private int damage;
-    public BurningBuff(Translate.BuffType label, Player subject, Player object, int turns, int dmg) {
-        // TODO the buffType is fixed
-        super( label, subject ,object ,turns );
-        damage = dmg;
+    private static final Translate.BuffType TYPE = Translate.BuffType.Burn;
+    private static final int DMG = 2;
+
+    public BurningBuff(int turns) {
+        super(TYPE, turns);
     }
-    public int applyBuff() {
-        Effect.dealDamageEffect(subject, object, damage);
-        return super.applyBuff();
+
+    public BurningBuff(int id, Translate.BuffType type, int remainingTurns) {
+        super(id, type, remainingTurns);
+    }
+
+    @Override
+    public void applyBuff(Player player) {
+        super.applyBuff(player);
+        Effect.dealDamageEffect(player, player, DMG);
     }
 }

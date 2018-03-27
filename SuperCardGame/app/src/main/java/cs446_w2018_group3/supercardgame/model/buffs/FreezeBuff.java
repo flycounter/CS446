@@ -9,12 +9,20 @@ import cs446_w2018_group3.supercardgame.model.player.Player;
  */
 
 public class FreezeBuff extends Buff {
+    private static final Translate.BuffType TYPE = Translate.BuffType.Freeze;
     private static final int FREEZE_BUFF_AP_DECREASE = 2;
-    public FreezeBuff(Translate.BuffType label, Player subject, Player object, int turns) {
-        super( label, subject ,object ,turns );
+
+    public FreezeBuff(int turns) {
+        super(TYPE, turns);
     }
-    public int applyBuff() {
-        Effect.decreaseAP(subject,object,FREEZE_BUFF_AP_DECREASE);
-        return super.applyBuff();
+
+    public FreezeBuff(int id, Translate.BuffType type, int remainingTurns) {
+        super(id, type, remainingTurns);
+    }
+
+    @Override
+    public void applyBuff(Player player) {
+        super.applyBuff(player);
+        Effect.decreaseAP(player, player, FREEZE_BUFF_AP_DECREASE);
     }
 }

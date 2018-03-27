@@ -23,9 +23,9 @@ public class Effect {
     public static void dealDamageEffect ( Player subject, Player object, int damage) {
         Log.i("Buffs size: ", "" + object.getBuffs().size());
         for ( Buff b : object.getBuffs() ) {
-            Log.i("check", "Checking Buff" + b.getLabel().toString());
+            Log.i("check", "Checking Buff" + b.getBuffType().toString());
             if ( b instanceof DodgeBuff) {
-                Log.i("check", b.getLabel().toString());
+                Log.i("check", b.getBuffType().toString());
                 return;
             }
         }   // check Dodge

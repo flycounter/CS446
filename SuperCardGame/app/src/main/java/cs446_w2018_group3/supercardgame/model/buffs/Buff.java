@@ -1,34 +1,40 @@
 package cs446_w2018_group3.supercardgame.model.buffs;
 
-import cs446_w2018_group3.supercardgame.util.events.payload.BuffPayload;
 import cs446_w2018_group3.supercardgame.model.player.Player;
+import cs446_w2018_group3.supercardgame.util.events.payload.BuffPayload;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
 /**
  * Created by Yakumo on 2/24/2018.
  */
 
+// TODO: factory pattern
+
 public abstract class Buff {
-    static int id = 0;
-    protected int remainingTurns;
-    protected int buffId;
-    protected Translate.BuffType buffType;
-    protected Player subject, object;
+    private static int index = 0;
 
-    public Buff(Translate.BuffType label, Player subject, Player object, int turns) {
-        this.buffId = id;
+    private int id;
+    private Translate.BuffType buffType;
+    private int remainingTurns;
+
+    public Buff(int id, Translate.BuffType label, int turns) {
+        this.id = id;
         this.buffType = label;
-        this.subject = subject;
-        this.object = object;
         remainingTurns = turns;
-        this.id++;
     }
 
-    public int getBuffId() {
-        return buffId;
+    public Buff(Translate.BuffType label, int turns) {
+        this.id = index;
+        this.buffType = label;
+        remainingTurns = turns;
+        Buff.index++;
     }
 
-    public Translate.BuffType getLabel() {
+    public int getId() {
+        return id;
+    }
+
+    public Translate.BuffType getBuffType() {
         return buffType;
     }
 
@@ -37,17 +43,15 @@ public abstract class Buff {
     }
 
     public BuffPayload getBuffInfo() {
-        return new BuffPayload(buffId, buffType);
+        return new BuffPayload(id, buffType);
     }
 
-    public int applyBuff() {
+    public void applyBuff(Player player) {
         remainingTurns -= 1;
-        return remainingTurns;
     }
 
     @Override
     public boolean equals(Object that) {
-        return (that instanceof Buff && ((Buff) that).getBuffId() == this.getBuffId());
+        return (that instanceof Buff && ((Buff) that).getId() == this.getId());
     }
-
 }

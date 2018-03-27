@@ -9,12 +9,14 @@ import cs446_w2018_group3.supercardgame.model.buffs.*;
  */
 
 public class SteamCard extends ElementCard {
-    public SteamCard () {
+    private static final int STEAM_DODGE_DURATION = 2;
+
+    public SteamCard() {
         super(Translate.CardType.Steam, 2, 0);
     }
 
     public void apply(Player subject, Player object) {
-        Buff newBuff = new DodgeBuff(Translate.BuffType.Dodge, subject, object);
+        Buff newBuff = new DodgeBuff(STEAM_DODGE_DURATION);
         subject.addBuff(newBuff);
     }
 }
