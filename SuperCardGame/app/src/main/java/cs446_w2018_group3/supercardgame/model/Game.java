@@ -162,7 +162,7 @@ public class Game {
         if (newCard == null) {
             throw new ElementCardsCanNotCombineException(cards);
         }
-        String msg = player.getName() + " combines ";
+        String msg = player.getName() + " combine ";
         msg = msg + cards.get(0).getCardType().toString() + " card and " + cards.get(1).getCardType().toString();
         msg = msg + " card get a " + newCard.getCardType().toString() + " card";
         player.addCardToHand(newCard);
