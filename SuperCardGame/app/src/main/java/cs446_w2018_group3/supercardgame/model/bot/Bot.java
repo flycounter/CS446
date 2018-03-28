@@ -7,9 +7,9 @@ import java.util.List;
 
 import cs446_w2018_group3.supercardgame.Exception.BotException.BotNotEnoughBaseCardInHandException;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
-import cs446_w2018_group3.supercardgame.model.cards.SandCard;
-import cs446_w2018_group3.supercardgame.model.cards.SteamCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.SandCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.SteamCard;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.AbsStateEventAdapter;
@@ -135,7 +135,7 @@ public class Bot implements IBot {
                         ||  c.getClass() == SteamCard.class) {
                     Log.i(Bot.class.getName(),
                             "Using Defencive Card " + c.getLabel());
-                    mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getCardId()));
+                    mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getId()));
                     break;
                 }
             }
@@ -148,7 +148,7 @@ public class Bot implements IBot {
                 if (c.getLevel() >= 2) {
                     Log.i(Bot.class.getName(),
                             "Using Hybrid Card " + c.getLabel());
-                    mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getCardId()));
+                    mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), c.getId()));
                     break;
                 }
             }
@@ -160,7 +160,7 @@ public class Bot implements IBot {
             if(!botPlayer.getHand().isEmpty()) {
                 Log.i(Bot.class.getName(),
                         "Using Any Card " + botPlayer.getHand().get(0).getLabel());
-                mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), botPlayer.getHand().get(0).getCardId()));
+                mGameEventHandler.handlePlayerUseCardEvent(new PlayerUseCardEvent(botPlayer.getId(),localPlayer.getId(), botPlayer.getHand().get(0).getId()));
             }
         }
     }
@@ -168,7 +168,7 @@ public class Bot implements IBot {
         List<Integer> cardIds = new ArrayList<>();
         for (ElementCard c:botPlayer.getHand()){
             if (c.getLevel() == 1) {
-                cardIds.add(c.getCardId());
+                cardIds.add(c.getId());
                 if (cardIds.size() == 2) {
                     break;
                 }

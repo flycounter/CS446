@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.view.cardedit.CardEditActivity;
 import cs446_w2018_group3.supercardgame.view.cardshop.CardShopActivity;
 import cs446_w2018_group3.supercardgame.R;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
             showAddNewUserDialog();
         }
         else {
-            setWelcomeMsg(new Gson().fromJson(users.get(0).getPlayerData(), Player.class).getName());
+            setWelcomeMsg(Parser.getInstance().getParser().fromJson(users.get(0).getPlayerData(), Player.class).getName());
         }
     }
 
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                Gson gson = new Gson();
+                Gson gson = Parser.getInstance().getParser();
                 Random rng = new Random();
                 User user = new User();
                 user.setId((long) rng.nextInt(987654321));

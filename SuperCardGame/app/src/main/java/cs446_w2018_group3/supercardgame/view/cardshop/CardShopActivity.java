@@ -22,6 +22,7 @@ import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.util.Config;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 
 public class CardShopActivity extends AppCompatActivity {
@@ -43,18 +44,18 @@ public class CardShopActivity extends AppCompatActivity {
         setContentView(R.layout.activity_card_shop);
         getSession();
         mUser = User.getLocalUser(mSession.getUserDao());
-        collection= new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection();
-        String userName = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
+        collection= Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection();
+        String userName = Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
         mPlayer = new Player(new BigDecimal(mUser.getId()).intValueExact(), userName);
         mPlayer.setCollection(collection);
-        mPlayer.setCollectionDeck(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck());
+        mPlayer.setCollectionDeck(Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck());
         mPlayer.setGold(gold);
-        mPlayer.setDeck(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck());
+        mPlayer.setDeck(Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck());
         waterNo = collection.get(0);
         fireNo = collection.get(1);
         airNo = collection.get(2);
         dirtNo = collection.get(3);
-        gold = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold();
+        gold = Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold();
         //connect wigets
         fire = findViewById(R.id.ShopFire);
         water= findViewById(R.id.ShopWater);

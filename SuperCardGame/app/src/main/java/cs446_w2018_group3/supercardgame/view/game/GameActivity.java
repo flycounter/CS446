@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +28,7 @@ import java.util.Map;
 
 import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 import cs446_w2018_group3.supercardgame.view.cardedit.PopupInfo;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.util.Config;
@@ -326,8 +325,8 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         // data binding (in a lame way)
         // NOTE: need to be aware of variable scope
         final int checkboxId = CardDataMap.size();
-        CardDataMap.put(checkboxId, card.getCardId());
-//        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getCardId()));
+        CardDataMap.put(checkboxId, card.getId());
+//        Log.i("view", String.format("card data map: %s -> %s", checkboxId, card.getId()));
 
         // listener
         cardBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

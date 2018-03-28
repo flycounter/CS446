@@ -17,8 +17,9 @@ import com.google.gson.Gson;
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.Translate;
 import cs446_w2018_group3.supercardgame.model.cards.Card;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.User;
+import cs446_w2018_group3.supercardgame.util.Parser;
 
 /**
  * Created by GARY on 2018-03-25.
@@ -131,7 +132,7 @@ public class ShopPopup extends PopupWindow {
         parent.gold=gold;
         parent.mPlayer.setGold(gold);
         parent.mPlayer.addCardToCollection(newCard,buy);
-        Gson gson = new Gson();
+        Gson gson = Parser.getInstance().getParser();
         parent.mUser.setPlayerData(gson.toJson(parent.mPlayer));
         User.replaceUser(parent.getSession().getUserDao(),parent.mUser);
         setStatus(gold,own,0,0);

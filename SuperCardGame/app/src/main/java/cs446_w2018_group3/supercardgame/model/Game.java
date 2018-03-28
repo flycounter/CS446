@@ -11,8 +11,8 @@ import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.ElementC
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerInsufficientApException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.model.field.Weather.Weather;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.model.cards.*;
@@ -63,7 +63,7 @@ public class Game {
 
     public static Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
         for (Card c : player.getHand()) {
-            if (c.getCardId() == cardId) {
+            if (c.getId() == cardId) {
                 return c;
             }
         }

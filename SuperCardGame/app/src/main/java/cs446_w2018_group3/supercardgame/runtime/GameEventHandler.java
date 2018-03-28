@@ -15,7 +15,7 @@ import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.InvalidSt
 import cs446_w2018_group3.supercardgame.Exception.PlayerStateException.GameStateException;
 import cs446_w2018_group3.supercardgame.model.Game;
 import cs446_w2018_group3.supercardgame.model.player.Player;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.GameEndEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEventListener;

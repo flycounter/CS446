@@ -3,13 +3,10 @@ package cs446_w2018_group3.supercardgame.model;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.java_websocket.WebSocket;
 
 import cs446_w2018_group3.supercardgame.Exception.NetworkException.UnknownMessageException;
-import cs446_w2018_group3.supercardgame.model.buffs.Buff;
-import cs446_w2018_group3.supercardgame.model.buffs.BuffAdapter;
 import cs446_w2018_group3.supercardgame.model.dto.GameRuntimeData;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.network.INetworkConnector;
@@ -20,6 +17,7 @@ import cs446_w2018_group3.supercardgame.network.Connection.IClient;
 import cs446_w2018_group3.supercardgame.network.Connection.IHost;
 import cs446_w2018_group3.supercardgame.network.Connection.IMessageConnector;
 import cs446_w2018_group3.supercardgame.network.Connection.Sendable;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.LocalGameEventListener;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.PlayerAddEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.ActionEvent;
@@ -44,7 +42,7 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
     private final MultiGameViewModel mViewModel;
     private final RemoteGameEventListener mRemoteGameEventListener;
 
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(Buff.class, new BuffAdapter()).create();
+    private final Gson gson = Parser.getInstance().getParser();
 
 
     public NetworkConnector(IClient client,

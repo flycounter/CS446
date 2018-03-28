@@ -1,25 +1,26 @@
-package cs446_w2018_group3.supercardgame.model.cards;
+package cs446_w2018_group3.supercardgame.model.cards.element;
 
 import android.util.Log;
 
+import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.buffs.*;
 
 /**
  * Created by yandong on 2018-02-25.
  */
 
-public class ElementCard extends Card {
+public abstract class ElementCard extends Card {
     private static final String TAG = ElementCard.class.getName();
 
-    static Translate.CardType[][] combineRule = {
+    public static final Translate.CardType[][] combineRule = {
             {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
             {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
             {Translate.CardType.Ice, Translate.CardType.Blast, Translate.CardType.Gale, Translate.CardType.Sand},
             {Translate.CardType.Mud, Translate.CardType.Lava, Translate.CardType.Sand, Translate.CardType.Rock}};
-    int level;
-    int damage;
+
+    private final int level;
+    private final int damage;
 
     @Override
     public void apply(Player subject, Player object) {
@@ -37,40 +38,15 @@ public class ElementCard extends Card {
         return combineRule[cardIntType1][cardIntType2];
     }
 
-    public static int calculateDamage (int damage, Player object) {
-
-
-        return Math.max(0, damage);
-    }
-
-    ElementCard() {
-
-    }
-
-    public ElementCard(Translate.CardType cardType, int level, int damage) {
+    ElementCard(Translate.CardType cardType, int level, int damage) {
         super(cardType);
-        // NOTE: TODO: replace with factory
 
-        switch (cardType) {
-            case Air:
+        this.level = level;
+        this.damage = damage;
+    }
 
-            case Aqua:
-            case Blast:
-            case Dirt:
-            case Fire:
-            case Flame:
-            case Gale:
-            case Ice:
-            case Lava:
-            case Mud:
-            case Rock:
-            case Sand:
-            case Steam:
-            case Water:
-            default:
-                // nothing
-        }
-
+    ElementCard(Translate.CardType cardType, int level, int damage, int id) {
+        super(cardType, id);
         this.level = level;
         this.damage = damage;
     }
@@ -80,7 +56,11 @@ public class ElementCard extends Card {
 //        return null;
 //    }
 
-    public int getLevel(){
+    public int getLevel() {
         return level;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 }

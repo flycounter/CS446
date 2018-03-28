@@ -25,11 +25,12 @@ import java.util.Map;
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.util.Config;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.view.mainmenu.MainActivity;
 
 public class CardEditActivity extends AppCompatActivity {
@@ -66,9 +67,9 @@ public class CardEditActivity extends AppCompatActivity {
         collection = new ArrayList<>();
         getSession();
         mUser = User.getLocalUser(mSession.getUserDao());
-        cacheDeck = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck();
-        collection= new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck();
-        String userName = new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
+        cacheDeck = Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getDeck();
+        collection= Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollectionDeck();
+        String userName = Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getName();
         mPlayer = new Player(new BigDecimal(mUser.getId()).intValueExact(), userName);
         //connect wigets
         add = findViewById(R.id.AddButton);
@@ -101,9 +102,9 @@ public class CardEditActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mPlayer.setDeck(cacheDeck);
                 mPlayer.setCollectionDeck(collection);
-                mPlayer.setGold(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold());
-                mPlayer.setCollection(new Gson().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection());
-                Gson gson = new Gson();
+                mPlayer.setGold(Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getGold());
+                mPlayer.setCollection(Parser.getInstance().getParser().fromJson(mUser.getPlayerData(), cs446_w2018_group3.supercardgame.model.player.Player.class).getCollection());
+                Gson gson = Parser.getInstance().getParser();
                 mUser.setPlayerData(gson.toJson(mPlayer));
                 User.replaceUser(mSession.getUserDao(),mUser);
             }
