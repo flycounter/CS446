@@ -3,9 +3,7 @@ package cs446_w2018_group3.supercardgame.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 
 import java.util.List;
@@ -29,15 +27,14 @@ import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
  * Created by JarvieK on 2018/2/25.
  */
 
-public abstract class GameViewModel extends AndroidViewModel implements PlayerAction, ErrorMessageListener {
+public abstract class GameViewModel extends AndroidViewModel implements PlayerAction {
     private static final String TAG = GameViewModel.class.getName();
     GameRuntime gameRuntime;
     IGameEventHandler gameEventHandler;
     GameReadyCallback mGameReadyCallback;
     StateEventListener mStateEventListener;
+    ErrorMessageListener mErrorMessageListener;
     DaoSession mSession;
-
-    private final MutableLiveData<String> actionLogMessage = new MutableLiveData<>();
 
     Player player;
 
@@ -60,7 +57,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         mGameReadyCallback = gameReadyCallback;
         mStateEventListener = stateEventListener;
         gameEventHandler.addStateEventListener(mStateEventListener);
-        gameEventHandler.setErrorMessageListener(this);
+        gameEventHandler.setErrorMessageListener(mErrorMessageListener);
     }
 
     public void start() {
@@ -133,25 +130,23 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
     public LiveData<GameField> getGameField() { return gameRuntime.getGameField(); }
 
     public void deliverErrorMessage(String message) {
-        if (Looper.myLooper() == Looper.getMainLooper()) actionLogMessage.setValue(message); else actionLogMessage.postValue(message);
+        gameRuntime.updateLogInfo(message);
     }
 
-    public LiveData<String> getActionLogMessage() {
-        return actionLogMessage;
-    }
+    public LiveData<String> getActionLogMessage() { return gameRuntime.getLogInfo(); }
 
     public interface GameReadyCallback {
         void onGameReady();
     }
 
-    @Override
-    public void onMessage(String message) {
-        Log.w(TAG, "error message to UI: " + message);
-        deliverErrorMessage(message);
+    public void setmErrorMessageListener(ErrorMessageListener mErrorMessageListener) {
+        this.mErrorMessageListener = mErrorMessageListener;
     }
+
 
     public void setSession(DaoSession session) {
         Log.i(TAG, "session set: " + session);
         mSession = session;
     }
 }
+

@@ -2,10 +2,8 @@ package cs446_w2018_group3.supercardgame.Exception.PlayerActionException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import cs446_w2018_group3.supercardgame.model.cards.Card;
-import cs446_w2018_group3.supercardgame.model.cards.ElementCard;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 
 /**
  * Created by JarvieK on 2018/2/26.

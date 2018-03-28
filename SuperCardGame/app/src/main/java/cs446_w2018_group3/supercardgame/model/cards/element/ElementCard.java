@@ -1,5 +1,8 @@
-package cs446_w2018_group3.supercardgame.model.cards;
+package cs446_w2018_group3.supercardgame.model.cards.element;
 
+import android.util.Log;
+
+import cs446_w2018_group3.supercardgame.model.cards.Card;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.model.Translate;
 
@@ -7,18 +10,21 @@ import cs446_w2018_group3.supercardgame.model.Translate;
  * Created by yandong on 2018-02-25.
  */
 
-public class ElementCard extends Card {
-    static Translate.CardType[][] combineRule = {
+public abstract class ElementCard extends Card {
+    private static final String TAG = ElementCard.class.getName();
+
+    public static final Translate.CardType[][] combineRule = {
             {Translate.CardType.Aqua, Translate.CardType.Steam, Translate.CardType.Ice, Translate.CardType.Mud},
             {Translate.CardType.Steam, Translate.CardType.Flame, Translate.CardType.Blast, Translate.CardType.Lava},
             {Translate.CardType.Ice, Translate.CardType.Blast, Translate.CardType.Gale, Translate.CardType.Sand},
             {Translate.CardType.Mud, Translate.CardType.Lava, Translate.CardType.Sand, Translate.CardType.Rock}};
-    int level;
-    int damage;
+
+    private final int level;
+    private final int damage;
 
     @Override
     public void apply(Player subject, Player object) {
-        // stub
+        Log.e(TAG, "stub!");
     }
 
     public static Boolean canCombine(ElementCard card1, ElementCard card2) {
@@ -32,14 +38,15 @@ public class ElementCard extends Card {
         return combineRule[cardIntType1][cardIntType2];
     }
 
-    public static int calculateDamage (int damage, Player object) {
+    ElementCard(Translate.CardType cardType, int level, int damage) {
+        super(cardType);
 
-
-        return Math.max(0, damage);
+        this.level = level;
+        this.damage = damage;
     }
 
-    public ElementCard(Translate.CardType cardType, int level, int damage) {
-        super(cardType);
+    ElementCard(Translate.CardType cardType, int level, int damage, int id) {
+        super(cardType, id);
         this.level = level;
         this.damage = damage;
     }
@@ -49,7 +56,11 @@ public class ElementCard extends Card {
 //        return null;
 //    }
 
-    public int getLevel(){
+    public int getLevel() {
         return level;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 }

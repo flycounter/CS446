@@ -34,6 +34,7 @@ public class GameRuntime implements GameStateControl {
     private final MutableLiveData<Player> localPlayer = new MutableLiveData<>();
     private final MutableLiveData<Player> otherPlayer = new MutableLiveData<>();
     private final MutableLiveData<GameField> mGameField = new MutableLiveData<>();
+    private final MutableLiveData<String> logInfo = new MutableLiveData<>();
 
 
     public GameRuntime() {
@@ -141,10 +142,18 @@ public class GameRuntime implements GameStateControl {
         return mGameField;
     }
 
+    public LiveData<String> getLogInfo() { return logInfo; }
+
     public void updateGameField(GameField gameField) {
         if (Looper.myLooper() == Looper.getMainLooper())
             mGameField.setValue(gameField);
         else mGameField.postValue(gameField);
+    }
+
+    public void updateLogInfo(String msg) {
+        if (Looper.myLooper() == Looper.getMainLooper())
+            logInfo.setValue(msg);
+        else logInfo.postValue(msg);
     }
 
     Game getGameModel() {

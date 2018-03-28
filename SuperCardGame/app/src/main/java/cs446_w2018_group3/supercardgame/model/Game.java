@@ -11,8 +11,8 @@ import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.ElementC
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerInsufficientApException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerNotFoundException;
 import cs446_w2018_group3.supercardgame.Exception.PlayerActionException.PlayerCanNotEnterTurnException;
+import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
 import cs446_w2018_group3.supercardgame.model.field.GameField;
-import cs446_w2018_group3.supercardgame.model.field.Weather.Weather;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameRuntime;
 import cs446_w2018_group3.supercardgame.model.cards.*;
@@ -32,7 +32,8 @@ public class Game {
     private Random rng = new Random(System.currentTimeMillis()); // seed = curr unix time
 
     // Pseudo game constructor. Create a game with a sandbag opponent, and with only water cards in deck. Sunny weather
-    public Game() { }
+    public Game() {
+    }
 
     public void bind(GameRuntime gameRuntime) {
         this.gameRuntime = gameRuntime;
@@ -40,19 +41,10 @@ public class Game {
 
     public void init() throws PlayerNotFoundException {
         // for each player
-        for (LiveData<Player> playerHolder: gameRuntime.getPlayers()) {
+        for (LiveData<Player> playerHolder : gameRuntime.getPlayers()) {
             Player player = playerHolder.getValue();
             player.setHP(10);
             player.setAP(0);
-            List<ElementCard> deck = player.getDeck();
-            for( int i = 0; i < 6; i++ ) {
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Water ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Fire ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Air ) );
-                deck.add( ElementCard.createNewCard( Translate.CardType.Dirt ) );
-            }
 
             // update liveData
             gameRuntime.updatePlayer(player);
@@ -64,13 +56,14 @@ public class Game {
 
         // update LiveData
         gameRuntime.updateGameField(gameField);
-
+        String msg = "Game Started";
+        gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game ready");
     }
 
     public static Card getCardInHand(Player player, int cardId) throws CardNotFoundException {
-        for ( Card c : player.getHand() ) {
-            if ( c.getCardId() == cardId ) {
+        for (Card c : player.getHand()) {
+            if (c.getId() == cardId) {
                 return c;
             }
         }
@@ -92,8 +85,13 @@ public class Game {
     }
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
+        String msg;
+        msg = player.getName() + " turn starts";
+        gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnStart");
         beforePlayerTurnStart(player);
+        msg = player.getName() + " regain AP";
+        gameRuntime.updateLogInfo(msg);
         // update player's AP
         player.addAP(PLAYER_AP_REGEN_PER_TURN);
 
@@ -110,6 +108,8 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
+        String msg = player.getName() + "turn ends";
+        gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnEnd");
         // nothing to do at this moment?
         // update player AP??? isn't the game supposed to carry on AP to the next turn?
@@ -126,7 +126,7 @@ public class Game {
         gameRuntime.setNextPlayer();
     }
 
-    public void useCard(Player subject, Player target, Card card) throws PlayerInsufficientApException,PlayerNotFoundException, CardNotFoundException {
+    public void useCard(Player subject, Player target, Card card) throws PlayerInsufficientApException, PlayerNotFoundException, CardNotFoundException {
         // check whether subject player has enough AP
         if (subject.getAP() < card.getCost()) {
             throw new PlayerInsufficientApException();
@@ -138,10 +138,12 @@ public class Game {
 
         // apply card to target
         card.apply(subject, target);
+        String msg = subject.getName() + " use a " + card.getCardType().toString() + " card to " + target.getName();
 
         // update LiveData
         gameRuntime.updatePlayer(subject);
         gameRuntime.updatePlayer(target);
+        gameRuntime.updateLogInfo(msg);
     }
 
     public void playerCombineElementsEventHandler(Player player, List<ElementCard> cards)
@@ -165,11 +167,15 @@ public class Game {
         }
 
         player.setAP(player.getAP() - PLAYER_COMBINE_ELEMENT_COST);
+        String msg = player.getName() + " combine ";
+        msg = msg + cards.get(0).getCardType().toString() + " card and " + cards.get(1).getCardType().toString();
+        msg = msg + " card get a " + newCard.getCardType().toString() + " card";
         player.addCardToHand(newCard);
         player.removeCardFromHand(cards.get(0));
         player.removeCardFromHand(cards.get(1));
 
         // update LiveData
         gameRuntime.updatePlayer(player);
+        gameRuntime.updateLogInfo(msg);
     }
 }

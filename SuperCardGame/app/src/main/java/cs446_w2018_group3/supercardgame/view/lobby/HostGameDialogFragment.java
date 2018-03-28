@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.view.game.MultiGameActivity;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
@@ -106,7 +107,7 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
         viewModel.getConnInfoContainer().observe(this, new Observer<ConnInfo>() {
             @Override
             public void onChanged(@Nullable ConnInfo connInfo) {
-                Log.i(TAG, "onChanged: connInfo: " + new Gson().toJson(connInfo));
+                Log.i(TAG, "onChanged: connInfo: " + Parser.getInstance().getParser().toJson(connInfo));
                 roomName.setText(connInfo != null ? connInfo.getGameName() : "");
                 roomInfo.setText(connInfo != null ? String.format("%s:%s", connInfo.getHost().getHostAddress(), connInfo.getPort()) : "");
             }
@@ -115,7 +116,7 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
         viewModel.getConnStateContainer().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
-                Log.i(TAG, "onChanged: connState: " + new Gson().toJson(connState));
+                Log.i(TAG, "onChanged: connState: " + Parser.getInstance().getParser().toJson(connState));
                 connStatus.setText(s);
             }
         });

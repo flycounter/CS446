@@ -1,6 +1,7 @@
 package cs446_w2018_group3.supercardgame.view.mainmenu;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +20,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 
+import cs446_w2018_group3.supercardgame.util.Parser;
+import cs446_w2018_group3.supercardgame.view.cardedit.CardEditActivity;
+import cs446_w2018_group3.supercardgame.view.cardshop.CardShopActivity;
 import cs446_w2018_group3.supercardgame.R;
 import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
 import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
@@ -76,6 +80,26 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
                 gameModePopup.showPopup(new View(MainActivity.this));
             }
         });
+        deckEdit.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardEditActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
+
+
+        shop.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setClass(v.getContext(),CardShopActivity.class);
+                // Start activity
+                v.getContext().startActivity(intent);
+            }
+        });
 
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,9 +109,6 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
         });
 
 
-        //demo code
-        deckEdit.setEnabled(false);
-        shop.setEnabled(false);
         leaderBoard.setEnabled(false);
 
         // check if user exists
@@ -117,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
             showAddNewUserDialog();
         }
         else {
-            setWelcomeMsg(new Gson().fromJson(users.get(0).getPlayerData(), Player.class).getName());
+            setWelcomeMsg(Parser.getInstance().getParser().fromJson(users.get(0).getPlayerData(), Player.class).getName());
         }
     }
 
@@ -139,13 +160,16 @@ public class MainActivity extends AppCompatActivity implements AddUserFragment.U
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                Gson gson = new Gson();
+                Gson gson = Parser.getInstance().getParser();
                 Random rng = new Random();
                 User user = new User();
                 user.setId((long) rng.nextInt(987654321));
                 Log.i(TAG, "userId generated: " + user.getId());
 
                 Player player = new Player(new BigDecimal(user.getId()).intValueExact(), userName);
+                if(user.getPlayerData()==null) {
+                    player.setDefault();
+                }
                 user.setPlayerData(gson.toJson(player));
                 User.replaceUser(getSession().getUserDao(), user);
             }

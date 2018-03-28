@@ -19,6 +19,7 @@ import cs446_w2018_group3.supercardgame.network.Connection.ConnectionListener;
 import cs446_w2018_group3.supercardgame.network.Connection.IHost;
 import cs446_w2018_group3.supercardgame.network.Connection.P2pClient;
 import cs446_w2018_group3.supercardgame.network.Connection.P2pHost;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.util.listeners.cb;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
@@ -114,7 +115,7 @@ public class P2PLobbyManager implements ILobbyManager {
     public void joinGame(ConnInfo connInfo) {
         // create p2p client
         client = new P2pClient(connInfo);
-        Log.i(TAG, "connecting to host: " + new Gson().toJson(connInfo));
+        Log.i(TAG, "connecting to host: " + Parser.getInstance().getParser().toJson(connInfo));
         mViewModel.changeConnectionStateMessage("connecting to host");
         mViewModel.changeIsGameReadyFlag(false);
         mConnectionListener = new ConnectionListener() {
