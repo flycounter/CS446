@@ -502,12 +502,12 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void run() {
                 if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
                     Log.i(TAG, "local player's turn");
-                    showErrorMessage("Noew it's your turn");
+                    showErrorMessage("Now it's your turn");
                     combine.setEnabled(true);
                     use.setEnabled(true);
                     endTurn.setEnabled(true);
                 } else {
-                    showErrorMessage("Noew it's your opponent's turn");
+                    showErrorMessage("Now it's your opponent's turn");
                     combine.setEnabled(false);
                     use.setEnabled(false);
                     endTurn.setEnabled(false);
