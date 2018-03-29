@@ -36,7 +36,9 @@ public class GameRuntime implements GameStateControl {
     private final MutableLiveData<Player> otherPlayer = new MutableLiveData<>();
     private final MutableLiveData<GameField> mGameField = new MutableLiveData<>();
     private final MutableLiveData<List<String>> logInfo = new MutableLiveData<>();
-
+    // Changing weather counter
+    private int weatherCounter = 3;
+    private boolean weatherChangeSwitch = true;
 
     public GameRuntime() {
         gameModel.bind(this);
@@ -216,6 +218,16 @@ public class GameRuntime implements GameStateControl {
         }
     }
 
+    private void changeWeather() {
+        if (weatherChangeSwitch) {
+            weatherCounter -= 1;
+            if (weatherCounter == 0) {
+                weatherCounter = 3;
+                gameModel.changeWeather();
+            }
+        }
+    }
+
     @Override
     public void turnStart() throws PlayerCanNotEnterTurnException {
         try {
@@ -223,7 +235,7 @@ public class GameRuntime implements GameStateControl {
             if (fsm.getState() != GameFSM.State.TURN_START) {
                 throw new InvalidStateException(fsm.getState());
             }
-
+            changeWeather();
             gameModel.playerTurnStart(getCurrPlayer());
 
             // state update

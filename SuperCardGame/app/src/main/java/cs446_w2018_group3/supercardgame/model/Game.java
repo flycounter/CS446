@@ -84,6 +84,9 @@ public class Game {
         }
         // pass
     }
+    public void changeWeather() {
+
+    }
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
         String msg;
