@@ -99,6 +99,7 @@ public class HostGameDialogFragment extends AppCompatDialogFragment {
         joinGameBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                viewModel.sendConfirmationMessage();
                 joinGame(v);
             }
         });

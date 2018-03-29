@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
+import cs446_w2018_group3.supercardgame.util.listeners.cb;
 
 /**
  * Created by JarvieK on 2018/3/23.
@@ -18,10 +19,12 @@ import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 
 public class P2pClient implements IClient {
     private static final String TAG = P2pClient.class.getName();
-    private final List<ConnectionListener> mConnectionListeners = new ArrayList<>();
     private final ConnInfo mConnInfo;
     private final WebSocketClient ws;
     private IMessageConnector mMessageConnetor;
+
+    private final List<ConnectionListener> mConnectionListeners = new ArrayList<>();
+    private cb mConfirmationReceivedCallback;
 
     // TODO: singleton?
 
@@ -50,6 +53,9 @@ public class P2pClient implements IClient {
 
                 if (mMessageConnetor != null) {
                     mMessageConnetor.onMessage(ws, message);
+                }
+                if (mConfirmationReceivedCallback != null) {
+                    mConfirmationReceivedCallback.then();
                 }
 
                 for (ConnectionListener listener : mConnectionListeners) {
@@ -101,5 +107,10 @@ public class P2pClient implements IClient {
     @Override
     public void setMessageConnector(IMessageConnector messageConnector) {
         mMessageConnetor = messageConnector;
+    }
+
+    @Override
+    public void setConfirmationReceivedCallback(cb cb) {
+        this.mConfirmationReceivedCallback = cb;
     }
 }

@@ -14,7 +14,7 @@ import cs446_w2018_group3.supercardgame.util.listeners.cb;
 public interface ILobbyManager {
     LiveData<List<ConnInfo>> getLobby();
     void hostGame(String gameName);
-    void sendConfirmationMessage(cb cb);
+    void sendConfirmationMessage();
     void joinGame(ConnInfo connInfo);
     void start();
     void onResume();

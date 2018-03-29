@@ -99,6 +99,11 @@ public class P2pHost implements IHost {
     }
 
     @Override
+    public void sendConfirmationMessage() {
+        broadcast(GAME_JOIN_CONFIRMATION);
+    }
+
+    @Override
     public ConnInfo getConnInfo() {
         return connInfo;
     }

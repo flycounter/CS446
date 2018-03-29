@@ -7,8 +7,6 @@ import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import java.util.List;
 
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
@@ -103,28 +101,18 @@ public class P2PLobbyManager implements ILobbyManager {
     }
 
     @Override
-    public synchronized void sendConfirmationMessage(cb cb) {
-        if (host != null) {
-            host.sendMessage(IHost.GAME_JOIN_CONFIRMATION);
-            Log.i(TAG, "confirmation message sent");
-            cb.then();
-        }
-    }
-
-    @Override
     public void joinGame(ConnInfo connInfo) {
-        // create p2p client
-        client = new P2pClient(connInfo);
         Log.i(TAG, "connecting to host: " + Parser.getInstance().getParser().toJson(connInfo));
+
         mViewModel.changeConnectionStateMessage("connecting to host");
         mViewModel.changeIsGameReadyFlag(false);
+
         mConnectionListener = new ConnectionListener() {
             @Override
             public void onConnected() {
                 Log.i(TAG, "connected to host: " + connInfo);
                 mViewModel.changeConnectionStateMessage("connected to host");
                 ClientHandler.setClient(client);
-                mViewModel.changeIsGameReadyFlag(true);
             }
 
             @Override
@@ -135,11 +123,19 @@ public class P2PLobbyManager implements ILobbyManager {
 
             @Override
             public void onMessage(String message) {
-                if (message.equals(IHost.GAME_JOIN_CONFIRMATION)) {
-                    mViewModel.changeConnectionStateMessage("host confirmed");
-                }
+                // nothing
             }
         };
+
+        // create p2p client
+        client = new P2pClient(connInfo);
+        client.setConfirmationReceivedCallback(new cb() {
+            @Override
+            public void then() {
+                mViewModel.changeConnectionStateMessage("host confirmed");
+                mViewModel.changeIsGameReadyFlag(true);
+            }
+        });
         client.addConnectionListener(mConnectionListener);
         client.connect();
     }
@@ -168,4 +164,8 @@ public class P2PLobbyManager implements ILobbyManager {
 
     }
 
+    @Override
+    public void sendConfirmationMessage() {
+        host.sendConfirmationMessage();
+    }
 }

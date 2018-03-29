@@ -23,6 +23,8 @@ public interface IHost extends Sendable {
 
     void broadcast(String message);
 
+    void sendConfirmationMessage();
+
     void addConnectionListener(ConnectionListener connectionListener);
 
     void removeConnectionListener(ConnectionListener connectionListener);

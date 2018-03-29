@@ -43,8 +43,8 @@ public class LobbyViewModel extends AndroidViewModel {
         lobbyManager.hostGame(gameName);
     }
 
-    public void sendConfirmationMessage(cb cb) {
-        lobbyManager.sendConfirmationMessage(cb);
+    public void sendConfirmationMessage() {
+        lobbyManager.sendConfirmationMessage();
     }
 
     public void joinGame(ConnInfo connInfo) {
