@@ -99,14 +99,14 @@ public abstract class Card {
             case Dirt: return "Dirt card.\nBase element.\nDeals 1 damage.";
             case Aqua: return "Aqua card.\nHigh level element.\nCombine by 2 water.\nDeals 3 damage.";
             case Steam: return "Steam card.\nCombined element.\nCombine by water and fire.\nYour opponent will miss attack in next turn.";
-            case Ice: return "Ice card.\nCombined element.\nCombine by water and air.\nFreeze your opponent and he will lose the ability of combining elements in next turn.";
+            case Ice: return "Ice card.\nCombined element.\nCombine by water and air.\nDeals 2 damage.\nFreeze your opponent if weather is rainy,reduce your opponent 2 ability points";
             case Mud: return "Mud card.\nCombined element.\nCombine by dirt and water.\nSo hard to move in mud!Decrease your opponent ap by 3 in next turn.";
             case Flame: return "Flame card.\nHigh level element.\nCombine by 2 fire.\nDeals 2 damage per turn to your opponent.Last 2 turns.";
-            case Blast: return "Blast card.\nCombined element.\nCombine by fire and air.";
-            case Lava: return "Lava card.\nCombined element.\nCombine by fire and dirt.";
+            case Blast: return "Blast card.\nCombined element.\nCombine by fire and air.\nDeals 4 damage.";
+            case Lava: return "Lava card.\nCombined element.\nCombine by fire and dirt.\nDeals 3 damage and burn your opponent.";
             case Gale: return "Gale card.\nHigh level element.\nCombine by 2 air.\nDeals 3 damage.";
             case Sand: return "Sand card.\nCombined element.\nCombine by dirt and air.\nGain 3 shields.";
-            case Rock: return "Rock card.\nHigh level element.\nCombine by 2 dirt.\nDeals 3 damage.";
+            case Rock: return "Rock card.\nHigh level element.\nCombine by 2 dirt.\nDeals 3 damage and gain 1 shields.";
         }
         return "default_card_description";
     }
