@@ -108,7 +108,7 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
-        String msg = player.getName() + "turn ends";
+        String msg = player.getName() + " turn ends";
         gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnEnd");
         // nothing to do at this moment?
