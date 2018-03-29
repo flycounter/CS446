@@ -86,7 +86,7 @@ public class CardEditActivity extends AppCompatActivity {
         collectionText.setText("Your collection");
         int cardNo = cacheDeck.size();
         deckText.setText("Your deck          Card number:"+Integer.toString(cardNo));
-        setTextSize(TEXT_SIZE);
+//        setTextSize(TEXT_SIZE);
         //button listener
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
