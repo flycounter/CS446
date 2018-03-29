@@ -13,11 +13,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.greenrobot.greendao.database.Database;
+
 import java.net.InetAddress;
 import java.util.List;
 
+import cs446_w2018_group3.supercardgame.model.dao.DaoMaster;
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
 import cs446_w2018_group3.supercardgame.R;
+import cs446_w2018_group3.supercardgame.util.Config;
 import cs446_w2018_group3.supercardgame.viewmodel.LobbyViewModel;
 
 
@@ -34,6 +39,18 @@ public class LobbyActivity extends AppCompatActivity implements
     private RecyclerViewAdapter mAdapter;
 
     private LobbyViewModel viewModel;
+
+    private DaoSession mSession;
+
+    private DaoSession getSession() {
+        if (mSession == null) {
+            DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, Config.DB_NAME);
+            Database db = helper.getWritableDb();
+            helper.getReadableDb();
+            mSession = new DaoMaster(db).newSession();
+        }
+        return mSession;
+    }
 
     private void setAdapter() {
         mAdapter = new RecyclerViewAdapter(LobbyActivity.this, hostInfoList.getValue());
@@ -107,6 +124,7 @@ public class LobbyActivity extends AppCompatActivity implements
 
         // viewmodel
         viewModel = ViewModelProviders.of(this).get(LobbyViewModel.class);
+        viewModel.setSession(getSession());
         viewModel.init(this);
 
         hostInfoList = viewModel.getLobby();

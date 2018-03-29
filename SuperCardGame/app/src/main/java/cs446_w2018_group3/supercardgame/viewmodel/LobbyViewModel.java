@@ -7,10 +7,14 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.List;
 
+import cs446_w2018_group3.supercardgame.model.dao.DaoSession;
+import cs446_w2018_group3.supercardgame.model.dao.User;
 import cs446_w2018_group3.supercardgame.model.network.ConnInfo;
+import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.network.Lobby.ILobbyManager;
 import cs446_w2018_group3.supercardgame.network.Lobby.P2PLobbyManager;
 import cs446_w2018_group3.supercardgame.util.listeners.cb;
@@ -26,6 +30,8 @@ public class LobbyViewModel extends AndroidViewModel {
     private final MutableLiveData<String> connStateContainer = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isGameReadyContainer = new MutableLiveData<>();
 
+    DaoSession mSession;
+
     private String gameName;
     private String playerName = "default_player_name";
 
@@ -36,6 +42,7 @@ public class LobbyViewModel extends AndroidViewModel {
     public void init(Activity activity) {
         lobbyManager = new P2PLobbyManager(activity, this);
         lobbyManager.start();
+        playerName = Player.getLocalPlayer(mSession).getName();
     }
 
     public void hostGame() {
@@ -58,7 +65,8 @@ public class LobbyViewModel extends AndroidViewModel {
 
     public void changeIsGameReadyFlag(Boolean val) {
         // notify UI that game is ready to join
-        if (Looper.myLooper() == Looper.getMainLooper()) isGameReadyContainer.setValue(val); else isGameReadyContainer.postValue(val);
+        if (Looper.myLooper() == Looper.getMainLooper()) isGameReadyContainer.setValue(val);
+        else isGameReadyContainer.postValue(val);
     }
 
     public LiveData<List<ConnInfo>> getLobby() {
@@ -78,11 +86,13 @@ public class LobbyViewModel extends AndroidViewModel {
     }
 
     public void changeConnectionStateMessage(String message) {
-        if (Looper.myLooper() == Looper.getMainLooper()) connStateContainer.setValue(message); else connStateContainer.postValue(message);
+        if (Looper.myLooper() == Looper.getMainLooper()) connStateContainer.setValue(message);
+        else connStateContainer.postValue(message);
     }
 
     public void changeConnInfo(ConnInfo connInfo) {
-        if (Looper.myLooper() == Looper.getMainLooper()) connInfoContainer.setValue(connInfo); else connInfoContainer.postValue(connInfo);
+        if (Looper.myLooper() == Looper.getMainLooper()) connInfoContainer.setValue(connInfo);
+        else connInfoContainer.postValue(connInfo);
     }
 
     public LiveData<String> getConnStateContainer() {
@@ -99,5 +109,10 @@ public class LobbyViewModel extends AndroidViewModel {
 
     public String getGameName() {
         return gameName;
+    }
+
+    public void setSession(DaoSession session) {
+        Log.i(TAG, "session set: " + session);
+        mSession = session;
     }
 }
