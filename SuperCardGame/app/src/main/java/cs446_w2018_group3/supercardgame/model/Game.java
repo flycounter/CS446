@@ -3,6 +3,7 @@ package cs446_w2018_group3.supercardgame.model;
 import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -86,7 +87,7 @@ public class Game {
 
     public void playerTurnStart(Player player) throws PlayerCanNotEnterTurnException, PlayerNotFoundException {
         String msg;
-        msg = player.getName() + " turn starts";
+        msg = player.getName() + "'s turn starts";
         gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnStart");
         beforePlayerTurnStart(player);
@@ -108,7 +109,7 @@ public class Game {
     }
 
     public void playerTurnEnd(Player player) throws PlayerNotFoundException {
-        String msg = player.getName() + "turn ends";
+        String msg = player.getName() + "'s turn ends";
         gameRuntime.updateLogInfo(msg);
         Log.i(TAG, "game model: playerTurnEnd");
         // nothing to do at this moment?
@@ -146,7 +147,7 @@ public class Game {
         gameRuntime.updateLogInfo(msg);
     }
 
-    public void playerCombineElementsEventHandler(Player player, List<ElementCard> cards)
+    public void combineCard(Player player, List<ElementCard> cards)
             throws PlayerInsufficientApException, PlayerNotFoundException, CardNotFoundException, ElementCardsCanNotCombineException {
 
         // validation
@@ -166,13 +167,22 @@ public class Game {
             throw new ElementCardsCanNotCombineException(cards);
         }
 
+        Log.i(TAG, String.format("card combination: %s + %s -> %s", cards.get(0).getCardType(), cards.get(1).getCardType(), cardType));
+
         player.setAP(player.getAP() - PLAYER_COMBINE_ELEMENT_COST);
         String msg = player.getName() + " combine ";
         msg = msg + cards.get(0).getCardType().toString() + " card and " + cards.get(1).getCardType().toString();
         msg = msg + " card get a " + newCard.getCardType().toString() + " card";
-        player.addCardToHand(newCard);
         player.removeCardFromHand(cards.get(0));
         player.removeCardFromHand(cards.get(1));
+        player.addCardToHand(newCard);
+
+        // debug log
+        String cardIdsInHand = "";
+        for (Card card: player.getHand()) {
+            cardIdsInHand += String.format("[%s: %s], ", card.getCardType(), card.getId());
+        }
+        Log.i(TAG, "cards in hand: " + cardIdsInHand);
 
         // update LiveData
         gameRuntime.updatePlayer(player);

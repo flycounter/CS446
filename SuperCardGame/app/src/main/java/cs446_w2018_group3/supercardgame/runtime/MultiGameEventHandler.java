@@ -14,6 +14,7 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.Player
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerCombineElementEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerEndTurnEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.playerevent.actionevent.PlayerUseCardEvent;
+import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.StateEvent;
 import cs446_w2018_group3.supercardgame.util.events.GameEvent.stateevent.TurnStartEvent;
 import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 
@@ -24,10 +25,11 @@ import cs446_w2018_group3.supercardgame.viewmodel.MultiGameViewModel;
 public class MultiGameEventHandler extends GameEventHandler implements RemoteGameEventListener {
     private static final String TAG = MultiGameEventHandler.class.getName();
 
+    private final boolean isHost;
     private LocalGameEventListener mLocalEventListener;
 
-    public MultiGameEventHandler() {
-
+    public MultiGameEventHandler(boolean isHost) {
+        this.isHost = isHost;
     }
 
     private void dispatchGameEvent(GameEvent e) {
@@ -38,37 +40,37 @@ public class MultiGameEventHandler extends GameEventHandler implements RemoteGam
 
     @Override
     public void handlePlayerUseCardEvent(PlayerUseCardEvent e) {
-        super.handlePlayerUseCardEvent(e);
+        if (isHost) super.handlePlayerUseCardEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerCombineElementEvent(PlayerCombineElementEvent e) {
-        super.handlePlayerCombineElementEvent(e);
+        if (isHost) super.handlePlayerCombineElementEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerEndTurnEvent(PlayerEndTurnEvent e) {
-        super.handlePlayerEndTurnEvent(e);
+        if (isHost) super.handlePlayerEndTurnEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handleTurnStartEvent(TurnStartEvent e) {
-        super.handleTurnStartEvent(e);
+        if (isHost) super.handleTurnStartEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handleGameEndEvent(GameEndEvent e) {
-        super.handleGameEndEvent(e);
+        if (isHost) super.handleGameEndEvent(e);
         dispatchGameEvent(e);
     }
 
     @Override
     public void handlePlayerAddEvent(PlayerAddEvent e) {
-        super.handlePlayerAddEvent(e);
+        if (isHost) super.handlePlayerAddEvent(e);
         dispatchGameEvent(e);
     }
 
@@ -77,24 +79,26 @@ public class MultiGameEventHandler extends GameEventHandler implements RemoteGam
     }
 
     @Override
-    public void onGameEventReceived(GameEvent e) {
+    public void onRemoteGameEventReceived(GameEvent e) {
+        Log.i(TAG, "remote game event received: " + e.getEventCode());
+
         switch (e.getEventCode()) {
             // TODO: if GameEventHandler can handle GameEvent instead of the concrete events,
             // this code can be simpler and less error prone
             case PLAYER_COMBINE_ELEMENT:
-                super.handlePlayerCombineElementEvent((PlayerCombineElementEvent) e);
+                if (isHost) handlePlayerCombineElementEvent((PlayerCombineElementEvent) e);
                 break;
             case PLAYER_USE_CARD:
-                super.handlePlayerUseCardEvent((PlayerUseCardEvent) e);
+                if (isHost) handlePlayerUseCardEvent((PlayerUseCardEvent) e);
                 break;
             case PLAYER_START_TURN:
                 super.handleTurnStartEvent((TurnStartEvent) e);
                 break;
             case PLAYER_END_TURN:
-                super.handlePlayerEndTurnEvent((PlayerEndTurnEvent) e);
+                if (isHost) handlePlayerEndTurnEvent((PlayerEndTurnEvent) e);
                 break;
             case PLAYER_ADD:
-                super.handlePlayerAddEvent((PlayerAddEvent) e);
+                if (isHost) handlePlayerAddEvent((PlayerAddEvent) e);
                 break;
             case GAME_END:
                 super.handleGameEndEvent((GameEndEvent) e);
@@ -109,10 +113,6 @@ public class MultiGameEventHandler extends GameEventHandler implements RemoteGam
     public void onSyncDataReceived(GameRuntimeData gameRuntimeData) {
         // used by client only
         getGameRuntime().replaceGameData(gameRuntimeData);
-//        if (!onGameReadyNotified && getGameRuntime().getState() == GameFSM.State.TURN_START) {
-//            onGameReadyNotified = true;
-//            mViewModel.onRemoteReady();
-//        }
     }
 
     @Override

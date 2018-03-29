@@ -10,7 +10,7 @@ import cs446_w2018_group3.supercardgame.util.events.GameEvent.GameEvent;
  */
 
 public interface RemoteGameEventListener {
-    void onGameEventReceived(GameEvent e);
+    void onRemoteGameEventReceived(GameEvent e);
     void onSyncDataReceived(GameRuntimeData gameRuntimeData);
     void onPlayerDataReceived(Player player);
     void onFieldDataReceived(GameField gameField);

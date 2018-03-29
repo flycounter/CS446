@@ -58,7 +58,7 @@ public class P2pHost implements IHost {
 
             @Override
             public void onMessage(WebSocket conn, String message) {
-                Log.i(TAG, "onMessage: " + conn + " " + message);
+                Log.i(TAG, "onErrorMessage: " + conn + " " + message);
 
                 if (mMessageConnector != null) {
                     mMessageConnector.onMessage(conn, message);

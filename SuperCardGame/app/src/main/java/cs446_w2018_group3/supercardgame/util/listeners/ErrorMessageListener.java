@@ -5,5 +5,5 @@ package cs446_w2018_group3.supercardgame.util.listeners;
  */
 
 public interface ErrorMessageListener {
-    void onMessage(String message);
+    void onErrorMessage(String message);
 }

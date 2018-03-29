@@ -43,7 +43,6 @@ import cs446_w2018_group3.supercardgame.model.Translate;
 public abstract class Card {
     private static final String TAG = Card.class.getName();
 
-    private static int index = 0;
     private final int id;
     private final Translate.CardType cardType;
     private static final int DEFAULT_COST = 1;
@@ -57,8 +56,7 @@ public abstract class Card {
 
     public Card(Translate.CardType cardType) {
         this.cardType = cardType;
-        this.id = index;
-        index++;
+        this.id = Counter.getNextIndex();
     }
 
     public int getCost() { return DEFAULT_COST; }

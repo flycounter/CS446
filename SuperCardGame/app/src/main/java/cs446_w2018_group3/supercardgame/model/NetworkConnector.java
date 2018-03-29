@@ -42,6 +42,9 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
     private final MultiGameViewModel mViewModel;
     private final RemoteGameEventListener mRemoteGameEventListener;
 
+    // flags
+    private boolean isLastSyncReceived = false;
+
     private final Gson gson = Parser.getInstance().getParser();
 
 
@@ -69,7 +72,8 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
 
     @Override
     public void onGameEvent(GameEvent e) {
-        Log.i(TAG, "local game event received: " + e);
+        Log.i(TAG, "local game event received: " + e.getEventCode());
+
         if (!mViewModel.isHost()) {
             if (e instanceof ActionEvent) {
                 // action event from client
@@ -168,6 +172,11 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
         PayloadInfo.Type payloadType = payload.getType();
         Log.i(TAG, String.format("valid message received: type: %s", payloadType));
 
+        if (isLastSyncReceived) {
+            Log.w(TAG, "message after last sync received");
+            return;
+        }
+
         try {
             switch (payloadType) {
                 case GAME_EVENT: {
@@ -192,12 +201,13 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                             break;
                         case GAME_END:
                             e = gson.fromJson(payload.getPayload(), GameEndEvent.class);
+                            isLastSyncReceived = true;
                             break;
                         default:
                             // unknown event
                             throw new UnknownMessageException();
                     }
-                    mRemoteGameEventListener.onGameEventReceived(e);
+                    mRemoteGameEventListener.onRemoteGameEventReceived(e);
 
                 }
                 break;
@@ -215,7 +225,8 @@ public class NetworkConnector implements INetworkConnector, IMessageConnector, L
                                 original.getLocalPlayer(),
                                 original.getCurrPlayer(),
                                 original.getGameField(),
-                                original.getGameState());
+                                original.getGameState(),
+                                original.getLogInfo());
                         mRemoteGameEventListener.onSyncDataReceived(actual);
                         sendACK(PayloadInfo.Type.ACK_GAME_SYNC);
                     }

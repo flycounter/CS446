@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.os.Looper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,11 +35,12 @@ public class GameRuntime implements GameStateControl {
     private final MutableLiveData<Player> localPlayer = new MutableLiveData<>();
     private final MutableLiveData<Player> otherPlayer = new MutableLiveData<>();
     private final MutableLiveData<GameField> mGameField = new MutableLiveData<>();
-    private final MutableLiveData<String> logInfo = new MutableLiveData<>();
+    private final MutableLiveData<List<String>> logInfo = new MutableLiveData<>();
 
 
     public GameRuntime() {
         gameModel.bind(this);
+        logInfo.setValue(new ArrayList<>());
     }
 
     public void setGameStateChangeListener(GameFSM.GameStateChangeListener gameStateChangeListener) {
@@ -62,6 +64,7 @@ public class GameRuntime implements GameStateControl {
         updateCurrPlayer(gameRuntimeData.getCurrPlayer());
         updateGameField(gameRuntimeData.getGameField());
         fsm.setState(gameRuntimeData.getGameState());
+        setLogInfo(gameRuntimeData.getLogInfo());
         Log.i(TAG, "game runtime data refreshed");
     }
 
@@ -142,7 +145,7 @@ public class GameRuntime implements GameStateControl {
         return mGameField;
     }
 
-    public LiveData<String> getLogInfo() { return logInfo; }
+    public LiveData<List<String>> getLogInfo() { return logInfo; }
 
     public void updateGameField(GameField gameField) {
         if (Looper.myLooper() == Looper.getMainLooper())
@@ -151,9 +154,19 @@ public class GameRuntime implements GameStateControl {
     }
 
     public void updateLogInfo(String msg) {
+        List<String> newval = logInfo.getValue();
+        if (newval == null) {
+            newval = new ArrayList<>();
+        }
+
+        newval.add(0, msg);
+        setLogInfo(newval);
+    }
+
+    public void setLogInfo(List<String> logInfo) {
         if (Looper.myLooper() == Looper.getMainLooper())
-            logInfo.setValue(msg);
-        else logInfo.postValue(msg);
+            this.logInfo.setValue(logInfo);
+        else this.logInfo.postValue(logInfo);
     }
 
     Game getGameModel() {
@@ -161,7 +174,7 @@ public class GameRuntime implements GameStateControl {
     }
 
     public GameRuntimeData getSyncData() {
-        return new GameRuntimeData(localPlayer.getValue(), otherPlayer.getValue(), currPlayer, mGameField.getValue(), fsm.getState());
+        return new GameRuntimeData(localPlayer.getValue(), otherPlayer.getValue(), currPlayer, mGameField.getValue(), fsm.getState(), logInfo.getValue());
     }
 
     @Override

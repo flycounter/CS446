@@ -1,5 +1,7 @@
 package cs446_w2018_group3.supercardgame.model.dto;
 
+import java.util.List;
+
 import cs446_w2018_group3.supercardgame.model.field.GameField;
 import cs446_w2018_group3.supercardgame.model.player.Player;
 import cs446_w2018_group3.supercardgame.runtime.GameFSM;
@@ -15,13 +17,15 @@ public class GameRuntimeData {
     private final Player currPlayer;
     private final GameField gameField;
     private final GameFSM.State gameState;
+    private final List<String> logInfo;
 
-    public GameRuntimeData(Player localPlayer, Player otherPlayer, Player currPlayer, GameField gameField, GameFSM.State gameState) {
+    public GameRuntimeData(Player localPlayer, Player otherPlayer, Player currPlayer, GameField gameField, GameFSM.State gameState, List<String> logInfo) {
         this.localPlayer = localPlayer;
         this.otherPlayer = otherPlayer;
         this.currPlayer = currPlayer;
         this.gameField = gameField;
         this.gameState = gameState;
+        this.logInfo = logInfo;
     }
 
     public Player getLocalPlayer() {
@@ -42,5 +46,9 @@ public class GameRuntimeData {
 
     public GameFSM.State getGameState() {
         return gameState;
+    }
+
+    public List<String> getLogInfo() {
+        return logInfo;
     }
 }

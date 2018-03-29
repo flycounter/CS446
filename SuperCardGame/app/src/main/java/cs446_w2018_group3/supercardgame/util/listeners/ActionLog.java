@@ -44,7 +44,7 @@ public class ActionLog implements LocalGameEventListener, RemoteGameEventListene
         updateActionLog(msg);
     }
 
-    public void onGameEventReceived(GameEvent e){
+    public void onRemoteGameEventReceived(GameEvent e){
 
     }
 

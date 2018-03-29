@@ -133,7 +133,7 @@ public abstract class GameViewModel extends AndroidViewModel implements PlayerAc
         gameRuntime.updateLogInfo(message);
     }
 
-    public LiveData<String> getActionLogMessage() { return gameRuntime.getLogInfo(); }
+    public LiveData<List<String>> getActionLogMessage() { return gameRuntime.getLogInfo(); }
 
     public interface GameReadyCallback {
         void onGameReady();

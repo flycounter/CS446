@@ -46,7 +46,7 @@ public class GameEventHandler implements IGameEventHandler {
 
         if (mErrorMessageListener != null) {
             Log.i(TAG, "error message delivery to " + mErrorMessageListener);
-            mErrorMessageListener.onMessage(err.getMessage());
+            mErrorMessageListener.onErrorMessage(err.getMessage());
         }
     }
 
@@ -87,7 +87,7 @@ public class GameEventHandler implements IGameEventHandler {
                 cards.add((ElementCard) Game.getCardInHand(player, cardId));
             }
 
-            game.playerCombineElementsEventHandler(player, cards);
+            game.combineCard(player, cards);
         }
         catch (GameStateException | PlayerActionException err) {
             deliverErrorMessage(err);

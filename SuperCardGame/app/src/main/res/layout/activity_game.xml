@@ -19,36 +19,43 @@
             android:id="@+id/OppStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="TextView" />
 
         <TextView
             android:id="@+id/OppBuffEquid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="TextView" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_info"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/Weather"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_opponent_bottom">
+        app:layout_constraintTop_toTopOf="@+id/guideline_opponent_bottom" />
 
-        <TextView
-            android:id="@+id/Weather"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="TextView" />
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_info_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Weather">
 
         <TextView
             android:id="@+id/ActionLog"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
             android:text="TextView" />
-    </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/layout_player"
@@ -63,12 +70,14 @@
             android:id="@+id/PlayerStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="TextView" />
 
         <TextView
             android:id="@+id/PlayerBuffEquip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="TextView" />
     </LinearLayout>
 

@@ -35,7 +35,6 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
 
     public MultiGameViewModel(Application application) {
         super(application);
-        gameEventHandler = new MultiGameEventHandler();
     }
 
     @Override
@@ -44,6 +43,7 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
         Log.i(TAG, "isHost: " + isHost());
 
         gameRuntime  = new MultiGameRuntime(isHost());
+        gameEventHandler = new MultiGameEventHandler(isHost());
         gameEventHandler.bind(gameRuntime);
         gameRuntime.setGameStateChangeListener(this);
 
@@ -89,13 +89,21 @@ public class MultiGameViewModel extends GameViewModel implements ConnectionListe
         if (isHost()) {
             GameRuntimeData gameRuntimeData = gameRuntime.getSyncData();
 
-            gameRuntimeData = new GameRuntimeData(gameRuntimeData.getLocalPlayer(), gameRuntimeData.getOtherPlayer(), gameRuntimeData.getCurrPlayer(), gameRuntimeData.getGameField(), gameRuntimeData.getGameState());
+            gameRuntimeData = new GameRuntimeData(
+                    gameRuntimeData.getLocalPlayer(),
+                    gameRuntimeData.getOtherPlayer(),
+                    gameRuntimeData.getCurrPlayer(),
+                    gameRuntimeData.getGameField(),
+                    gameRuntimeData.getGameState(),
+                    gameRuntimeData.getLogInfo()
+            );
 
             Log.i(TAG, "data sync to client");
             Log.i(TAG, "local player: " + gameRuntimeData.getLocalPlayer());
             Log.i(TAG, "other player: " + gameRuntimeData.getOtherPlayer());
             Log.i(TAG, "curr player: " + gameRuntimeData.getCurrPlayer());
             Log.i(TAG, "game state: " + gameRuntimeData.getGameState());
+            Log.i(TAG, "log info size: " + gameRuntimeData.getLogInfo().size());
 
             mNetworkConnector.sendSyncData(gameRuntime.getSyncData());
         }

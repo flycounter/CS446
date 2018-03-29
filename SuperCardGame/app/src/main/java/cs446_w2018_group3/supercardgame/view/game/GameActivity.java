@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -123,13 +124,14 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void onClick(View v) {
                 int size = chosenCard.size();
                 if (size != 2) {
-                    actionLog.setText("Action:\nInvalid command,you have to choose exactly two element card to combine");
+                    showErrorMessage("you have to choose exactly two element cards to combine");
                 } else {
                     if (gameMode == 3) {
                         stepCount += 1;
                         actionLog.performClick();
                         combine.setEnabled(false);
                     }
+                    Log.i(TAG, "chosen cards: " + chosenCard);
                     viewModel.combineCards(chosenCard);
                 }
             }
@@ -139,10 +141,10 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void onClick(View v) {
                 int size = chosenCard.size();
                 if (size < 1) {
-                    actionLog.setText("Action:\nInvalid command,you have to choose at least one card to use.");
+                    showErrorMessage("you have to choose at least one card to use");
                     return;
                 } else if (size > 1) {
-                    actionLog.setText("Action:\nInvalid command,you can only use one card each time.");
+                    showErrorMessage("you can only use one card each time");
                     return;
                 }
 
@@ -163,7 +165,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         endTurn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionLog.setText("Action:\nYou end the turn,now is your opponent's turn.");
+                showErrorMessage("You end the turn, now is your opponent's turn");
                 combine.setEnabled(false);
                 use.setEnabled(false);
                 endTurn.setEnabled(false);
@@ -295,10 +297,10 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             }
         });
 
-        viewModel.getActionLogMessage().observe(this, new Observer<String>() {
+        viewModel.getActionLogMessage().observe(this, new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                actionLog.setText(s);
+            public void onChanged(@Nullable List<String> strings) {
+                actionLog.setText(TextUtils.join("\n", strings));
             }
         });
     }
@@ -483,6 +485,10 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
         }
     }
 
+    private void showErrorMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onTurnStart(TurnStartEvent e) {
         Log.i(TAG, String.format("TurnStartEvent, playerId: %s, receiverId: %s",
@@ -494,12 +500,12 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void run() {
                 if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
                     Log.i(TAG, "local player's turn");
-                    actionLog.setText("Action:\nNow it's your turn.");
+                    showErrorMessage("Noew it's your turn");
                     combine.setEnabled(true);
                     use.setEnabled(true);
                     endTurn.setEnabled(true);
                 } else {
-                    actionLog.setText("Action:\nNow it's your opponent's turn.");
+                    showErrorMessage("Noew it's your opponent's turn");
                     combine.setEnabled(false);
                     use.setEnabled(false);
                     endTurn.setEnabled(false);
@@ -515,7 +521,7 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void run() {
                 Player winner = e.getWinner();
                 String winnerName = (winner == null) ? "null" : winner.getName();
-                actionLog.setText(String.format("Game end. winner is %s", winnerName));
+                viewModel.getGameRuntime().updateLogInfo(String.format("Game end, winner is %s", winnerName));
                 combine.setEnabled(false);
                 use.setEnabled(false);
                 endTurn.setEnabled(false);
@@ -538,12 +544,12 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
     }
 
     @Override
-    public void onMessage(String message) {
+    public void onErrorMessage(String message) {
         Activity thisActivity = this;
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(thisActivity, message, Toast.LENGTH_SHORT).show();
+                showErrorMessage(message);
             }
         });
 
