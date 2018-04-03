@@ -32,7 +32,7 @@ public class PopupInfo extends PopupWindow {
         this.setBackgroundDrawable(dw);
         //conncet
         info = contentView.findViewById(R.id.CardInfo);
-        info.setTextSize(26);
+//        info.setTextSize(26);
         String infoText = Card.getInfo(cardType);
         info.setText(infoText);
         info.setTextColor(0xffffffff);

@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cs446_w2018_group3.supercardgame.model.dao.User;
+import cs446_w2018_group3.supercardgame.util.Parser;
 import cs446_w2018_group3.supercardgame.util.listeners.ErrorMessageListener;
 import cs446_w2018_group3.supercardgame.view.cardedit.PopupInfo;
 import cs446_w2018_group3.supercardgame.model.cards.element.ElementCard;
@@ -500,12 +502,12 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
             public void run() {
                 if (viewModel.getThisPlayer().getValue() != null && viewModel.getThisPlayer().getValue().getId() == e.getSubjectId()) {
                     Log.i(TAG, "local player's turn");
-                    showErrorMessage("Noew it's your turn");
+                    showErrorMessage("Now it's your turn");
                     combine.setEnabled(true);
                     use.setEnabled(true);
                     endTurn.setEnabled(true);
                 } else {
-                    showErrorMessage("Noew it's your opponent's turn");
+                    showErrorMessage("Now it's your opponent's turn");
                     combine.setEnabled(false);
                     use.setEnabled(false);
                     endTurn.setEnabled(false);
@@ -526,6 +528,22 @@ public abstract class GameActivity extends AppCompatActivity implements StateEve
                 use.setEnabled(false);
                 endTurn.setEnabled(false);
                 surrender.setEnabled(false);
+
+                // add gold to player
+                int goldIncrement = 2000;
+                try {
+                    if (winner.getName().equals(viewModel.getThisPlayer().getValue().getName())) {
+                        goldIncrement = 4000;
+                    }
+                }
+                catch (Exception err) {}
+
+                User user = User.getLocalUser(getSession().getUserDao());
+                Player player = Player.getLocalPlayer(getSession());
+                player.setGold(player.getGold() + goldIncrement);
+                user.setPlayerData(Parser.getInstance().getParser().toJson(player));
+                User.replaceUser(getSession().getUserDao(), user);
+                showErrorMessage(String.format("%s gold added to local player", goldIncrement));
             }
         });
 
